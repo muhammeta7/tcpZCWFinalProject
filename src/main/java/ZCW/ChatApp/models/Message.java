@@ -1,4 +1,4 @@
-package Models;
+package ZCW.ChatApp.models;
 
 import java.util.Date;
 

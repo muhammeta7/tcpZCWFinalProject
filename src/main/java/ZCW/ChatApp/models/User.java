@@ -1,4 +1,4 @@
-package Models;
+package ZCW.ChatApp.models;
 
 import java.nio.channels.Channel;
 import java.util.Set;
