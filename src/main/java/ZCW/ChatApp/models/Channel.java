@@ -1,23 +1,38 @@
 package ZCW.ChatApp.models;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Entity
 public class Channel {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String channelName;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_channels",
+            joinColumns = @JoinColumn(name = "channel_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> users;
     private boolean isPrivate;
+
+    @OneToMany
     private List<Message> messages;
 
     public Channel (){};
 
-    public Channel(long id, String channelName, Set<User> users, boolean isPrivate, List<Message> messages) {
+    public Channel(long id, String channelName, Set<User> users, boolean isPrivate) {
         this.id = id;
         this.channelName = channelName;
-        this.users = users;
+        this.users = new HashSet<>();
         this.isPrivate = isPrivate;
-        this.messages = messages;
+        this.messages = new ArrayList<>();
     }
 
     public long getId() {
@@ -59,6 +74,7 @@ public class Channel {
     public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
+
 }
 
 
