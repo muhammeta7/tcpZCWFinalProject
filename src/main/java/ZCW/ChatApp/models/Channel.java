@@ -11,24 +11,19 @@ public class Channel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String channelName;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_channels",
-            joinColumns = @JoinColumn(name = "channel_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @ManyToMany(mappedBy = "channels")
     private Set<User> users;
-    private boolean isPrivate;
+    private Boolean isPrivate;
 
     @OneToMany
     private List<Message> messages;
 
     public Channel (){};
 
-    public Channel(long id, String channelName, Set<User> users, boolean isPrivate) {
-        this.id = id;
+    public Channel(String channelName, Set<User> users, boolean isPrivate) {
         this.channelName = channelName;
         this.users = new HashSet<>();
         this.isPrivate = isPrivate;
