@@ -11,19 +11,16 @@ public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    private String channel;
+    private Long id;
     private String sender;
-    private String msgContent;
+    private String messageContent;
     private Date timestamp;
 
     public Message (){};
 
-    public Message(long id, String channel, String sender, String msgContent, Date timestamp) {
-        this.id = id;
-        this.channel = channel;
+    public Message(String sender, String msgContent, Date timestamp) {
         this.sender = sender;
-        this.msgContent = msgContent;
+        this.messageContent = msgContent;
         this.timestamp = timestamp;
     }
 
@@ -35,14 +32,6 @@ public class Message {
         this.id = id;
     }
 
-    public String getChannel() {
-        return channel;
-    }
-
-    public void setChannel(String channel) {
-        this.channel = channel;
-    }
-
     public String getSender() {
         return sender;
     }
@@ -52,11 +41,11 @@ public class Message {
     }
 
     public String getMsgContent() {
-        return msgContent;
+        return messageContent;
     }
 
     public void setMsgContent(String msgContent) {
-        this.msgContent = msgContent;
+        this.messageContent = msgContent;
     }
 
     public Date getTimestamp() {

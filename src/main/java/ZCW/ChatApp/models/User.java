@@ -9,19 +9,21 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String firstName;
     private String lastName;
     private String userName;
     private String password;
-    private boolean isConnected;
-    @ManyToMany
+    private Boolean isConnected;
+    @ManyToMany( cascade = {
+        CascadeType.PERSIST,
+                CascadeType.MERGE
+    })
     private Set<Channel> channels;
 
     public User (){};
 
-    public User(long id, String firstName, String lastName, String userName, String password, boolean connected) {
-        this.id = id;
+    public User(String firstName, String lastName, String userName, String password, boolean connected) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
