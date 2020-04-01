@@ -1,28 +1,33 @@
 package ZCW.ChatApp.models;
 
-import java.nio.channels.Channel;
+import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
+@Entity
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String firstName;
     private String lastName;
     private String userName;
     private String password;
-    private boolean connected;
+    private boolean isConnected;
+    @ManyToMany
     private Set<Channel> channels;
 
     public User (){};
 
-    public User(long id, String firstName, String lastName, String userName, String password, boolean connected, Set<Channel> channels) {
+    public User(long id, String firstName, String lastName, String userName, String password, boolean connected) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
         this.password = password;
-        this.connected = connected;
-        this.channels = channels;
+        this.isConnected = connected;
+        this.channels = new HashSet<>();
     }
 
     public long getId() {
@@ -66,11 +71,11 @@ public class User {
     }
 
     public boolean isConnected() {
-        return connected;
+        return isConnected;
     }
 
     public void setConnected(boolean connected) {
-        this.connected = connected;
+        this.isConnected = connected;
     }
 
     public Set<Channel> getChannels() {
