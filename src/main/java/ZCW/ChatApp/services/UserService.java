@@ -4,8 +4,6 @@ import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,6 +53,7 @@ public class UserService {
         original.setConnected(false);
         return userRepo.save(original);
     }
+
 
     // ToDo Update User Info
 

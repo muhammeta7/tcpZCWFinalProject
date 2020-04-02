@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -65,13 +66,39 @@ public class UserController {
         return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
     }
 
-
-
     // PUT
     //=============================================================================
     // TODO Connect, Disconnect User, update info
+    @PutMapping("/{id}/connect")
+    public ResponseEntity<User> connect(@PathVariable Long id){
+        return new ResponseEntity<>(userService.connectUser(id), HttpStatus.OK);
+    }
 
+    @PutMapping("/{id}/disconnect")
+    public ResponseEntity<User> disconnect(@PathVariable Long id){
+        return new ResponseEntity<>(userService.disconnectUser(id), HttpStatus.OK);
+    }
 
+    @PutMapping("/updateUser/{id}")
+    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable Long id){
+        Optional<User> existingUser = userService.findById(id);
+        return existingUser
+                .map(u -> {
+                    u.setFirstName(user.getFirstName());
+                    u.setLastName(user.getLastName());
+                    u.setPassword(user.getPassword());
+                    u.setUserName(user.getUserName());
+
+                    try{
+                        return ResponseEntity
+                                .ok()
+                                .location(new URI("/updateUser/" + u.getId()))
+                                .body(u);
+                    } catch(URISyntaxException e){
+                        return ResponseEntity.status(HttpStatus.MULTI_STATUS.INTERNAL_SERVER_ERROR).build();
+                    }
+                }).orElse(ResponseEntity.notFound().build());
+    }
 
     // DELETE
     //=============================================================================
