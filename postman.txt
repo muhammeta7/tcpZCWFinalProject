@@ -1,0 +1,17 @@
+Post Requests to add users
+
+{
+	"firstName" : "Moe",
+	"connected" : false,
+	"lastName" : "Aydin",
+	"password" : "mojo",
+	"userName" : "muhammeta7"
+}
+
+{
+	"firstName" : "Moe",
+	"connected" : false,
+	"lastName" : "Aydin",
+	"password" : "mojo",
+	"userName" : "muhammeta7"
+}

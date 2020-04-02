@@ -14,29 +14,28 @@ public class User {
     private String lastName;
     private String userName;
     private String password;
-    private Boolean isConnected;
+    private Boolean connected = false;
     @ManyToMany( cascade = {
-        CascadeType.PERSIST,
+                CascadeType.PERSIST,
                 CascadeType.MERGE
     })
-    private Set<Channel> channels;
+    private Set<Channel> channels = new HashSet<>();;
 
     public User (){};
 
-    public User(String firstName, String lastName, String userName, String password, boolean connected) {
+    public User(String firstName, String lastName, String userName, String password, Boolean isConnected) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
         this.password = password;
-        this.isConnected = connected;
-        this.channels = new HashSet<>();
+        this.connected = isConnected;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -72,12 +71,12 @@ public class User {
         this.password = password;
     }
 
-    public boolean isConnected() {
-        return isConnected;
+    public Boolean isConnected() {
+        return connected;
     }
 
-    public void setConnected(boolean connected) {
-        this.isConnected = connected;
+    public void setConnected(Boolean connected) {
+        this.connected = connected;
     }
 
     public Set<Channel> getChannels() {
