@@ -68,7 +68,6 @@ public class UserController {
 
     // PUT
     //=============================================================================
-    // TODO Connect, Disconnect User, update info
     @PutMapping("/{id}/connect")
     public ResponseEntity<User> connect(@PathVariable Long id){
         return new ResponseEntity<>(userService.connectUser(id), HttpStatus.OK);
@@ -107,10 +106,9 @@ public class UserController {
         return new ResponseEntity<>(userService.deleteUser(id), HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/deleteAll")
     public ResponseEntity<Boolean> deleteAllUsers() {
         return new ResponseEntity<>(userService.deleteAll(), HttpStatus.NOT_FOUND);
     }
-
 
 }
