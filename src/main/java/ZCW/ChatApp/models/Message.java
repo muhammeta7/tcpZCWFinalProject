@@ -40,11 +40,11 @@ public class Message {
         this.sender = sender;
     }
 
-    public String getMsgContent() {
+    public String getContent() {
         return content;
     }
 
-    public void setMsgContent(String msgContent) {
+    public void setContent(String msgContent) {
         this.content = msgContent;
     }
 
@@ -55,4 +55,5 @@ public class Message {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
+
 }
