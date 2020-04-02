@@ -5,7 +5,9 @@ import ZCW.ChatApp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -20,7 +22,7 @@ public class UserService {
     // POST
     //=============================================================================
     public User create(User user) throws Exception{
-        if(userRepo.findByUserName(user.getUserName()) == null){
+        if(!userRepo.findByUserName(user.getUserName()).isPresent()){
             return userRepo.save(user);
         }
         throw new Exception("Username is taken. Try something else.");
@@ -32,16 +34,48 @@ public class UserService {
         return userRepo.findAll();
     }
 
-    public User findOne(Long id){
-        return userRepo.getOne(id);
+    public Optional<User> findById(Long id){
+        return userRepo.findById(id);
+    }
+
+    public Optional<User> findUserByUsername(String username){
+        return userRepo.findByUserName(username);
     }
 
     // UPDATE
     //=============================================================================
+    public User isConnected(Long id){
+        User original = userRepo.getOne(id);
+        original.setConnected(true);
+        return userRepo.save(original);
+    }
+
+    public User disconnect(Long id){
+        User original = userRepo.getOne(id);
+        original.setConnected(false);
+        return userRepo.save(original);
+    }
 
     // DELETE
     //=============================================================================
+    public Boolean deleteUser(Long id){
+        userRepo.deleteById(id);
+        return true;
+    }
 
+    public Boolean deleteMultipleUsers(List<Integer> userList){
+        List<User> users = new ArrayList<>();
+        for(User u : users){
+            if(userList.contains(u.getId())){
+                userRepo.deleteById(u.getId());
+            }
+        }
+        return true;
+    }
 
+    public Boolean deleteAll(){
+        userRepo.deleteAll();
+        return true;
+    }
 
 }
