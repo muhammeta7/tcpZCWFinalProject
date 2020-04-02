@@ -23,7 +23,7 @@ public class Channel {
 
     public Channel (){};
 
-    public Channel(String channelName, Set<User> users, boolean isPrivate) {
+    public Channel(String channelName, Set<User> users, Boolean isPrivate) {
         this.channelName = channelName;
         this.users = new HashSet<>();
         this.isPrivate = isPrivate;
@@ -54,7 +54,7 @@ public class Channel {
         this.users = users;
     }
 
-    public boolean isPrivate() {
+    public Boolean isPrivate() {
         return isPrivate;
     }
 
