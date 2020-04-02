@@ -23,9 +23,9 @@ public class Channel {
 
     public Channel (){};
 
-    public Channel(String channelName, Set<User> users, Boolean isPrivate) {
+    public Channel(String channelName, HashSet<User> users, Boolean isPrivate) {
         this.channelName = channelName;
-        this.users = new HashSet<>();
+        this.users = users;
         this.isPrivate = isPrivate;
         this.messages = new ArrayList<>();
     }

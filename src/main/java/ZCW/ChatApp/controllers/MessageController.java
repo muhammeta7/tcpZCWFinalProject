@@ -80,7 +80,7 @@ public class MessageController {
 
     @DeleteMapping("/deleteAll")
     public ResponseEntity<Boolean> deleteAllUsers() {
-        return new ResponseEntity<>(messageService.deletAll(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(messageService.deleteAll(), HttpStatus.NOT_FOUND);
     }
 
 }

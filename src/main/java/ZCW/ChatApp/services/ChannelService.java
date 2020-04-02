@@ -20,9 +20,7 @@ public class ChannelService {
 
     // POST
     //=============================================================================
-    public Channel create(String name, User... users){
-        Set<User> set = new HashSet<>(Arrays.asList(users));
-        Channel channel = new Channel(name, set, true);
+    public Channel create(Channel channel){
         return channelRepository.save(channel);
     }
 

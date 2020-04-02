@@ -48,7 +48,7 @@ public class UserServiceTest {
     @DisplayName("Test findById Fail")
     public void findByIdFailTest(){
         // Set up mock repo
-        doReturn(Optional.empty()).when(repo).findById(1l);
+        doReturn(Optional.empty()).when(repo).findById(1L);
         // Execute Call
         Optional<User> returnUser = service.findById(1L);
         // Check assertions
@@ -65,7 +65,7 @@ public class UserServiceTest {
         // Execute service call
         List<User> returnList = service.findAll();
         // Check Assertions
-        Assertions.assertEquals(2, returnList.size(), "findAll shoudl return 2 users");
+        Assertions.assertEquals(2, returnList.size(), "findAll should return 2 users");
     }
 
     @Test
@@ -79,6 +79,6 @@ public class UserServiceTest {
         Assertions.assertNotNull(returnUser, "The User should not be null");
     }
 
-    // TODO Service Tests for Delete and Udate Methods
+    // TODO Service Tests for Delete and Update Methods
 
 }
