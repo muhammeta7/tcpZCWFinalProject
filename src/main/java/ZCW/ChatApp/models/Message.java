@@ -13,14 +13,14 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String sender;
-    private String messageContent;
+    private String content;
     private Date timestamp;
 
     public Message (){};
 
     public Message(String sender, String msgContent, Date timestamp) {
         this.sender = sender;
-        this.messageContent = msgContent;
+        this.content = msgContent;
         this.timestamp = timestamp;
     }
 
@@ -41,11 +41,11 @@ public class Message {
     }
 
     public String getMsgContent() {
-        return messageContent;
+        return content;
     }
 
     public void setMsgContent(String msgContent) {
-        this.messageContent = msgContent;
+        this.content = msgContent;
     }
 
     public Date getTimestamp() {
