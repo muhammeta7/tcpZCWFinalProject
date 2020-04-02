@@ -44,32 +44,25 @@ public class UserService {
 
     // UPDATE
     //=============================================================================
-    public User isConnected(Long id){
+    public User connectUser(Long id){
         User original = userRepo.getOne(id);
         original.setConnected(true);
         return userRepo.save(original);
     }
 
-    public User disconnect(Long id){
+    public User disconnectUser(Long id){
         User original = userRepo.getOne(id);
         original.setConnected(false);
         return userRepo.save(original);
     }
 
+    // ToDo Update User Info
+
+
     // DELETE
     //=============================================================================
     public Boolean deleteUser(Long id){
         userRepo.deleteById(id);
-        return true;
-    }
-
-    public Boolean deleteMultipleUsers(List<Integer> userList){
-        List<User> users = new ArrayList<>();
-        for(User u : users){
-            if(userList.contains(u.getId())){
-                userRepo.deleteById(u.getId());
-            }
-        }
         return true;
     }
 

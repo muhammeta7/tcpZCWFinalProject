@@ -5,13 +5,11 @@ import ZCW.ChatApp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -40,11 +38,52 @@ public class UserController {
     }
     // GET
     //=============================================================================
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findUserById(@PathVariable Long id){
+        return userService.findById(id)
+                .map(emp -> ResponseEntity
+                        .ok()
+                        .body(emp))
+                .orElse(ResponseEntity
+                        .notFound()
+                        .build());
+    }
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity<?> findByUsername(@PathVariable String username){
+        return userService.findUserByUsername(username)
+                .map(emp -> ResponseEntity
+                        .ok()
+                        .body(emp))
+                .orElse(ResponseEntity
+                        .notFound()
+                        .build());
+    }
+
+    @GetMapping("/allUsers")
+    public ResponseEntity<List<User>> findAllUsers(){
+        return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
+    }
+
+
 
     // PUT
     //=============================================================================
+    // TODO Connect, Disconnect User, update info
+
+
 
     // DELETE
     //=============================================================================
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Boolean> deleteUser(@PathVariable Long id) {
+        return new ResponseEntity<>(userService.deleteUser(id), HttpStatus.NOT_FOUND);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Boolean> deleteAllUsers() {
+        return new ResponseEntity<>(userService.deleteAll(), HttpStatus.NOT_FOUND);
+    }
+
 
 }
