@@ -54,10 +54,6 @@ public class UserService {
         return userRepo.save(original);
     }
 
-
-    // ToDo Update User Info
-
-
     // DELETE
     //=============================================================================
     public Boolean deleteUser(Long id){
