@@ -59,7 +59,6 @@ public class MessageController {
         return existingMessage
                 .map(m -> {
                     m.setContent(message.getContent());
-                    message.setTimestamp(new Date());
                     try{
                         return ResponseEntity
                                 .ok()
