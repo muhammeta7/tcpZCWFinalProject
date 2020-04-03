@@ -21,11 +21,11 @@ public class Channel {
     @OneToMany
     private List<Message> messages;
 
-    public Channel (){};
+    public Channel (){}
 
-    public Channel(String channelName, Set<User> users, boolean isPrivate) {
+    public Channel(String channelName, HashSet<User> users, Boolean isPrivate) {
         this.channelName = channelName;
-        this.users = new HashSet<>();
+        this.users = users;
         this.isPrivate = isPrivate;
         this.messages = new ArrayList<>();
     }
@@ -54,7 +54,7 @@ public class Channel {
         this.users = users;
     }
 
-    public boolean isPrivate() {
+    public Boolean isPrivate() {
         return isPrivate;
     }
 
