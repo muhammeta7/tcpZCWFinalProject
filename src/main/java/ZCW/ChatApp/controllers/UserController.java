@@ -34,16 +34,16 @@ public class UserController {
         } catch (URISyntaxException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-
     }
+
     // GET
     //=============================================================================
     @GetMapping("/{id}")
     public ResponseEntity<?> findUserById(@PathVariable Long id){
         return userService.findById(id)
-                .map(emp -> ResponseEntity
+                .map(u -> ResponseEntity
                         .ok()
-                        .body(emp))
+                        .body(u))
                 .orElse(ResponseEntity
                         .notFound()
                         .build());
@@ -52,9 +52,9 @@ public class UserController {
     @GetMapping("/username/{username}")
     public ResponseEntity<?> findByUsername(@PathVariable String username){
         return userService.findUserByUsername(username)
-                .map(emp -> ResponseEntity
+                .map(u -> ResponseEntity
                         .ok()
-                        .body(emp))
+                        .body(u))
                 .orElse(ResponseEntity
                         .notFound()
                         .build());
@@ -77,7 +77,7 @@ public class UserController {
         return new ResponseEntity<>(userService.disconnectUser(id), HttpStatus.OK);
     }
 
-    @PutMapping("/updateUser/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable Long id){
         Optional<User> existingUser = userService.findById(id);
         return existingUser

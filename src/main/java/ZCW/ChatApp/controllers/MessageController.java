@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,7 +77,7 @@ public class MessageController {
 
     @DeleteMapping("/deleteAll")
     public ResponseEntity<Boolean> deleteAllUsers() {
-        return new ResponseEntity<>(messageService.deletAll(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(messageService.deleteAll(), HttpStatus.NOT_FOUND);
     }
 
 }
