@@ -1,11 +1,6 @@
 Post Requests to add users
 
-Creating Users -> localhost:8080/users/create
-
-Get All Users -> localhost:8080/users/allUsers
-
-Update User -> localhost:8080/users/updateUser/1
-
+POST Users -> localhost:8080/users/create
 
 {
 	"firstName" : "Moe",
@@ -28,17 +23,18 @@ Update User -> localhost:8080/users/updateUser/1
 	"userName" : "fisher4"
 }
 
+GET All Users -> localhost:8080/users/allUsers
+GET One User -> localhost:8080/users/1
+GET One User -> localhost:8080/users/username/muhammeta7
 
-
-
-
-
-
-
-
-
-
-
+PUT Update User -> localhost:8080/users/1
+{
+        "id": 1,
+        "firstName": "New",
+        "lastName": "Guy",
+        "userName": "muhammeta7",
+        "password": "magikarp"
+}
 
 
 
@@ -57,3 +53,6 @@ Creating Messages
 	"sender" : "Sandy",
 	"content" : "What it do"
 }
+
+
+

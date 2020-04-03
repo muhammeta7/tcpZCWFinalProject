@@ -17,6 +17,10 @@ public class UserService {
         this.userRepo = userRepo;
     }
 
+    public User save(User user){
+        return userRepo.save(user);
+    }
+
     // POST
     //=============================================================================
     public User create(User user) throws Exception{
@@ -24,10 +28,6 @@ public class UserService {
             return userRepo.save(user);
         }
         throw new Exception("Username is taken. Try something else.");
-    }
-
-    public User save(User user){
-        return userRepo.save(user);
     }
 
     // GET
