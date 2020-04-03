@@ -17,6 +17,10 @@ public class UserService {
         this.userRepo = userRepo;
     }
 
+    public User save(User user){
+        return userRepo.save(user);
+    }
+
     // POST
     //=============================================================================
     public User create(User user) throws Exception{
@@ -28,6 +32,7 @@ public class UserService {
 
     // GET
     //=============================================================================
+
     public List<User> findAll(){
         return userRepo.findAll();
     }
@@ -42,6 +47,7 @@ public class UserService {
 
     // UPDATE
     //=============================================================================
+
     public User connectUser(Long id){
         User original = userRepo.getOne(id);
         original.setConnected(true);
