@@ -29,6 +29,7 @@ public class ChannelModelTest {
         String expected = "expected";
         Channel channel = new Channel();
 
+
         // When
         channel.setChannelName(expected);
         String actual = channel.getChannelName();
