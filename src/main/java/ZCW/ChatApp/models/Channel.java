@@ -21,7 +21,7 @@ public class Channel {
     @OneToMany
     private List<Message> messages;
 
-    public Channel (){};
+    public Channel (){}
 
     public Channel(String channelName, HashSet<User> users, Boolean isPrivate) {
         this.channelName = channelName;

@@ -75,5 +75,13 @@ public class ChannelServiceTest {
         Assertions.assertNotNull(returnChannel, "The Channel should not be null.");
     }
 
+    @Test
+    @DisplayName("Test delete Channel")
+    public void deleteChannelTest(){
+        Channel mockChannel = new Channel("Lab", new HashSet<>(), true);
+        channelService.create(mockChannel);
+        //channelService.delete(mockChannel.getId());
 
+        Assertions.assertEquals(channelService.findById(mockChannel.getId()), Optional.empty(), "It did not delete the channel properly.");
+    }
 }
