@@ -1,6 +1,4 @@
 package ZCW.ChatApp.controllers;
-
-
 import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.services.ChannelService;
@@ -8,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -81,6 +78,5 @@ public class ChannelController {
     public ResponseEntity<Boolean> deleteAllChannel(){
         return new ResponseEntity<>(channelService.deleteAll(), HttpStatus.NOT_FOUND);
     }
-
-
+  
 }

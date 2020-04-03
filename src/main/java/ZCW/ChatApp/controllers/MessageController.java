@@ -49,8 +49,6 @@ public class MessageController {
         return new ResponseEntity<>(messageService.findBySender(username, pageable), HttpStatus.OK);
     }
 
-    // TODO possibly get message by Date
-
     // PUT
     //=============================================================================
     @PutMapping("/updateMessage/{id}")
@@ -59,6 +57,7 @@ public class MessageController {
         return existingMessage
                 .map(m -> {
                     m.setContent(message.getContent());
+                    messageService.save(m);
                     try{
                         return ResponseEntity
                                 .ok()
