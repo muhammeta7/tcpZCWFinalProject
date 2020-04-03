@@ -2,14 +2,16 @@ http://localhost:8080/channels
 
 {
     "channelName" : "Labs",
-    "users" : {},
-    "isPrivate" : true
+    "users" : [],
+    "private" : true
 }
+{
     "channelName" : "Announcements",
-    "users" : {},
-    "isPrivate" : false
+    "users" : [],
+    "private" : false
+}
 {
     "channelName" : "Party",
-    "users" : {},
-    "isPrivate" : false
+    "users" : [],
+    "private" : false
 }

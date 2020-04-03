@@ -49,6 +49,14 @@ public class ChannelService {
         return channelRepository.findAll();
     }
 
+    public Optional<Channel> findChannelByChannelName(String channelName){
+        return channelRepository.findChannelByChannelName(channelName);
+    }
+
+    public Channel saveChannel(Channel channel){
+        return channelRepository.save(channel);
+    }
+
     // UPDATE
     //=============================================================================
 
