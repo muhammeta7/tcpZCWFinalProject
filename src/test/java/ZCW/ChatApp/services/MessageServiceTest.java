@@ -1,6 +1,11 @@
 package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Message;
+
+import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.repositories.MessageRepository;
+import ZCW.ChatApp.repositories.UserRepository;
+
 import ZCW.ChatApp.repositories.MessageRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -15,8 +20,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -30,7 +39,7 @@ public class MessageServiceTest {
     private MessageRepository repo;
 
     @Test
-    @DisplayName("Test findbyId Success")
+    @DisplayName("Test findById Success")
     public void findByIdSuccessTest(){
         // Set Up mock object and repo
         Message mockMessage = new Message("moe", "testing time", new Date());
@@ -74,6 +83,5 @@ public class MessageServiceTest {
 
         Assertions.assertNotNull(returnMessage, "The Message should not be null");
     }
-
-
 }
+
