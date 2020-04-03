@@ -1,5 +1,6 @@
 Post Requests to add users
 
+Creating Users
 {
 	"firstName" : "Moe",
 	"lastName" : "Aydin",
@@ -19,4 +20,32 @@ Post Requests to add users
 	"lastName" : "Black",
 	"password" : "jalapeno",
 	"userName" : "fisher4"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+Creating Messages
+{
+	"sender" : "muhammeta7",
+	"content" : "Hey yo bro"
+}
+
+{
+	"sender" : "Chris",
+	"content" : "Did you do them tests"
+}
+
+{
+	"sender" : "Sandy",
+	"content" : "What it do"
 }
