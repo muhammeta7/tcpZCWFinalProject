@@ -1,6 +1,5 @@
 package ZCW.ChatApp.controllers;
 import ZCW.ChatApp.models.Channel;
-import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.services.ChannelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,14 +42,14 @@ public class ChannelController {
                 ResponseEntity.ok().body(channel)).orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<Channel>> findAllChannels(){
         return new ResponseEntity<>(channelService.findAll(), HttpStatus.OK);
     }
 
     // PUT
     //=============================================================================
-    @PutMapping("/updateChannel/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateChannel(@RequestBody Channel newChannel, @PathVariable Long id){
         Optional<Channel> existingChannel = channelService.findById(id);
         return existingChannel.map(channel -> {
@@ -60,7 +59,10 @@ public class ChannelController {
             channel.setUsers(newChannel.getUsers());
             channelService.saveChannel(channel);
             try{
-                return ResponseEntity.ok().location(new URI("/"+ channel.getId())).body(channel);
+                return ResponseEntity
+                        .ok()
+                        .location(new URI("/"+ channel.getId()))
+                        .body(channel);
             } catch (URISyntaxException e) {
                 return ResponseEntity.status(HttpStatus.MULTI_STATUS.INTERNAL_SERVER_ERROR).build();
             }

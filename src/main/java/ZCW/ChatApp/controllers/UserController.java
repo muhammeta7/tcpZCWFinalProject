@@ -60,7 +60,7 @@ public class UserController {
                         .build());
     }
 
-    @GetMapping("/allUsers")
+    @GetMapping
     public ResponseEntity<List<User>> findAllUsers(){
         return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
     }
