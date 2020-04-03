@@ -1,13 +1,10 @@
 package ZCW.ChatApp.models;
 
 import org.junit.Assert;
-import org.junit.jupiter.api.Test;
-
+import org.junit.Test;
 import java.util.Date;
 
 public class MessageModelTest {
-
-    public class MessageTests {
 
         private Long testId = 1L;
         private String testSender = "Jeff";
@@ -69,19 +66,21 @@ public class MessageModelTest {
             Assert.assertEquals(newMessageContent, actualMessageContent);
         }
 
-        @Test
-        public void setAndGetTimestampTest() {
-            Message testMessage = new Message(testSender, null, testContent);
+}
 
-            //When
-            Assert.assertNull(testMessage.getTimestamp());
-            Date newTimestamp = testTimestamp;
-            testMessage.setTimestamp(newTimestamp);
-            Date actualTimestamp = testMessage.getTimestamp();
-
-            //Then
-            Assert.assertEquals(newTimestamp, actualTimestamp);
-        }
-
-        }
-    }
+//        @Test
+//        public void setAndGetTimestampTest() {
+//            Message testMessage = new Message(testSender, null, testContent);
+//
+//            //When
+//            Assert.assertNull(testMessage.getTimestamp());
+//            Date newTimestamp = testTimestamp;
+//            testMessage.setTimestamp(newTimestamp);
+//            Date actualTimestamp = testMessage.getTimestamp();
+//
+//            //Then
+//            Assert.assertEquals(newTimestamp, actualTimestamp);
+//        }
+//
+//        }
+//    }
