@@ -1,6 +1,12 @@
 Post Requests to add users
 
-Creating Users
+Creating Users -> localhost:8080/users/create
+
+Get All Users -> localhost:8080/users/allUsers
+
+Update User -> localhost:8080/users/updateUser/1
+
+
 {
 	"firstName" : "Moe",
 	"lastName" : "Aydin",
@@ -21,6 +27,8 @@ Creating Users
 	"password" : "jalapeno",
 	"userName" : "fisher4"
 }
+
+
 
 
 
