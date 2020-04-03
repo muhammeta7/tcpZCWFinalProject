@@ -54,5 +54,21 @@ Creating Messages
 	"content" : "What it do"
 }
 
-
+localhost:8080/channels
+Creating Channels
+{
+    "channelName" : "Labs",
+    "users" : [],
+    "private" : true
+}
+{
+    "channelName" : "Announcements",
+    "users" : [],
+    "private" : false
+}
+{
+    "channelName" : "Party",
+    "users" : [],
+    "private" : false
+}
 

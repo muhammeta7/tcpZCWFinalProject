@@ -50,7 +50,7 @@ public class MessageController {
 
     // PUT
     //=============================================================================
-    @PutMapping("/updateMessage/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateMessage(@RequestBody Message message, @PathVariable Long id){
         Optional<Message> existingMessage = messageService.findById(id);
         return existingMessage
@@ -60,7 +60,7 @@ public class MessageController {
                     try{
                         return ResponseEntity
                                 .ok()
-                                .location(new URI("/updateMessage/" + m.getId()))
+                                .location(new URI("/" + m.getId()))
                                 .body(m);
                     } catch(URISyntaxException e){
                         return ResponseEntity.status(HttpStatus.MULTI_STATUS.INTERNAL_SERVER_ERROR).build();
