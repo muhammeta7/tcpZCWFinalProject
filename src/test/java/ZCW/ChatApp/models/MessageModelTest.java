@@ -70,7 +70,7 @@ public class MessageModelTest {
         }
 
         @Test
-        public void setAndGetTimestampTest() {//Given
+        public void setAndGetTimestampTest() {
             Message testMessage = new Message(testSender, null, testContent);
 
             //When
