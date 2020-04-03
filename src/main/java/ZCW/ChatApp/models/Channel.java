@@ -11,15 +11,12 @@ public class Channel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "channel_id")
     private Long id;
     private String channelName;
-
-    @ManyToMany(mappedBy = "channels")
-    private Set<User> users;
     private Boolean isPrivate;
-
-    @OneToMany
-    private List<Message> messages;
+    @ManyToMany
+    private Set<User> users;
 
     public Channel (){}
 
@@ -27,7 +24,7 @@ public class Channel {
         this.channelName = channelName;
         this.users = users;
         this.isPrivate = isPrivate;
-        this.messages = new ArrayList<>();
+        this.users = new HashSet<>();
     }
 
     public Long getId() {
@@ -60,14 +57,6 @@ public class Channel {
 
     public void setPrivate(boolean aPrivate) {
         isPrivate = aPrivate;
-    }
-
-    public List<Message> getMessages() {
-        return messages;
-    }
-
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
     }
 
 }

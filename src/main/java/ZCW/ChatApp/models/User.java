@@ -1,7 +1,9 @@
 package ZCW.ChatApp.models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -9,17 +11,15 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
     private String firstName;
     private String lastName;
     private String userName;
     private String password;
     private Boolean connected = false;
-    @ManyToMany( cascade = {
-                CascadeType.PERSIST,
-                CascadeType.MERGE
-    })
-    private Set<Channel> channels = new HashSet<>();;
+    @OneToMany
+    private List<Message> messages;
 
     public User (){};
 
@@ -29,6 +29,7 @@ public class User {
         this.userName = userName;
         this.password = password;
         this.connected = isConnected;
+        this.messages = new ArrayList<>();
     }
 
     public Long getId() {
@@ -79,11 +80,4 @@ public class User {
         this.connected = connected;
     }
 
-    public Set<Channel> getChannels() {
-        return channels;
-    }
-
-    public void setChannels(Set<Channel> channels) {
-        this.channels = channels;
-    }
 }
