@@ -83,5 +83,6 @@ public class MessageServiceTest {
 
         Assertions.assertNotNull(returnMessage, "The Message should not be null");
     }
+
 }
 
