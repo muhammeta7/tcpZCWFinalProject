@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -87,13 +86,13 @@ public class UserController {
                     u.setLastName(user.getLastName());
                     u.setPassword(user.getPassword());
                     u.setUserName(user.getUserName());
-
+                    userService.save(u);
                     try{
                         return ResponseEntity
                                 .ok()
-                                .location(new URI("/updateUser/" + u.getId()))
+                                .location(new URI("/" + u.getId()))
                                 .body(u);
-                    } catch(URISyntaxException e){
+                    }catch(URISyntaxException e){
                         return ResponseEntity.status(HttpStatus.MULTI_STATUS.INTERNAL_SERVER_ERROR).build();
                     }
                 }).orElse(ResponseEntity.notFound().build());

@@ -21,6 +21,10 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
+    public void save(Message message){
+        messageRepository.save(message);
+    }
+
     // POST
     //=============================================================================
     public Message create(Message message){

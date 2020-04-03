@@ -26,8 +26,13 @@ public class UserService {
         throw new Exception("Username is taken. Try something else.");
     }
 
+    public User save(User user){
+        return userRepo.save(user);
+    }
+
     // GET
     //=============================================================================
+
     public List<User> findAll(){
         return userRepo.findAll();
     }
@@ -42,6 +47,7 @@ public class UserService {
 
     // UPDATE
     //=============================================================================
+
     public User connectUser(Long id){
         User original = userRepo.getOne(id);
         original.setConnected(true);
