@@ -10,8 +10,7 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String firstName;
     private String lastName;
@@ -20,9 +19,11 @@ public class User {
     private Boolean connected = false;
     @JsonIgnore
     @OneToMany
+    @Column(name="message_id")
     private List<Message> messages;
     @JsonIgnore
     @ManyToMany
+    @Column(name="channel_id")
     private Set<Channel> channels;
 
     public User (){};

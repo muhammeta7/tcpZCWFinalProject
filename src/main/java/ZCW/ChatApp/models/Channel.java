@@ -11,8 +11,7 @@ import java.util.Set;
 public class Channel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "channel_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String channelName;
     private Boolean isPrivate;

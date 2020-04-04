@@ -29,6 +29,10 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/chatapp/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/chatapp/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/frontend/chatapp/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/frontend/chatapp/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

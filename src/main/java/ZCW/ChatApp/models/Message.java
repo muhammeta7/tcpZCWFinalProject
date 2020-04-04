@@ -10,8 +10,7 @@ import java.util.Date;
 public class Message {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "message_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @JsonIgnoreProperties("message")
     @ManyToOne
