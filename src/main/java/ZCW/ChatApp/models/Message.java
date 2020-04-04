@@ -16,7 +16,7 @@ public class Message {
     private String content;
     private Date timestamp;
 
-    public Message (){};
+    public Message (){}
 
     public Message(String sender, String msgContent, Date timestamp) {
         this.sender = sender;
