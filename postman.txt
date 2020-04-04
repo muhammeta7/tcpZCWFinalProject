@@ -71,4 +71,3 @@ Creating Channels
     "users" : [],
     "private" : false
 }
-
