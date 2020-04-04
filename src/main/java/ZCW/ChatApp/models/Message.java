@@ -1,9 +1,9 @@
 package ZCW.ChatApp.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -11,14 +11,17 @@ public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "message_id")
     private Long id;
-    private String sender;
+    @JsonIgnoreProperties("message")
+    @ManyToOne
+    private User sender;
     private String content;
     private Date timestamp;
 
     public Message (){}
 
-    public Message(String sender, String msgContent, Date timestamp) {
+    public Message(User sender, String msgContent, Date timestamp) {
         this.sender = sender;
         this.content = msgContent;
         this.timestamp = timestamp;
@@ -32,11 +35,11 @@ public class Message {
         this.id = id;
     }
 
-    public String getSender() {
-        return sender;
+    public User getSender() {
+        return this.sender;
     }
 
-    public void setSender(String sender) {
+    public void setSender(User sender) {
         this.sender = sender;
     }
 

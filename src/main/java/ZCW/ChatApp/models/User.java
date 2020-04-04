@@ -1,25 +1,27 @@
 package ZCW.ChatApp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
     private String firstName;
     private String lastName;
     private String userName;
     private String password;
     private Boolean connected = false;
-    @ManyToMany( cascade = {
-                CascadeType.PERSIST,
-                CascadeType.MERGE
-    })
-    private Set<Channel> channels = new HashSet<>();;
+    @JsonIgnoreProperties("user")
+    @OneToMany
+    private List<Message> messages;
 
     public User (){};
 
@@ -29,6 +31,7 @@ public class User {
         this.userName = userName;
         this.password = password;
         this.connected = isConnected;
+        this.messages = new ArrayList<>();
     }
 
     public Long getId() {
@@ -79,11 +82,11 @@ public class User {
         this.connected = connected;
     }
 
-    public Set<Channel> getChannels() {
-        return channels;
+    public List<Message> getMessages() {
+        return messages;
     }
 
-    public void setChannels(Set<Channel> channels) {
-        this.channels = channels;
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 }

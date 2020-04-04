@@ -54,7 +54,7 @@ public class ChannelController {
         Optional<Channel> existingChannel = channelService.findById(id);
         return existingChannel.map(channel -> {
             channel.setChannelName(newChannel.getChannelName());
-            channel.setMessages(newChannel.getMessages());
+            //channel.setMessages(newChannel.getMessages());
             channel.setPrivate(newChannel.isPrivate());
             channel.setUsers(newChannel.getUsers());
             channelService.saveChannel(channel);
