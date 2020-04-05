@@ -17,8 +17,8 @@ public class Channel {
     @JsonIgnoreProperties("channel")
     @ManyToMany
     private Set<User> users;
-    @OneToMany
-    private Set<Message> messages;
+//    @OneToMany
+//    private Set<Message> messages;
 
     public Channel (){}
 
@@ -27,7 +27,7 @@ public class Channel {
         this.users = users;
         this.isPrivate = isPrivate;
         this.users = new HashSet<>();
-        this.messages = new HashSet<>();
+       // this.messages = new HashSet<>();
     }
 
     public Long getId() {
@@ -62,13 +62,13 @@ public class Channel {
         isPrivate = aPrivate;
     }
 
-    public HashSet<Message> getMessages() {
-        return new HashSet<>(messages);
-    }
-
-    public void setMessages(HashSet<Message> messages) {
-        this.messages = messages;
-    }
+//    public HashSet<Message> getMessages() {
+//        return new HashSet<>(messages);
+//    }
+//
+//    public void setMessages(HashSet<Message> messages) {
+//        this.messages = messages;
+//    }
 }
 
 

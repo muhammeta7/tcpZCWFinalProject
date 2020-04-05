@@ -13,5 +13,5 @@ import java.util.Set;
 @Repository
 public interface ChannelRepository extends JpaRepository<Channel, Long> {
 
-    HashSet<Message> findAllMessages();
+    //HashSet<Message> findAllMessages();
 }
