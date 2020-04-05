@@ -130,6 +130,7 @@ public class ChannelServiceTest {
         Optional<Channel> option2 = channelService.findById(mockChannel2.getId());
 
         Assertions.assertTrue(actual);
-        Assertions.assertEquals(option1, option2);
+        Assertions.assertFalse(option1.isPresent());
+        Assertions.assertFalse(option2.isPresent());
     }
 }
