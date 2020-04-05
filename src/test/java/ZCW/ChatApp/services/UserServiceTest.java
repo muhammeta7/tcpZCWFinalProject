@@ -105,6 +105,17 @@ public class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Test save User")
+    public void saveTest() {
+        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
+        doReturn(mockUser).when(repo).save(any());
+
+        User returnUser = service.save(mockUser);
+
+        Assertions.assertNotNull(returnUser, "Saved user should not be null");
+    }
+
+    @Test
     @DisplayName("Test create User")
     public void createUserTest() throws Exception {
         User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
@@ -117,25 +128,65 @@ public class UserServiceTest {
 
     // TODO Write Test For When User Tries to Use Same username
 //    @Test
-//    @DisplayName("Test create user with already existing username")
-//    public void createUserTestFails() throws Exception {
-//        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+//    public void shouldThrowExceptionWithDuplicateUserNames() throws Exception {
+//        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
+//        User mockUser2 = new User("Jack", "Black", "muhammeta7", "password2", false);
 //        doReturn(mockUser).when(repo).save(any());
-//        // Execute service call
-//        User returnUser = service.create(mockUser);
-//        // Check Assertions
-//        Assertions.assertNotNull(returnUser, "The User should not be null");
+//        doReturn(mockUser2).when(repo).save(any());
+//
+//        User valid = service.create(mockUser);
+//
+//        Assertions.assertThrows(Exception.class, service.create(mockUser2));
 //    }
 
-    // TODO Service Tests for DeleteAll and DeleteUser, Change connection
     @Test
     @DisplayName("Test connection")
     public void updateConnectionTest(){
         User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        doReturn(mockUser).when(repo).save(mockUser);
+        doReturn(mockUser).when(repo).getOne(1L);
 
+        Boolean actual = service.updateConnection(1L).isConnected();
+
+        Assertions.assertTrue(actual);
     }
 
+    @Test
+    @DisplayName("Test update connection fail")
+    public void updateConnectionFalse(){
+        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        doReturn(mockUser).when(repo).save(mockUser);
+        doReturn(mockUser).when(repo).getOne(1L);
 
+        service.updateConnection(1L);
+        Boolean actual = service.updateConnection(1L).isConnected();
 
+        Assertions.assertFalse(actual);
+    }
+
+    @Test
+    @DisplayName("Test delete")
+    public void deleteUserTest(){
+        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        doReturn(mockUser).when(repo).save(mockUser);
+        doReturn(mockUser).when(repo).getOne(1L);
+
+        Boolean actual = service.deleteUser(1L);
+
+        Assertions.assertTrue(actual);
+    }
+
+    @Test
+    @DisplayName("Test delete all")
+    public void deleteAllTest(){
+        User mockUser1 = new User("Moe", "Aydin", "muhammeta7", "password", false);
+        User mockUser2 = new User("Jack", "Black", "jack7", "password2", false);
+        doReturn(Arrays.asList(mockUser1, mockUser2)).when(repo).findAll();
+
+        List<User> returnUsers = service.findAll();
+        Boolean actual = service.deleteAll();
+
+        Assertions.assertTrue(actual);
+    }
 
 }
