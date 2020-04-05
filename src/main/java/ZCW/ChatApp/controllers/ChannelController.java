@@ -1,7 +1,7 @@
 package ZCW.ChatApp.controllers;
 import ZCW.ChatApp.models.Channel;
+import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
-import ZCW.ChatApp.repositories.UserRepository;
 import ZCW.ChatApp.services.ChannelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +12,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/channels")
@@ -40,12 +39,6 @@ public class ChannelController {
                 ResponseEntity.ok().body(channel)).orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/channel/{channelName}")
-    public ResponseEntity<?> findByChannelName(@PathVariable String channelName){
-        return channelService.findChannelByChannelName(channelName).map(channel ->
-                ResponseEntity.ok().body(channel)).orElse(ResponseEntity.notFound().build());
-    }
-
     @GetMapping
     public ResponseEntity<List<Channel>> findAllChannels(){
         return new ResponseEntity<>(channelService.findAll(), HttpStatus.OK);
@@ -56,6 +49,11 @@ public class ChannelController {
         return new ResponseEntity<>(channel.getUsers(), HttpStatus.OK);
     }
 
+    @GetMapping("/{channelName}")
+    public ResponseEntity<Set<Message>> findAllMessageForChannel(@RequestBody Channel channel){
+        return new ResponseEntity<>(channelService.findAllMessages(channel), HttpStatus.OK);
+    }
+
     // PUT
     //=============================================================================
     @PutMapping("/{id}")
@@ -63,8 +61,7 @@ public class ChannelController {
         Optional<Channel> existingChannel = channelService.findById(id);
         return existingChannel.map(channel -> {
             channel.setChannelName(newChannel.getChannelName());
-            //channel.setMessages(newChannel.getMessages());
-            channel.setPrivate(newChannel.isPrivate());
+            channel.setPrivate(newChannel.getPrivate());
             channel.setUsers(newChannel.getUsers());
             channelService.saveChannel(channel);
             try{
