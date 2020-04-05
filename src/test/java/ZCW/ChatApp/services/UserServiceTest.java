@@ -33,11 +33,11 @@ public class UserServiceTest {
     @DisplayName("Test findbyId Success")
     public void findByIdSuccessTest(){
         // Set Up mock object and repo
-        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
-        doReturn(Optional.of(mockUser)).when(repo).findById(1L);
+        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
+        doReturn(Optional.of(mockUser)).when(repo).findById(mockUser.getId());
 
         // Execute Call
-        Optional<User> returnUser = service.findById(1L);
+        Optional<User> returnUser = service.findById(mockUser.getId());
 
         // Check Assertions
         Assertions.assertTrue(returnUser.isPresent(), "No User was found");
@@ -59,13 +59,49 @@ public class UserServiceTest {
     @DisplayName("Test findAll")
     public void findAllUsersTest(){
         // Setup mock objects and repo
-        User mockUser1 = new User("Moe", "Aydin", "password", "muhammeta7", false);
-        User mockUser2 = new User("Jack", "Black", "password", "jack7", false);
+        User mockUser1 = new User("Moe", "Aydin", "muhammeta7", "password", false);
+        User mockUser2 = new User("Jack", "Black", "jack7", "password2", false);
         doReturn(Arrays.asList(mockUser1, mockUser2)).when(repo).findAll();
         // Execute service call
         List<User> returnList = service.findAll();
         // Check Assertions
         Assertions.assertEquals(2, returnList.size(), "findAll should return 2 users");
+    }
+
+    @Test
+    @DisplayName("Test findAllByUsername")
+    public void findUsersByUserNameTest(){
+        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
+        doReturn(Optional.of(mockUser)).when(repo).findByUserName(mockUser.getUserName());
+
+        Optional<User> returnUser = service.findUserByUsername(mockUser.getUserName());
+
+        Assertions.assertTrue(returnUser.isPresent(), "No user was found");
+        Assertions.assertSame(returnUser.get(), mockUser, "Models don't match");
+    }
+
+    @Test
+    @DisplayName("Test Find By Firstname")
+    public void findUsersByFirstNameTest(){
+        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
+        doReturn(Optional.of(mockUser)).when(repo).findByFirstName(mockUser.getFirstName());
+
+        Optional<User> returnUser = service.findUserByFirstName(mockUser.getFirstName());
+
+        Assertions.assertTrue(returnUser.isPresent(), "No user was found");
+        Assertions.assertSame(returnUser.get(), mockUser, "Models don't match");
+    }
+
+    @Test
+    @DisplayName("Test Find By Lastname")
+    public void findUsersByLastNameTest(){
+        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
+        doReturn(Optional.of(mockUser)).when(repo).findByLastName(mockUser.getLastName());
+
+        Optional<User> returnUser = service.findUserByLastName(mockUser.getLastName());
+
+        Assertions.assertTrue(returnUser.isPresent(), "No user was found");
+        Assertions.assertSame(returnUser.get(), mockUser, "Models don't match");
     }
 
     @Test
@@ -79,6 +115,27 @@ public class UserServiceTest {
         Assertions.assertNotNull(returnUser, "The User should not be null");
     }
 
-    // TODO Service Tests for Delete and Update Methods
+    // TODO Write Test For When User Tries to Use Same username
+//    @Test
+//    @DisplayName("Test create user with already existing username")
+//    public void createUserTestFails() throws Exception {
+//        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+//        doReturn(mockUser).when(repo).save(any());
+//        // Execute service call
+//        User returnUser = service.create(mockUser);
+//        // Check Assertions
+//        Assertions.assertNotNull(returnUser, "The User should not be null");
+//    }
+
+    // TODO Service Tests for DeleteAll and DeleteUser, Change connection
+    @Test
+    @DisplayName("Test connection")
+    public void updateConnectionTest(){
+        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+
+    }
+
+
+
 
 }

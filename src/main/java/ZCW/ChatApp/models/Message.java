@@ -1,7 +1,6 @@
 package ZCW.ChatApp.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,9 +9,9 @@ import java.util.Date;
 public class Message {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JsonIgnoreProperties("message")
+    @JsonIgnore
     @ManyToOne
     private User sender;
     private String content;
