@@ -17,6 +17,12 @@ public class MessageModelTest {
     }
 
     @Test
+    public void constructorTest(){
+        Message message = new Message(new User(), "content", new Date());
+        assertEquals("content", message.getContent());
+    }
+
+    @Test
     public void getMessageTest(){
         Long expected = 1L;
         message.setId(1L);
@@ -27,8 +33,8 @@ public class MessageModelTest {
     public void getSenderTest(){
         User user = new User();
         user.setUserName("John");
-        String expected = "John";
-        assertEquals(expected, user.getUserName());
+        message.setSender(user);
+        assertEquals("John", message.getSender().getUserName() );
     }
 
     @Test
@@ -38,6 +44,7 @@ public class MessageModelTest {
         assertEquals(expected, message.getContent());
     }
 
+    // TODO Test Timestamp
 
 
 }
