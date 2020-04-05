@@ -19,9 +19,7 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
-    public void save(Message message) {
-        messageRepository.save(message);
-    }
+    public Message save(Message message) { return messageRepository.save(message); }
 
     // POST
     //=============================================================================
@@ -42,6 +40,7 @@ public class MessageService {
         return messageRepository.findAll();
     }
 
+    // TODO: fix this to pass in User
     public List<Message> findBySender(String sender, Pageable pageable) {
         return messageRepository.findMessageBySender(sender, pageable);
     }

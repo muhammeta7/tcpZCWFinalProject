@@ -44,7 +44,13 @@ public class MessageModelTest {
         assertEquals(expected, message.getContent());
     }
 
-    // TODO Test Timestamp
-
+    @Test
+    public void timestampTest(){
+        Date date = new Date();
+        message.setTimestamp(date);
+        int expected = 120;
+        int actual = message.getTimestamp().getYear();
+        assertEquals(expected, actual);
+    }
 
 }
