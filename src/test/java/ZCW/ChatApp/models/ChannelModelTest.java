@@ -71,4 +71,12 @@ public class ChannelModelTest {
 //        Assert.assertEquals(messages, channel.getMessages());
 //    }
 
+    @Test
+    public void channelPrivacyTest(){
+        Channel channel = new Channel();
+        channel.setPrivate(true);
+        Boolean actual = channel.getPrivate();
+        Assert.assertTrue(actual);
+    }
+
 }

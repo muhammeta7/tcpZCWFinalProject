@@ -1,6 +1,5 @@
 package ZCW.ChatApp.controllers;
 import ZCW.ChatApp.models.Channel;
-import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.services.ChannelService;
 import org.springframework.beans.factory.annotation.Autowired;

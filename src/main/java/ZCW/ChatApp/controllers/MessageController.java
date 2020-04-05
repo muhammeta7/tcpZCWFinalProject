@@ -44,6 +44,7 @@ public class MessageController {
         return new ResponseEntity<>((messageService.findAll()), HttpStatus.OK);
     }
 
+    // TODO Fix this to pass in user
     @GetMapping("/sender/{username}")
     public ResponseEntity<List<Message>> findBySender(@PathVariable String username, Pageable pageable){
         return new ResponseEntity<>(messageService.findBySender(username, pageable), HttpStatus.OK);
