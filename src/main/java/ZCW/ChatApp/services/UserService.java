@@ -1,9 +1,7 @@
 package ZCW.ChatApp.services;
 
-import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.repositories.UserRepository;
-import jdk.nashorn.internal.runtime.options.Option;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -49,7 +47,6 @@ public class UserService {
 
     public Optional<User> findUserByLastName(String lastName) { return userRepo.findByLastName(lastName);}
 
-
     // TODO Get Messages & getChannels
 
     // UPDATE
@@ -58,13 +55,11 @@ public class UserService {
     public User updateConnection(Long id){
         User original = userRepo.getOne(id);
         if (original.isConnected()) {
-            original.setConnected(true);
-            save(original);
-        } else {
             original.setConnected(false);
-            save(original);
+        } else {
+            original.setConnected(true);
         }
-        return original;
+        return userRepo.save(original);
     }
 
     // DELETE
