@@ -1,6 +1,7 @@
 package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Channel;
+import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.repositories.ChannelRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -62,6 +63,16 @@ public class ChannelServiceTest {
         List<Channel> returnList = channelService.findAll();
 
         Assertions.assertEquals(2, returnList.size(), "findAll should return 2 channels.");
+    }
+
+    @Test
+    @DisplayName("Test findAll with User")
+    public void findAllUserTest(){
+        User mockUser = new User();
+        Channel mockChannel1 = new Channel();
+        Channel mockChannel2 = new Channel();
+        mockChannel1.setUsers(new HashSet<>(Arrays.asList(mockUser)));
+
     }
 
     @Test

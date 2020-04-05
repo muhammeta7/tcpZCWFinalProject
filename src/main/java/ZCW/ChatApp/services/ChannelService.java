@@ -1,11 +1,11 @@
 package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Channel;
+import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.repositories.ChannelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 @Service
@@ -26,17 +26,12 @@ public class ChannelService {
 
     // GET
     //=============================================================================
-    public Optional<Channel> findById(Long id, User user){
-        User[] holder = new User[1];
-        channelRepository.findById(id).ifPresent(channel -> {
-            if (channel.getUsers().contains(user))
-                holder[0] = user;
-        });
-        return (holder[0].equals(user)) ? channelRepository.findById(id) : Optional.empty();
-    }
-
     public Optional<Channel> findById(Long id){
         return channelRepository.findById(id);
+    }
+
+    public Set<Message> findAllMessages(Channel channel){
+        return channel.getMessages();
     }
 
     public List<Channel> findAll(User user){

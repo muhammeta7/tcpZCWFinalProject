@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.util.HashSet;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ChannelModelTest {
 
@@ -53,6 +54,21 @@ public class ChannelModelTest {
 
         // Then
         Assert.assertEquals(users,channel.getUsers());
+    }
+
+    @Test
+    public void getAndSetMessagesTest(){
+        // Given
+        Set<Message> messages = new HashSet<>();
+        messages.add(new Message());
+        messages.add(new Message());
+        Channel channel = new Channel();
+
+        // When
+        channel.setMessages(messages);
+
+        // Then
+        Assert.assertEquals(messages, channel.getMessages());
     }
 
 }
