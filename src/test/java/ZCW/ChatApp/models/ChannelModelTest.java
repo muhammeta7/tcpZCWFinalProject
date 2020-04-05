@@ -59,7 +59,7 @@ public class ChannelModelTest {
     @Test
     public void getAndSetMessagesTest(){
         // Given
-        Set<Message> messages = new HashSet<>();
+        HashSet<Message> messages = new HashSet<>();
         messages.add(new Message());
         messages.add(new Message());
         Channel channel = new Channel();

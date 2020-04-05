@@ -39,12 +39,6 @@ public class ChannelController {
                 ResponseEntity.ok().body(channel)).orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/channel/{channelName}")
-    public ResponseEntity<?> findByChannelName(@PathVariable String channelName){
-        return channelService.findChannelByChannelName(channelName).map(channel ->
-                ResponseEntity.ok().body(channel)).orElse(ResponseEntity.notFound().build());
-    }
-
     @GetMapping
     public ResponseEntity<List<Channel>> findAllChannels(){
         return new ResponseEntity<>(channelService.findAll(), HttpStatus.OK);

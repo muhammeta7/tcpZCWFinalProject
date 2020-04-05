@@ -1,7 +1,7 @@
 package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Channel;
-import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.repositories.ChannelRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -66,33 +67,69 @@ public class ChannelServiceTest {
     }
 
     @Test
-    @DisplayName("Test findAll with User")
-    public void findAllUserTest(){
-        User mockUser = new User();
-        Channel mockChannel1 = new Channel();
-        Channel mockChannel2 = new Channel();
-        mockChannel1.setUsers(new HashSet<>(Arrays.asList(mockUser)));
+    @DisplayName("Test findAllMessages")
+    public void findAllMessagesTest(){
+        HashSet<Message> messages = new HashSet<>(Arrays.asList(new Message(), new Message()));
+        Channel mockChannel = new Channel();
+        mockChannel.setMessages(messages);
+        doReturn(messages).when(channelRepository).findAllMessages();
 
+        HashSet<Message> expected = channelService.findAllMessages(mockChannel);
+
+        Assertions.assertEquals(2, expected.size(), "Should be size 2 for 2 messages");
+    }
+
+    @Test
+    @DisplayName("Test saveChannel")
+    public void saveChannelTest(){
+        Channel mockChannel = new Channel();
+        doReturn(mockChannel).when(channelRepository).save(mockChannel);
+
+        Channel returnChannel = channelService.saveChannel(mockChannel);
+
+        Assertions.assertEquals(mockChannel, returnChannel, "Should be equal");
     }
 
     @Test
     @DisplayName("Test create Channel")
     public void createChannelTest(){
-        Channel mockChannel = new Channel("Lab", new HashSet<>(), true);
+        Channel mockChannel = new Channel();
         doReturn(mockChannel).when(channelRepository).save(mockChannel);
 
         Channel returnChannel = channelService.create(mockChannel);
 
-        Assertions.assertNotNull(returnChannel, "The Channel should not be null.");
+        Assertions.assertEquals(returnChannel, mockChannel, "They should be equal");
     }
 
     @Test
-    @DisplayName("Test delete Channel")
+    @DisplayName("Test delete")
     public void deleteChannelTest(){
         Channel mockChannel = new Channel("Lab", new HashSet<>(), true);
-        channelService.create(mockChannel);
-        //channelService.delete(mockChannel.getId());
+        doReturn(mockChannel).when(channelRepository).save(mockChannel);
+        doReturn(mockChannel).when(channelRepository).getOne(1L);
 
-        Assertions.assertEquals(channelService.findById(mockChannel.getId()), Optional.empty(), "It did not delete the channel properly.");
+        Boolean actual = channelService.delete(1L);
+        Optional<Channel> option = channelService.findById(mockChannel.getId());
+
+        Assertions.assertTrue(actual, "It did not delete the channel properly.");
+        Assertions.assertEquals(Optional.empty(), option);
+    }
+
+    @Test
+    @DisplayName("Test deleteAll")
+    public void deleteAllTest(){
+        Channel mockChannel1 = new Channel();
+        Channel mockChannel2 = new Channel();
+        doReturn(mockChannel1).when(channelRepository).save(mockChannel1);
+        doReturn(mockChannel1).when(channelRepository).getOne(1L);
+        doReturn(mockChannel2).when(channelRepository).save(mockChannel2);
+        doReturn(mockChannel2).when(channelRepository).getOne(2L);
+
+        Boolean actual = channelService.deleteAll();
+        Optional<Channel> option1 = channelService.findById(mockChannel1.getId());
+        Optional<Channel> option2 = channelService.findById(mockChannel2.getId());
+
+        Assertions.assertTrue(actual);
+        Assertions.assertEquals(option1, option2);
     }
 }

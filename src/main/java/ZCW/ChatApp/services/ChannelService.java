@@ -30,22 +30,12 @@ public class ChannelService {
         return channelRepository.findById(id);
     }
 
-    public Set<Message> findAllMessages(Channel channel){
+    public HashSet<Message> findAllMessages(Channel channel){
         return channel.getMessages();
-    }
-
-    public List<Channel> findAll(User user){
-        List<Channel> channels = channelRepository.findAll();
-        channels.removeIf(channel -> !channel.getUsers().contains(user));
-        return channels;
     }
 
     public List<Channel> findAll(){
         return channelRepository.findAll();
-    }
-
-    public Optional<Channel> findChannelByChannelName(String channelName){
-        return channelRepository.findChannelByChannelName(channelName);
     }
 
     public Channel saveChannel(Channel channel){

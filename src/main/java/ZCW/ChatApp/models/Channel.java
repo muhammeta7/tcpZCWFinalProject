@@ -62,11 +62,11 @@ public class Channel {
         isPrivate = aPrivate;
     }
 
-    public Set<Message> getMessages() {
-        return messages;
+    public HashSet<Message> getMessages() {
+        return new HashSet<>(messages);
     }
 
-    public void setMessages(Set<Message> messages) {
+    public void setMessages(HashSet<Message> messages) {
         this.messages = messages;
     }
 }
