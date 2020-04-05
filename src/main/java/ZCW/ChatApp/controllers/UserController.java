@@ -69,12 +69,12 @@ public class UserController {
     //=============================================================================
     @PutMapping("/{id}/connect")
     public ResponseEntity<User> connect(@PathVariable Long id){
-        return new ResponseEntity<>(userService.connectUser(id), HttpStatus.OK);
+        return new ResponseEntity<>(userService.updateConnection(id), HttpStatus.OK);
     }
 
     @PutMapping("/{id}/disconnect")
     public ResponseEntity<User> disconnect(@PathVariable Long id){
-        return new ResponseEntity<>(userService.disconnectUser(id), HttpStatus.OK);
+        return new ResponseEntity<>(userService.updateConnection(id), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

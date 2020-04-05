@@ -47,7 +47,10 @@ public class UserService {
 
     public Optional<User> findUserByFirstName(String firstName) {return userRepo.findByFirstName(firstName);}
 
-    public Optional<User> findUserByLastName(String lastName) { return userRepo.findByFirstName(lastName);}
+    public Optional<User> findUserByLastName(String lastName) { return userRepo.findByLastName(lastName);}
+
+
+    // TODO Get Messages & getChannels
 
     // UPDATE
     //=============================================================================

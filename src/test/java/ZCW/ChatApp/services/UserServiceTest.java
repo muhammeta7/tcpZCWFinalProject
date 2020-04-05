@@ -81,7 +81,7 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Test findAllByUsername")
+    @DisplayName("Test Find By Firstname")
     public void findUsersByFirstNameTest(){
         User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
         doReturn(Optional.of(mockUser)).when(repo).findByFirstName(mockUser.getFirstName());
@@ -93,12 +93,12 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Test findAllByUsername")
+    @DisplayName("Test Find By Lastname")
     public void findUsersByLastNameTest(){
         User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
-        doReturn(Optional.of(mockUser)).when(repo).findByLastName(mockUser.getUserName());
+        doReturn(Optional.of(mockUser)).when(repo).findByLastName(mockUser.getLastName());
 
-        Optional<User> returnUser = service.findUserByLastName(mockUser.getUserName());
+        Optional<User> returnUser = service.findUserByLastName(mockUser.getLastName());
 
         Assertions.assertTrue(returnUser.isPresent(), "No user was found");
         Assertions.assertSame(returnUser.get(), mockUser, "Models don't match");
@@ -115,6 +115,19 @@ public class UserServiceTest {
         Assertions.assertNotNull(returnUser, "The User should not be null");
     }
 
+    // TODO Write Test For When User Tries to Use Same username
+//    @Test
+//    @DisplayName("Test create user with already existing username")
+//    public void createUserTestFails() throws Exception {
+//        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+//        doReturn(mockUser).when(repo).save(any());
+//        // Execute service call
+//        User returnUser = service.create(mockUser);
+//        // Check Assertions
+//        Assertions.assertNotNull(returnUser, "The User should not be null");
+//    }
+
+    // TODO Service Tests for DeleteAll and DeleteUser, Change connection
     @Test
     @DisplayName("Test connection")
     public void updateConnectionTest(){
@@ -123,6 +136,6 @@ public class UserServiceTest {
     }
 
 
-    // TODO Service Tests for DeleteAll and DeleteUser
+
 
 }

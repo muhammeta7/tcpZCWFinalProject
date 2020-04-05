@@ -1,14 +1,23 @@
 package ZCW.ChatApp.models;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserModelTest {
+    private User user;
+
+    @Before
+    public void setup(){
+        this.user = new User();
+    }
 
     @Test
     public void getIdTest() {
         // given
-        User user = new User();
         long expected  = 0l;
         user.setId(expected);
 
@@ -22,7 +31,6 @@ public class UserModelTest {
     @Test
     public void getFirstNameTest() {
         // given
-        User user = new User();
         String expected = "Sandy";
         user.setFirstName(expected);
 
@@ -36,7 +44,6 @@ public class UserModelTest {
     @Test
     public void getLastNameTest() {
         // given
-        User user = new User();
         String expected = "Wick";
         user.setLastName(expected);
 
@@ -50,7 +57,6 @@ public class UserModelTest {
     @Test
     public void getUsernameTest() {
         // given
-        User user = new User();
         String expected = "sandy";
         user.setUserName(expected);
 
@@ -64,11 +70,21 @@ public class UserModelTest {
     @Test
     public void getConnectedTest() {
         // given
-        User user = new User();
         user.setConnected(true);
 
         // when; then
         Assert.assertTrue(user.isConnected());
     }
+
+    @Test
+    public void getPasswordTest(){
+        String expected = "password";
+        user.setPassword("password");
+        String actual = user.getPassword();
+        Assert.assertEquals(expected, actual);
+
+    }
+
+    // TODO Test set Messages and Channels
 
 }
