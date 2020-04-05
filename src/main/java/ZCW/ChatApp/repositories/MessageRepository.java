@@ -10,6 +10,6 @@ import java.util.List;
 public interface MessageRepository extends JpaRepository<Message, Long> {
    
    List<Message> findMessageBySender(String sender, Pageable pageable);
-   Message findMessageByTimestamp(Long id);
+   // TODO Add find message by Date
   
 }
