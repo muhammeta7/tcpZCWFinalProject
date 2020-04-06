@@ -95,26 +95,6 @@ public class MessageServiceTest {
         Assertions.assertNotNull(returnMessage, "The Message should not be null");
     }
 
-
-
-    @Test
-    public void findMessageBySender(){
-
-
-
-
-    }
-//    @DisplayName("Test Find By Lastname")
-//    public void findUsersByLastNameTest(){
-//        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
-//        doReturn(Optional.of(mockUser)).when(repo).findByLastName(mockUser.getLastName());
-//
-//        Optional<User> returnUser = service.findUserByLastName(mockUser.getLastName());
-//
-//        Assertions.assertTrue(returnUser.isPresent(), "No user was found");
-//        Assertions.assertSame(returnUser.get(), mockUser, "Models don't match");
-//    }
-
   @Test
   public void deleteMessageTest(){
       Message mockMessage = new Message(new User(), "testing time");

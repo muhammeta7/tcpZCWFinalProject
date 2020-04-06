@@ -1,15 +1,11 @@
 package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Message;
-import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.repositories.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 @Service
 public class MessageService {
 
