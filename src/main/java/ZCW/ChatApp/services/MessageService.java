@@ -3,12 +3,9 @@ package ZCW.ChatApp.services;
 import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.repositories.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 @Service
 public class MessageService {
 
@@ -25,7 +22,6 @@ public class MessageService {
     //=============================================================================
 
     public Message create(Message message) {
-        message.setTimestamp(new Date());
         return messageRepository.save(message);
     }
 
@@ -40,11 +36,10 @@ public class MessageService {
         return messageRepository.findAll();
     }
 
-    // TODO: fix this to pass in User
-    public List<Message> findBySender(String sender, Pageable pageable) {
-        return messageRepository.findMessageBySender(sender, pageable);
-    }
-  
+//    public List<Message> findBySender(User sender, Pageable pageable) {
+//        return messageRepository.findMessageBySender(sender, pageable);
+//    }
+
 //    public Message findByTimeStamp(Long id) {
 //        return messageRepository.findMessageByTimestamp(id);
 //    }
@@ -61,5 +56,4 @@ public class MessageService {
         messageRepository.deleteAll();
         return true;
     }
-  
 }

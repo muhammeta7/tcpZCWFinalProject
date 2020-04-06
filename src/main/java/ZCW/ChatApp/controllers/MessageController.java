@@ -1,6 +1,7 @@
 package ZCW.ChatApp.controllers;
 
 import ZCW.ChatApp.models.Message;
+import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -44,11 +45,11 @@ public class MessageController {
         return new ResponseEntity<>((messageService.findAll()), HttpStatus.OK);
     }
 
-    // TODO Fix this to pass in user
-    @GetMapping("/sender/{username}")
-    public ResponseEntity<List<Message>> findBySender(@PathVariable String username, Pageable pageable){
-        return new ResponseEntity<>(messageService.findBySender(username, pageable), HttpStatus.OK);
-    }
+//    // TODO Fix this to pass in user
+//    @GetMapping("/sender/{user}")
+//    public ResponseEntity<List<Message>> findBySender(@PathVariable User user, Pageable pageable){
+//        return new ResponseEntity<>(messageService.findBySender(user, pageable), HttpStatus.OK);
+//    }
 
     // PUT
     //=============================================================================

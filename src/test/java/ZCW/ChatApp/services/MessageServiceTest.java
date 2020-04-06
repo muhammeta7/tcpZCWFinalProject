@@ -42,7 +42,7 @@ public class MessageServiceTest {
     @DisplayName("Test findById Success")
     public void findByIdSuccessTest(){
         // Set Up mock object and repo
-        Message mockMessage = new Message(new User(), "testing time", new Date());
+        Message mockMessage = new Message(new User(), "testing time");
         doReturn(Optional.of(mockMessage)).when(repo).findById(1L);
         // Execute Call
         Optional<Message> returnMessage = service.findById(1L);
@@ -64,8 +64,8 @@ public class MessageServiceTest {
     @Test
     @DisplayName("Test findAll")
     public void findAllTest(){
-        Message mockMessage1 = new Message(new User(), "testing time", new Date());
-        Message mockMessage2 = new Message(new User(), "testing time", new Date());
+        Message mockMessage1 = new Message(new User(), "testing time");
+        Message mockMessage2 = new Message(new User(), "testing time");
         doReturn(Arrays.asList(mockMessage1, mockMessage2)).when(repo).findAll();
 
         List<Message> returnList = service.findAll();
@@ -76,7 +76,7 @@ public class MessageServiceTest {
     @Test
     @DisplayName("Test create Message")
     public void createMessageTest() {
-        Message mockMessage = new Message(new User(), "testing time", new Date());
+        Message mockMessage = new Message(new User(), "testing time");
         doReturn(mockMessage).when(repo).save(any());
 
         Message returnMessage = service.create(mockMessage);
@@ -87,7 +87,7 @@ public class MessageServiceTest {
     @Test
     @DisplayName("Test create Message")
     public void saveMessageTest() {
-        Message mockMessage = new Message(new User(), "testing time", new Date());
+        Message mockMessage = new Message(new User(), "testing time");
         doReturn(mockMessage).when(repo).save(any());
 
         Message returnMessage = service.save(mockMessage);
@@ -95,22 +95,28 @@ public class MessageServiceTest {
         Assertions.assertNotNull(returnMessage, "The Message should not be null");
     }
 
+  @Test
+  public void deleteMessageTest(){
+      Message mockMessage = new Message(new User(), "testing time");
+      doReturn(mockMessage).when(repo).save(mockMessage);
+      doReturn(mockMessage).when(repo).getOne(1L);
 
+      Boolean actual = service.delete(1L);
 
-//    @Test
-//    public void findMessageBySender(){
-//        Message mockMessage = new Message(new User(), "testing time", new Date());
-//
-//    }
-//    @DisplayName("Test Find By Lastname")
-//    public void findUsersByLastNameTest(){
-//        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
-//        doReturn(Optional.of(mockUser)).when(repo).findByLastName(mockUser.getLastName());
-//
-//        Optional<User> returnUser = service.findUserByLastName(mockUser.getLastName());
-//
-//        Assertions.assertTrue(returnUser.isPresent(), "No user was found");
-//        Assertions.assertSame(returnUser.get(), mockUser, "Models don't match");
-//    }
+      Assertions.assertTrue(actual);
+  }
+
+  @Test
+  public void deleteAllTest(){
+    Message mockMessage1 = new Message(new User(), "testing time");
+    Message mockMessage2 = new Message(new User(), "testing time");
+    doReturn(Arrays.asList(mockMessage1, mockMessage2)).when(repo).findAll();
+
+    List<Message> returnMessages = service.findAll();
+    Boolean actual = service.deleteAll();
+
+    Assertions.assertTrue(actual);
+  }
+
 }
 

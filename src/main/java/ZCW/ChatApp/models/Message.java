@@ -19,10 +19,10 @@ public class Message {
 
     public Message (){}
 
-    public Message(User sender, String msgContent, Date timestamp) {
+    public Message(User sender, String msgContent) {
         this.sender = sender;
         this.content = msgContent;
-        this.timestamp = timestamp;
+        this.timestamp = new Date();
     }
 
     public Long getId() {
@@ -47,14 +47,6 @@ public class Message {
 
     public void setContent(String msgContent) {
         this.content = msgContent;
-    }
-
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
     }
 
 }

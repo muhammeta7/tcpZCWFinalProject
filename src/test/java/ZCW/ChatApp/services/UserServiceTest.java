@@ -2,7 +2,6 @@ package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.repositories.UserRepository;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
