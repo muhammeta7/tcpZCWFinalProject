@@ -30,10 +30,6 @@ public class ChannelService {
         return channelRepository.findById(id);
     }
 
-    public HashSet<Message> findAllMessages(Channel channel){
-        return channel.getMessages();
-    }
-
     public List<Channel> findAll(){
         return channelRepository.findAll();
     }

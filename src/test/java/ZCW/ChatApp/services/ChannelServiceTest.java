@@ -66,18 +66,6 @@ public class ChannelServiceTest {
         Assertions.assertEquals(2, returnList.size(), "findAll should return 2 channels.");
     }
 
-    @Test
-    @DisplayName("Test findAllMessages")
-    public void findAllMessagesTest(){
-        HashSet<Message> messages = new HashSet<>(Arrays.asList(new Message(), new Message()));
-        Channel mockChannel = new Channel();
-        mockChannel.setMessages(messages);
-        doReturn(messages).when(channelRepository).findAllMessages();
-
-        HashSet<Message> expected = channelService.findAllMessages(mockChannel);
-
-        Assertions.assertEquals(2, expected.size(), "Should be size 2 for 2 messages");
-    }
 
     @Test
     @DisplayName("Test saveChannel")

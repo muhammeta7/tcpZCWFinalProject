@@ -49,11 +49,6 @@ public class ChannelController {
         return new ResponseEntity<>(channel.getUsers(), HttpStatus.OK);
     }
 
-    @GetMapping("/{channelName}")
-    public ResponseEntity<Set<Message>> findAllMessageForChannel(@RequestBody Channel channel){
-        return new ResponseEntity<>(channelService.findAllMessages(channel), HttpStatus.OK);
-    }
-
     // PUT
     //=============================================================================
     @PutMapping("/{id}")
