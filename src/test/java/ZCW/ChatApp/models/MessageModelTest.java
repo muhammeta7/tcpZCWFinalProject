@@ -8,17 +8,15 @@ import java.util.Date;
 public class MessageModelTest {
 
     private Message message;
-    private Date date;
 
     @Before
     public void setup(){
         this.message = new Message();
-        this.date = new Date();
     }
 
     @Test
     public void constructorTest(){
-        Message message = new Message(new User(), "content", new Date());
+        Message message = new Message(new User(), "content");
         assertEquals("content", message.getContent());
     }
 
@@ -42,15 +40,6 @@ public class MessageModelTest {
         String expected = "We TDD out here son";
         message.setContent(expected);
         assertEquals(expected, message.getContent());
-    }
-
-    @Test
-    public void timestampTest(){
-        Date date = new Date();
-        message.setTimestamp(date);
-        int expected = 120;
-        int actual = message.getTimestamp().getYear();
-        assertEquals(expected, actual);
     }
 
 }
