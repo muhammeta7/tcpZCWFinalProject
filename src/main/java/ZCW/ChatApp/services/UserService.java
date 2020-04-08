@@ -1,11 +1,14 @@
 package ZCW.ChatApp.services;
 
+import ZCW.ChatApp.models.Channel;
+import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -48,6 +51,13 @@ public class UserService {
     public Optional<User> findUserByLastName(String lastName) { return userRepo.findByLastName(lastName);}
 
     // TODO Get Messages & getChannels
+//    public List<Message> getUserMessages(Long id){
+//      return userRepo.getOne(id).getMessages();
+//    }
+//
+//    public Set<Channel> getUserChannels(Long id){
+//        return userRepo.getOne(id).getChannels();
+//    }
 
     // UPDATE
     //=============================================================================
