@@ -47,22 +47,22 @@ public class MessageModelTest {
 
     @Test
     public void getTimeStampTest() throws InterruptedException {
-      message.setTimestamp(new Date());
-      Message newerMessage = new Message();
-      TimeUnit.SECONDS.sleep(1);
-      newerMessage.setTimestamp(new Date());
-      assertTrue(message.getTimestamp().getSeconds() < newerMessage.getTimestamp().getSeconds());
+        message.setTimestamp(new Date());
+        Message newerMessage = new Message();
+        TimeUnit.SECONDS.sleep(1);
+        newerMessage.setTimestamp(new Date());
+        assertTrue(message.getTimestamp().getSeconds() < newerMessage.getTimestamp().getSeconds());
     }
 
     @Test
     public void getChannelTest(){
-      HashSet<User> users = new HashSet<>();
-      users.add(new User());
-      Channel channel = new Channel("test", users, false );
-      message.setChannel(channel);
-      String expected = "test";
-      String actual = message.getChannel().getChannelName();
-      assertEquals(expected, actual);
+        HashSet<User> users = new HashSet<>();
+        users.add(new User());
+        Channel channel = new Channel("test", users, false);
+        message.setChannel(channel);
+        String expected = "test";
+        String actual = message.getChannel().getChannelName();
+        assertEquals(expected, actual);
     }
 
 }

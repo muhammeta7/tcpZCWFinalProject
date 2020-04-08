@@ -46,7 +46,7 @@ public class ChannelServiceTest {
 
         Optional<Channel> returnChannel = channelService.findById(1L);
 
-        Assertions.assertTrue(returnChannel.isPresent(), "No User was found.");
+        Assertions.assertTrue(returnChannel.isPresent(), "No Channel was found.");
         Assertions.assertSame(returnChannel.get(), mockChannel, "Models don't match.");
     }
 
