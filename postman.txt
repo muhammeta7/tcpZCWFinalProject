@@ -1,0 +1,73 @@
+Post Requests to add users
+
+POST Users -> localhost:8080/users/create
+
+{
+	"firstName" : "Moe",
+	"lastName" : "Aydin",
+	"password" : "mojo",
+	"userName" : "muhammeta7"
+}
+
+{
+	"firstName" : "Joe",
+	"lastName" : "Schmo",
+	"password" : "rabbit",
+	"userName" : "corn"
+}
+
+{
+	"firstName" : "Jack",
+	"lastName" : "Black",
+	"password" : "jalapeno",
+	"userName" : "fisher4"
+}
+
+GET All Users -> localhost:8080/users/allUsers
+GET One User -> localhost:8080/users/1
+GET One User -> localhost:8080/users/username/muhammeta7
+
+PUT Update User -> localhost:8080/users/1
+{
+        "id": 1,
+        "firstName": "New",
+        "lastName": "Guy",
+        "userName": "muhammeta7",
+        "password": "magikarp"
+}
+
+
+
+Creating Messages
+{
+	"sender" : "muhammeta7",
+	"content" : "Hey yo bro"
+}
+
+{
+	"sender" : "Chris",
+	"content" : "Did you do them tests"
+}
+
+{
+	"sender" : "Sandy",
+	"content" : "What it do"
+}
+
+localhost:8080/channels
+Creating Channels
+{
+    "channelName" : "Labs",
+    "users" : [],
+    "private" : true
+}
+{
+    "channelName" : "Announcements",
+    "users" : [],
+    "private" : false
+}
+{
+    "channelName" : "Party",
+    "users" : [],
+    "private" : false
+}
