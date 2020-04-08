@@ -17,6 +17,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.awt.print.Pageable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -97,28 +99,30 @@ public class MessageServiceTest {
         Assertions.assertNotNull(returnMessage, "The Message should not be null");
     }
 
-  @Test
-  public void deleteMessageTest(){
-      Message mockMessage = new Message(new User(), "testing time", new Date(), new Channel());
-      doReturn(mockMessage).when(repo).save(mockMessage);
-      doReturn(mockMessage).when(repo).getOne(1L);
+    @Test
+    public void deleteMessageTest(){
+        Message mockMessage = new Message(new User(), "testing time", new Date(), new Channel());
+        doReturn(mockMessage).when(repo).save(mockMessage);
+        doReturn(mockMessage).when(repo).getOne(1L);
 
-      Boolean actual = service.delete(1L);
+        Boolean actual = service.delete(1L);
 
-      Assertions.assertTrue(actual);
-  }
+        Assertions.assertTrue(actual);
+    }
 
-  @Test
-  public void deleteAllTest(){
-    Message mockMessage1 = new Message(new User(), "testing time", new Date(), new Channel());
-    Message mockMessage2 = new Message(new User(), "testing time", new Date(), new Channel());
-    doReturn(Arrays.asList(mockMessage1, mockMessage2)).when(repo).findAll();
+    @Test
+    public void deleteAllTest(){
+        Message mockMessage1 = new Message(new User(), "testing time", new Date(), new Channel());
+        Message mockMessage2 = new Message(new User(), "testing time", new Date(), new Channel());
+        doReturn(Arrays.asList(mockMessage1, mockMessage2)).when(repo).findAll();
 
-    List<Message> returnMessages = service.findAll();
-    Boolean actual = service.deleteAll();
+        List<Message> returnMessages = service.findAll();
+        Boolean actual = service.deleteAll();
 
-    Assertions.assertTrue(actual);
-  }
+        Assertions.assertTrue(actual);
+    }
+
+
 
 }
 

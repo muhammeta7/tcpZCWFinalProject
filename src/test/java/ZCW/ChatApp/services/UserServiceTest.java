@@ -1,5 +1,6 @@
 package ZCW.ChatApp.services;
 
+import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -173,6 +174,7 @@ public class UserServiceTest {
         Boolean actual = service.deleteUser(1L);
 
         Assertions.assertTrue(actual);
+
     }
 
     @Test
