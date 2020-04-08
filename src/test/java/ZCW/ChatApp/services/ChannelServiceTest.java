@@ -1,8 +1,11 @@
 package ZCW.ChatApp.services;
 
+import ZCW.ChatApp.controllers.MessageController;
 import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
+import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.repositories.ChannelRepository;
+import ZCW.ChatApp.repositories.MessageRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,10 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -29,8 +29,14 @@ public class ChannelServiceTest {
     @Autowired
     private ChannelService channelService;
 
+    @Autowired
+    private MessageService messageService;
+
     @MockBean
     private ChannelRepository channelRepository;
+
+    @MockBean
+    private MessageRepository messageRepository;
 
     @Test
     @DisplayName("Test findById Success")
@@ -120,5 +126,20 @@ public class ChannelServiceTest {
         Assertions.assertTrue(actual);
         Assertions.assertFalse(option1.isPresent());
         Assertions.assertFalse(option2.isPresent());
+    }
+    @Test
+    @DisplayName("test findAllMessages")
+    public void findAllMessagesTest(){
+        Channel mockChannel = new Channel("test", new HashSet<>(), false);
+        Message mockMessage1 = new Message(new User(), "test", new Date(), mockChannel);
+        Message mockMessage2 = new Message(new User(), "test", new Date(), mockChannel);
+        doReturn(mockChannel).when(channelRepository).save(mockChannel);
+        doReturn(mockMessage1).when(messageRepository).save(mockMessage1);
+        doReturn(mockMessage2).when(messageRepository).save(mockMessage2);
+        doReturn(Arrays.asList(mockMessage1, mockMessage2)).when(messageRepository).findByChannelId(mockChannel.getId());
+
+        List<Message> actual = messageService.findByChannel(mockChannel.getId());
+
+        Assertions.assertEquals(actual.size(),2);
     }
 }

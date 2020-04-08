@@ -18,11 +18,15 @@ import java.util.Optional;
 public class MessageController {
 
 
-    private MessageService messageService;
+    private static MessageService messageService;
 
     @Autowired
     public MessageController(MessageService messageService) {
         this.messageService = messageService;
+    }
+
+    public static MessageService getMessageService() {
+        return messageService;
     }
 
     // POST

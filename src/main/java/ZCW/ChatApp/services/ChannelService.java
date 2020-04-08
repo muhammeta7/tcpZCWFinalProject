@@ -1,5 +1,6 @@
 package ZCW.ChatApp.services;
 
+import ZCW.ChatApp.controllers.MessageController;
 import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
@@ -37,6 +38,7 @@ public class ChannelService {
     public Channel saveChannel(Channel channel){
         return channelRepository.save(channel);
     }
+
 
     // UPDATE
     //=============================================================================

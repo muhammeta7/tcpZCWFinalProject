@@ -9,9 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/channels")
@@ -37,6 +39,11 @@ public class ChannelController {
     public ResponseEntity<?> findChannelById(@PathVariable Long id){
         return channelService.findById(id).map(channel ->
                 ResponseEntity.ok().body(channel)).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{id}/chat")
+    public ResponseEntity<List<Message>> findAllMessages(@PathVariable Long id){
+        return new ResponseEntity<>(MessageController.getMessageService().findByChannel(id), HttpStatus.OK);
     }
 
     @GetMapping
