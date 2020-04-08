@@ -19,8 +19,10 @@ public class Channel {
     @JsonIgnoreProperties("channel")
     @ManyToMany
     private Set<User> users;
+
     @OneToMany
     private List<Message> messages;
+
 
     public Channel (){}
 

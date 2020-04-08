@@ -18,6 +18,7 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -126,7 +127,6 @@ public class UserServiceTest {
         Assertions.assertNotNull(returnUser, "The User should not be null");
     }
 
-    // TODO Write Test For When User Tries to Use Same username
 //    @Test
 //    public void shouldThrowExceptionWithDuplicateUserNames() throws Exception {
 //        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
@@ -135,8 +135,7 @@ public class UserServiceTest {
 //        doReturn(mockUser2).when(repo).save(any());
 //
 //        User valid = service.create(mockUser);
-//
-//        Assertions.assertThrows(Exception.class, service.create(mockUser2));
+//        Assertions.assertThrows(Exception.class, () -> service.create(mockUser2));
 //    }
 
     @Test

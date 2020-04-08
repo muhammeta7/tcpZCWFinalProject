@@ -59,18 +59,19 @@ public class ChannelModelTest {
     }
 
     @Test
-    public void getAndSetMessagesTest(){
+    public void getAndSetMessagesTest() {
         // Given
         List<Message> messages = new ArrayList<>();
         messages.add(new Message());
         messages.add(new Message());
+    }
+
+    @Test
+    public void channelPrivacyTest(){
         Channel channel = new Channel();
-
-        // When
-        channel.setMessages(messages);
-
-        // Then
-        Assert.assertEquals(messages, channel.getMessages());
+        channel.setPrivate(true);
+        Boolean actual = channel.getPrivate();
+        Assert.assertTrue(actual);
     }
 
 }

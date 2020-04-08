@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class UserModelTest {
@@ -85,6 +86,24 @@ public class UserModelTest {
 
     }
 
-    // TODO Test set Messages and Channels
+    @Test
+    public void getMessagesTest(){
+        List<Message> list = new ArrayList<>();
+        list.add(new Message());
+        list.add(new Message());
+
+        user.setMessages(list);
+        Assert.assertEquals(list.size(), user.getMessages().size());
+    }
+
+    @Test
+    public void getChannelsTest(){
+        HashSet<Channel> channels = new HashSet<>();
+        channels.add(new Channel());
+        channels.add(new Channel());
+
+        user.setChannels(channels);
+        Assert.assertEquals(channels.size(), user.getChannels().size());
+    }
 
 }

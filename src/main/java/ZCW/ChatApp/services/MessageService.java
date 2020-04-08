@@ -8,10 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 @Service
 public class MessageService {
 
@@ -22,15 +20,12 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
-    public void save(Message message) {
-        messageRepository.save(message);
-    }
+    public Message save(Message message) { return messageRepository.save(message); }
 
     // POST
     //=============================================================================
 
     public Message create(Message message) {
-        message.setTimestamp(new Date());
         return messageRepository.save(message);
     }
 
@@ -45,6 +40,7 @@ public class MessageService {
         return messageRepository.findAll();
     }
 
+
     public List<Message> findBySender(String sender, Pageable pageable) {
         return messageRepository.findMessageBySender(sender, pageable);
     }
@@ -52,7 +48,7 @@ public class MessageService {
     public List<Message> findByChannel(Long channelId){
         return new ArrayList<>(messageRepository.findByChannelId(channelId));
     }
-  
+
 //    public Message findByTimeStamp(Long id) {
 //        return messageRepository.findMessageByTimestamp(id);
 //    }
@@ -69,5 +65,4 @@ public class MessageService {
         messageRepository.deleteAll();
         return true;
     }
-  
 }

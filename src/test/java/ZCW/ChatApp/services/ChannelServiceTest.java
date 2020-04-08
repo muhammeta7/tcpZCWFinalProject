@@ -72,7 +72,6 @@ public class ChannelServiceTest {
         Assertions.assertEquals(2, returnList.size(), "findAll should return 2 channels.");
     }
 
-
     @Test
     @DisplayName("Test saveChannel")
     public void saveChannelTest(){

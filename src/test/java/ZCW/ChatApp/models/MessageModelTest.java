@@ -8,12 +8,10 @@ import java.util.Date;
 public class MessageModelTest {
 
     private Message message;
-    private Date date;
 
     @Before
     public void setup(){
         this.message = new Message();
-        this.date = new Date();
     }
 
     @Test
@@ -43,8 +41,5 @@ public class MessageModelTest {
         message.setContent(expected);
         assertEquals(expected, message.getContent());
     }
-
-    // TODO Test Timestamp
-
 
 }
