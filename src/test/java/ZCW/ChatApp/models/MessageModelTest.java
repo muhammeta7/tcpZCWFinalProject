@@ -16,7 +16,7 @@ public class MessageModelTest {
 
     @Test
     public void constructorTest(){
-        Message message = new Message(new User(), "content");
+        Message message = new Message(new User(), "content", new Date(), new Channel());
         assertEquals("content", message.getContent());
     }
 

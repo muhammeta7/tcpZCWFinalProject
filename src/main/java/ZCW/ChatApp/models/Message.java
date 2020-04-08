@@ -14,15 +14,19 @@ public class Message {
     @JsonIgnore
     @ManyToOne
     private User sender;
+    @JsonIgnore
+    @ManyToOne
+    private Channel channel;
     private String content;
     private Date timestamp;
 
     public Message (){}
 
-    public Message(User sender, String msgContent) {
+    public Message(User sender, String msgContent, Date timestamp, Channel channel) {
         this.sender = sender;
         this.content = msgContent;
-        this.timestamp = new Date();
+        this.timestamp = timestamp;
+        this.channel = channel;
     }
 
     public Long getId() {
@@ -49,4 +53,19 @@ public class Message {
         this.content = msgContent;
     }
 
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public Channel getChannel() {
+        return channel;
+    }
+
+    public void setChannel(Channel channel) {
+        this.channel = channel;
+    }
 }

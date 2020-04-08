@@ -1,9 +1,13 @@
 package ZCW.ChatApp.services;
 
+import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.repositories.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -36,9 +40,14 @@ public class MessageService {
         return messageRepository.findAll();
     }
 
-//    public List<Message> findBySender(User sender, Pageable pageable) {
-//        return messageRepository.findMessageBySender(sender, pageable);
-//    }
+
+    public List<Message> findBySender(String sender, Pageable pageable) {
+        return messageRepository.findMessageBySender(sender, pageable);
+    }
+
+    public List<Message> findByChannel(Long channelId){
+        return new ArrayList<>(messageRepository.findByChannelId(channelId));
+    }
 
 //    public Message findByTimeStamp(Long id) {
 //        return messageRepository.findMessageByTimestamp(id);

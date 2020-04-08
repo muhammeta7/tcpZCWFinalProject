@@ -1,5 +1,6 @@
 package ZCW.ChatApp.services;
 
+import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
 
 import ZCW.ChatApp.models.User;
@@ -38,11 +39,12 @@ public class MessageServiceTest {
     @MockBean
     private MessageRepository repo;
 
+
     @Test
     @DisplayName("Test findById Success")
     public void findByIdSuccessTest(){
         // Set Up mock object and repo
-        Message mockMessage = new Message(new User(), "testing time");
+        Message mockMessage = new Message(new User(), "testing time", new Date(), new Channel());
         doReturn(Optional.of(mockMessage)).when(repo).findById(1L);
         // Execute Call
         Optional<Message> returnMessage = service.findById(1L);
@@ -64,8 +66,8 @@ public class MessageServiceTest {
     @Test
     @DisplayName("Test findAll")
     public void findAllTest(){
-        Message mockMessage1 = new Message(new User(), "testing time");
-        Message mockMessage2 = new Message(new User(), "testing time");
+        Message mockMessage1 = new Message(new User(), "testing time", new Date(), new Channel());
+        Message mockMessage2 = new Message(new User(), "testing time", new Date(), new Channel());
         doReturn(Arrays.asList(mockMessage1, mockMessage2)).when(repo).findAll();
 
         List<Message> returnList = service.findAll();
@@ -76,7 +78,7 @@ public class MessageServiceTest {
     @Test
     @DisplayName("Test create Message")
     public void createMessageTest() {
-        Message mockMessage = new Message(new User(), "testing time");
+        Message mockMessage = new Message(new User(), "testing time", new Date(), new Channel());
         doReturn(mockMessage).when(repo).save(any());
 
         Message returnMessage = service.create(mockMessage);
@@ -87,7 +89,7 @@ public class MessageServiceTest {
     @Test
     @DisplayName("Test create Message")
     public void saveMessageTest() {
-        Message mockMessage = new Message(new User(), "testing time");
+        Message mockMessage = new Message(new User(), "testing time", new Date(), new Channel());
         doReturn(mockMessage).when(repo).save(any());
 
         Message returnMessage = service.save(mockMessage);
@@ -97,7 +99,7 @@ public class MessageServiceTest {
 
   @Test
   public void deleteMessageTest(){
-      Message mockMessage = new Message(new User(), "testing time");
+      Message mockMessage = new Message(new User(), "testing time", new Date(), new Channel());
       doReturn(mockMessage).when(repo).save(mockMessage);
       doReturn(mockMessage).when(repo).getOne(1L);
 
@@ -108,8 +110,8 @@ public class MessageServiceTest {
 
   @Test
   public void deleteAllTest(){
-    Message mockMessage1 = new Message(new User(), "testing time");
-    Message mockMessage2 = new Message(new User(), "testing time");
+    Message mockMessage1 = new Message(new User(), "testing time", new Date(), new Channel());
+    Message mockMessage2 = new Message(new User(), "testing time", new Date(), new Channel());
     doReturn(Arrays.asList(mockMessage1, mockMessage2)).when(repo).findAll();
 
     List<Message> returnMessages = service.findAll();

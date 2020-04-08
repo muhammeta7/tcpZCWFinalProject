@@ -1,8 +1,6 @@
 package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Channel;
-import ZCW.ChatApp.models.Message;
-import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.repositories.ChannelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,10 +28,6 @@ public class ChannelService {
         return channelRepository.findById(id);
     }
 
-//    public HashSet<Message> findAllMessages(Channel channel){
-//        return channel.getMessages();
-//    }
-
     public List<Channel> findAll(){
         return channelRepository.findAll();
     }
@@ -41,6 +35,7 @@ public class ChannelService {
     public Channel saveChannel(Channel channel){
         return channelRepository.save(channel);
     }
+
 
     // UPDATE
     //=============================================================================
