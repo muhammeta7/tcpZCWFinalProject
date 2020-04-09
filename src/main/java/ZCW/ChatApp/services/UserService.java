@@ -40,6 +40,24 @@ public class UserService {
         throw new Exception("Username is taken. Try something else.");
     }
 
+    // TODO send message to user
+//    public Message sendMessageToUser(Long senderId, Long recipientId){
+//        User sender = userRepo.getOne(senderId);
+//        User recipient = userRepo.getOne(recipientId);
+//        Message message = messageService.create(new Message());
+//        return null;
+//    }
+
+    // TODO Refactor Too much going on here
+    public Message sendMessageToChannel(Long messageId, Long channelId){
+        Message message = messageService.getMessage(messageId);
+        Channel channel = channelService.getChannel(channelId);
+        message.setChannel(channel);
+        channel.getMessages().add(message);
+        channelService.saveChannel(channel);
+        return messageService.save(message);
+    }
+
     // GET
     //=============================================================================
 
