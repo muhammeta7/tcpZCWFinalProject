@@ -1,5 +1,6 @@
 package ZCW.ChatApp.services;
 
+import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.repositories.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,12 @@ public class MessageService {
     private MessageRepository messageRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ChannelService channelService;
+
+    @Autowired
     public MessageService(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
     }
@@ -24,10 +31,20 @@ public class MessageService {
     // POST
     //=============================================================================
 
+    // TODO Fix this to set channel ids, and sender ids
     public Message create(Message message) {
         message.setTimestamp(new Date());
         return messageRepository.save(message);
     }
+
+    // TODO Fix this
+//    public Message postInChannel(Message message, Long channelId){
+//        message.setTimestamp(new Date());
+//        Channel channel = channelService.getChannel(channelId);
+//        channel.getMessages().add(message);
+//        channelService.saveChannel(channel);
+//        return messageRepository.save(message);
+//    }
 
     // GET
     //=============================================================================

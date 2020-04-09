@@ -1,7 +1,9 @@
 package ZCW.ChatApp.controllers;
 
+import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.services.ChannelService;
 import ZCW.ChatApp.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -18,8 +20,10 @@ import java.util.Optional;
 @RequestMapping("/messages")
 public class MessageController {
 
-
+    @Autowired
     private static MessageService messageService;
+    @Autowired
+    private static ChannelService channelService;
 
     @Autowired
     public MessageController(MessageService messageService) {
@@ -36,6 +40,19 @@ public class MessageController {
     public ResponseEntity<Message> sendMessage(@RequestBody Message message){
         return new ResponseEntity<>(messageService.create(message), HttpStatus.OK);
     }
+
+//    @PostMapping("/channel/{channelId}")
+//    public ResponseEntity<Message> addMessageToChannel(@RequestBody Message message, @PathVariable Long channelId){
+//        Channel channel= channelService.getChannel(channelId);
+//        message = messageService.postInChannel(message, channel.getId());
+//        try{
+//            return ResponseEntity
+//                    .created(new URI( "/channel/" + channelId))
+//                    .body(message);
+//        } catch (URISyntaxException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
 
     // GET
     //=============================================================================
