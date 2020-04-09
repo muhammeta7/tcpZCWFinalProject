@@ -8,6 +8,7 @@ import ZCW.ChatApp.repositories.MessageRepository;
 import ZCW.ChatApp.repositories.UserRepository;
 
 import ZCW.ChatApp.repositories.MessageRepository;
+import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,6 @@ public class MessageServiceTest {
 
     @MockBean
     private MessageRepository repo;
-
 
     @Test
     @DisplayName("Test findById Success")
@@ -88,8 +88,15 @@ public class MessageServiceTest {
         Assertions.assertNotNull(returnMessage, "The Message should not be null");
     }
 
+    @Test
+    public void getMessageTest(){
+        Message mockMessage = new Message(new User(), "testing time", new Date(), new Channel());
+        doReturn(mockMessage).when(repo).getOne(mockMessage.getId());
 
+        Message returnMessage = service.getMessage(mockMessage.getId());
 
+        Assertions.assertNotNull(returnMessage);
+    }
 
     @Test
     @DisplayName("Test create Message")
@@ -124,7 +131,6 @@ public class MessageServiceTest {
 
         Assertions.assertTrue(actual);
     }
-
 
 }
 

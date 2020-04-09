@@ -2,6 +2,7 @@ package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.repositories.ChannelRepository;
 import ZCW.ChatApp.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,10 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
@@ -27,13 +26,18 @@ import static org.mockito.Mockito.doReturn;
 public class UserServiceTest {
 
     @Autowired
-    private UserService service;
+    private UserService userService;
 
     @MockBean
     private UserRepository repo;
 
     @MockBean
     private ChannelService channelService;
+    @MockBean
+    private ChannelRepository channelRepo;
+
+    @MockBean
+    private MessageService messageService;
 
     @Test
     @DisplayName("Test findbyId Success")
@@ -43,7 +47,7 @@ public class UserServiceTest {
         doReturn(Optional.of(mockUser)).when(repo).findById(mockUser.getId());
 
         // Execute Call
-        Optional<User> returnUser = service.findById(mockUser.getId());
+        Optional<User> returnUser = userService.findById(mockUser.getId());
 
         // Check Assertions
         Assertions.assertTrue(returnUser.isPresent(), "No User was found");
@@ -56,7 +60,7 @@ public class UserServiceTest {
         // Set up mock repo
         doReturn(Optional.empty()).when(repo).findById(1L);
         // Execute Call
-        Optional<User> returnUser = service.findById(1L);
+        Optional<User> returnUser = userService.findById(1L);
         // Check assertions
         Assertions.assertFalse(returnUser.isPresent(), "User found it shouldn't be.");
     }
@@ -69,7 +73,7 @@ public class UserServiceTest {
         User mockUser2 = new User("Jack", "Black", "jack7", "password2", false);
         doReturn(Arrays.asList(mockUser1, mockUser2)).when(repo).findAll();
         // Execute service call
-        List<User> returnList = service.findAll();
+        List<User> returnList = userService.findAll();
         // Check Assertions
         Assertions.assertEquals(2, returnList.size(), "findAll should return 2 users");
     }
@@ -80,7 +84,7 @@ public class UserServiceTest {
         User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
         doReturn(mockUser).when(repo).getOne(mockUser.getId());
 
-        User returnUser = service.getUser(mockUser.getId());
+        User returnUser = userService.getUser(mockUser.getId());
 
         Assertions.assertNotNull(returnUser);
     }
@@ -91,31 +95,7 @@ public class UserServiceTest {
         User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
         doReturn(Optional.of(mockUser)).when(repo).findByUserName(mockUser.getUserName());
 
-        Optional<User> returnUser = service.findUserByUsername(mockUser.getUserName());
-
-        Assertions.assertTrue(returnUser.isPresent(), "No user was found");
-        Assertions.assertSame(returnUser.get(), mockUser, "Models don't match");
-    }
-
-    @Test
-    @DisplayName("Test Find By Firstname")
-    public void findUsersByFirstNameTest(){
-        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
-        doReturn(Optional.of(mockUser)).when(repo).findByFirstName(mockUser.getFirstName());
-
-        Optional<User> returnUser = service.findUserByFirstName(mockUser.getFirstName());
-
-        Assertions.assertTrue(returnUser.isPresent(), "No user was found");
-        Assertions.assertSame(returnUser.get(), mockUser, "Models don't match");
-    }
-
-    @Test
-    @DisplayName("Test Find By Lastname")
-    public void findUsersByLastNameTest(){
-        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
-        doReturn(Optional.of(mockUser)).when(repo).findByLastName(mockUser.getLastName());
-
-        Optional<User> returnUser = service.findUserByLastName(mockUser.getLastName());
+        Optional<User> returnUser = userService.findUserByUsername(mockUser.getUserName());
 
         Assertions.assertTrue(returnUser.isPresent(), "No user was found");
         Assertions.assertSame(returnUser.get(), mockUser, "Models don't match");
@@ -127,7 +107,7 @@ public class UserServiceTest {
         User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
         doReturn(mockUser).when(repo).save(any());
 
-        User returnUser = service.save(mockUser);
+        User returnUser = userService.save(mockUser);
 
         Assertions.assertNotNull(returnUser, "Saved user should not be null");
     }
@@ -141,7 +121,7 @@ public class UserServiceTest {
         doReturn(mockUser).when(repo).save(any());
 
         // Execute service call
-        User returnUser = service.create(mockUser);
+        User returnUser = userService.create(mockUser);
         // Check Assertions
         Assertions.assertNotNull(returnUser, "The User should not be null");
     }
@@ -162,6 +142,27 @@ public class UserServiceTest {
 //        Assertions.assertThrows(Exception.class , () -> service.create(mockUser2));
 //    }
 
+    // TODO FIX TEST TO FIND ALL USERS IN CHANNEL
+//    @Test
+//    @DisplayName("Find Users By Channels")
+//    public void findUsersByChannelTest(){
+//        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+//        User mockUser1 = new User("Joe", "Aydin", "password", "something", false);
+//        HashSet<User> mockUsers = new HashSet<>();
+//        mockUsers.add(mockUser);
+//        mockUsers.add(mockUser1);
+//        Channel mockChannel = new Channel("Labs", mockUsers, false);
+//        System.out.println(mockChannel.getUsers().size());
+//        doReturn(mockChannel).when(channelRepo).getOne(mockChannel.getId());
+//        doReturn(Arrays.asList(mockUser, mockUser1)).when(repo).findAllByChannels(mockChannel);
+//
+//
+//        Integer expected = 2;
+//        Integer actual = userService.findUsersByChannel(mockChannel.getId()).size();
+//
+//        Assertions.assertEquals(expected, actual);
+//    }
+
     @Test
     @DisplayName("Test connection")
     public void updateConnectionTest(){
@@ -169,7 +170,7 @@ public class UserServiceTest {
         doReturn(mockUser).when(repo).save(mockUser);
         doReturn(mockUser).when(repo).getOne(1L);
 
-        Boolean actual = service.updateConnection(1L).isConnected();
+        Boolean actual = userService.updateConnection(1L).isConnected();
 
         Assertions.assertTrue(actual);
     }
@@ -181,8 +182,8 @@ public class UserServiceTest {
         doReturn(mockUser).when(repo).save(mockUser);
         doReturn(mockUser).when(repo).getOne(1L);
 
-        service.updateConnection(1L);
-        Boolean actual = service.updateConnection(1L).isConnected();
+        userService.updateConnection(1L);
+        Boolean actual = userService.updateConnection(1L).isConnected();
 
         Assertions.assertFalse(actual);
     }
@@ -192,12 +193,10 @@ public class UserServiceTest {
     public void joinChannelByIdTest(){
         User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
         Channel mockChannel = new Channel("Labs", new HashSet<>(), false);
-        doReturn(mockUser).when(repo).save(mockUser);
         doReturn(mockUser).when(repo).getOne(1L);
-        doReturn(mockChannel).when(channelService).saveChannel(mockChannel);
         doReturn(mockChannel).when(channelService).getChannel(1L);
 
-        service.joinChannelById(1L, 1L);
+        userService.joinChannelById(1L, 1L);
         Integer expected = 1;
         Integer actual = mockUser.getChannels().size();
 
@@ -209,12 +208,10 @@ public class UserServiceTest {
     public void leaveChannelByIdTest(){
         User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
         Channel mockChannel = new Channel("Labs", new HashSet<>(), false);
-        doReturn(mockUser).when(repo).save(mockUser);
         doReturn(mockUser).when(repo).getOne(1L);
-        doReturn(mockChannel).when(channelService).saveChannel(mockChannel);
         doReturn(mockChannel).when(channelService).getChannel(1L);
 
-        service.leaveChannelById(1L, 1L);
+        userService.leaveChannelById(1L, 1L);
         Integer expected = 0;
         Integer actual = mockUser.getChannels().size();
 
@@ -225,10 +222,9 @@ public class UserServiceTest {
     @DisplayName("Test delete")
     public void deleteUserTest(){
         User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
-        doReturn(mockUser).when(repo).save(mockUser);
         doReturn(mockUser).when(repo).getOne(1L);
 
-        Boolean actual = service.deleteUser(1L);
+        Boolean actual = userService.deleteUser(1L);
 
         Assertions.assertTrue(actual);
     }
@@ -240,9 +236,9 @@ public class UserServiceTest {
         User mockUser2 = new User("Jack", "Black", "jack7", "password2", false);
         doReturn(Arrays.asList(mockUser1, mockUser2)).when(repo).findAll();
 
-        List<User> returnUsers = service.findAll();
+        List<User> returnUsers = userService.findAll();
         Integer expected = returnUsers.size();
-        Boolean actual = service.deleteAll();
+        Boolean actual = userService.deleteAll();
 
         Assertions.assertTrue(actual);
         Assertions.assertEquals(2, expected);

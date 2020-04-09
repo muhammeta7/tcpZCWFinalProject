@@ -40,7 +40,7 @@ PUT Update User -> localhost:8080/users/1
 
 Creating Messages
 {
-	"sender" : "muhammeta7",
+
 	"content" : "Hey yo bro"
 }
 
