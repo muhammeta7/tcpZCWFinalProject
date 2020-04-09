@@ -20,6 +20,9 @@ public class UserService {
     private ChannelService channelService;
 
     @Autowired
+    private MessageService messageService;
+
+    @Autowired
     public UserService(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
@@ -62,7 +65,7 @@ public class UserService {
 //        return null;
 //    }
 
-    // TODO Get All User Messages ADD ENDPOINT TO CONTROLLER
+    // TODO Get All User Messages user message Service ADD ENDPOINT TO CONTROLLER
     // TODO GET ALL User Channels
     // TODO GET ALL Messages By Channel
 
