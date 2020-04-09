@@ -45,6 +45,8 @@ public class MessageService {
         return new ArrayList<>(messageRepository.findByChannelId(channelId));
     }
 
+    // TODO FindAll messages By User Id
+
     // DELETE
     //=============================================================================
 
@@ -57,4 +59,8 @@ public class MessageService {
         messageRepository.deleteAll();
         return true;
     }
+
+
+
+
 }

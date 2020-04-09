@@ -3,6 +3,7 @@ package ZCW.ChatApp.services;
 import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.repositories.ChannelRepository;
 import ZCW.ChatApp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,12 @@ import java.util.Set;
 public class UserService {
 
     private UserRepository userRepo;
+
+    @Autowired
+    private ChannelService channelService;
+
+    @Autowired
+    private MessageService messageService;
 
     @Autowired
     public UserService(UserRepository userRepo) {
@@ -44,6 +51,10 @@ public class UserService {
         return userRepo.findById(id);
     }
 
+    public User getUser(Long id){
+        return userRepo.getOne(id);
+    }
+
     public Optional<User> findUserByUsername(String username){ return userRepo.findByUserName(username); }
 
     public Optional<User> findUserByFirstName(String firstName) {return userRepo.findByFirstName(firstName);}
@@ -51,15 +62,9 @@ public class UserService {
     public Optional<User> findUserByLastName(String lastName) { return userRepo.findByLastName(lastName);}
 
 
-
-    // TODO Get Messages & getChannels
-//    public List<Message> getUserMessages(Long id){
-//      return userRepo.getOne(id).getMessages();
-//    }
-//
-//    public Set<Channel> getUserChannels(Long id){
-//        return userRepo.getOne(id).getChannels();
-//    }
+    // TODO Get All User Messages user message Service ADD ENDPOINT TO CONTROLLER
+    // TODO GET ALL User Channels
+    // TODO GET ALL Messages By Channel
 
     // UPDATE
     //=============================================================================
@@ -71,6 +76,22 @@ public class UserService {
         } else {
             original.setConnected(true);
         }
+        return userRepo.save(original);
+    }
+
+    public User joinChannelById(Long userId, Long channelId){
+        User original = userRepo.getOne(userId);
+        Channel channel = channelService.getChannel(channelId);
+        if(!channel.getPrivate()){
+            original.getChannels().add(channel);
+        }
+        return userRepo.save(original);
+    }
+
+    public User leaveChannelById(Long userId, Long channelId){
+        User original = userRepo.getOne(userId);
+        Channel channel = channelService.getChannel(channelId);
+        original.getChannels().remove(channel);
         return userRepo.save(original);
     }
 
