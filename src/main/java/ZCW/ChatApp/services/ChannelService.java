@@ -32,7 +32,6 @@ public class ChannelService {
         return channelRepository.findAll();
     }
 
-    // TODO TEST
     public Channel getChannel(Long id){
         return channelRepository.getOne(id);
     }
@@ -40,7 +39,6 @@ public class ChannelService {
     public Channel saveChannel(Channel channel){
         return channelRepository.save(channel);
     }
-
 
     // UPDATE
     //=============================================================================

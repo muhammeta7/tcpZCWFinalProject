@@ -42,10 +42,13 @@ public class MessageService {
     }
 
     public List<Message> findByChannel(Long channelId){
-        return new ArrayList<>(messageRepository.findByChannelId(channelId));
+        return messageRepository.findByChannelId(channelId);
     }
 
-    // TODO FindAll messages By User Id
+    // TODO Test
+    public List<Message> findMessagesByUserId(Long userId){
+        return messageRepository.findMessagesBySender_Id(userId);
+    }
 
     // DELETE
     //=============================================================================

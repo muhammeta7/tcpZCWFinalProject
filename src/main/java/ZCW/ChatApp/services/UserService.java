@@ -57,21 +57,13 @@ public class UserService {
 
     public Optional<User> findUserByUsername(String username){ return userRepo.findByUserName(username); }
 
-    public Optional<User> findUserByFirstName(String firstName) {return userRepo.findByFirstName(firstName);}
-
-    public Optional<User> findUserByLastName(String lastName) { return userRepo.findByLastName(lastName);}
-
-//    public List<Message> getUserMessages(){
-//        return null;
-//    }
-
-    // TODO Get All User Messages user message Service ADD ENDPOINT TO CONTROLLER
-    // TODO GET ALL User Channels
-    // TODO GET ALL Messages By Channel
+    // TODO TEST
+    public List<User> findUsersByChannel(Long id){
+        return userRepo.findAllByChannels(channelService.getChannel(id));
+    }
 
     // UPDATE
     //=============================================================================
-
     public User updateConnection(Long id){
         User original = userRepo.getOne(id);
         if (original.isConnected()) {
@@ -87,6 +79,8 @@ public class UserService {
         Channel channel = channelService.getChannel(channelId);
         if(!channel.getPrivate()){
             original.getChannels().add(channel);
+            channel.getUsers().add(original);
+            channelService.saveChannel(channel);
         }
         return userRepo.save(original);
     }
