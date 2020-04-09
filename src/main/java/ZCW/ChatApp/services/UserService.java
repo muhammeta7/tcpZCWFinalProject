@@ -47,6 +47,8 @@ public class UserService {
 
     public Optional<User> findUserByLastName(String lastName) { return userRepo.findByLastName(lastName);}
 
+
+
     // TODO Get Messages & getChannels
 
     // UPDATE
