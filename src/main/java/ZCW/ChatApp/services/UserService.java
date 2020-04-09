@@ -41,12 +41,12 @@ public class UserService {
     }
 
     // TODO send message to user
-//    public Message sendMessageToUser(Long senderId, Long recipientId){
-//        User sender = userRepo.getOne(senderId);
-//        User recipient = userRepo.getOne(recipientId);
-//        Message message = messageService.create(new Message());
-//        return null;
-//    }
+    public Message sendPersonalMessage(Long senderId, Long recipientId){
+        User sender = userRepo.getOne(senderId);
+        User recipient = userRepo.getOne(recipientId);
+        Message message = messageService.create(new Message());
+        return null;
+    }
 
     // TODO Refactor Too much going on here
     public Message sendMessageToChannel(Long messageId, Long channelId){
@@ -107,6 +107,7 @@ public class UserService {
         User original = userRepo.getOne(userId);
         Channel channel = channelService.getChannel(channelId);
         original.getChannels().remove(channel);
+        channelService.saveChannel(channel);
         return userRepo.save(original);
     }
 
