@@ -65,6 +65,11 @@ public class UserController {
         return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping("/channel/{channelId}")
+    public ResponseEntity<List<User>> findByChannel(@PathVariable Long channelId){
+        return new ResponseEntity<>(userService.findUsersByChannel(channelId), HttpStatus.OK);
+    }
+
     // PUT
     //=============================================================================
     @PutMapping("/{id}/connect")
