@@ -65,6 +65,11 @@ public class UserController {
         return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping("/channel/{channelId}")
+    public ResponseEntity<List<User>> findByChannel(@PathVariable Long channelId){
+        return new ResponseEntity<>(userService.findUsersByChannel(channelId), HttpStatus.OK);
+    }
+
     // PUT
     //=============================================================================
     @PutMapping("/{id}/connect")
@@ -96,6 +101,17 @@ public class UserController {
                         return ResponseEntity.status(HttpStatus.MULTI_STATUS.INTERNAL_SERVER_ERROR).build();
                     }
                 }).orElse(ResponseEntity.notFound().build());
+    }
+
+    // TODO TEST
+    @PutMapping("/{id}/join")
+    public ResponseEntity<User> joinChannel(@PathVariable Long id, @RequestParam Long channelId){
+        return new ResponseEntity<>(userService.joinChannelById(id,channelId), HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/leave")
+    public ResponseEntity<User> leaveChannel(@PathVariable Long id, @RequestParam Long channelId){
+        return new ResponseEntity<>(userService.leaveChannelById(id,channelId), HttpStatus.OK);
     }
 
     // DELETE

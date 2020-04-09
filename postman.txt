@@ -23,7 +23,7 @@ POST Users -> localhost:8080/users/create
 	"userName" : "fisher4"
 }
 
-GET All Users -> localhost:8080/users/allUsers
+GET All Users -> localhost:8080/users
 GET One User -> localhost:8080/users/1
 GET One User -> localhost:8080/users/username/muhammeta7
 
@@ -40,7 +40,7 @@ PUT Update User -> localhost:8080/users/1
 
 Creating Messages
 {
-	"sender" : "muhammeta7",
+
 	"content" : "Hey yo bro"
 }
 
@@ -57,17 +57,20 @@ Creating Messages
 localhost:8080/channels
 Creating Channels
 {
-    "channelName" : "Labs",
+    "channelName" : "Announcements",
     "users" : [],
-    "private" : true
+    "messages" : [],
+    "private" : false
 }
 {
     "channelName" : "Announcements",
     "users" : [],
+    "messages" : [],
     "private" : false
 }
 {
     "channelName" : "Party",
     "users" : [],
+    "messages" : [],
     "private" : false
 }

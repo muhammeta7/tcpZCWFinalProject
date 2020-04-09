@@ -1,5 +1,6 @@
 package ZCW.ChatApp.controllers;
 import ZCW.ChatApp.models.Channel;
+import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.services.ChannelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/channels")
@@ -38,6 +41,11 @@ public class ChannelController {
                 ResponseEntity.ok().body(channel)).orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/{id}/chat")
+    public ResponseEntity<List<Message>> findAllMessages(@PathVariable Long id){
+        return new ResponseEntity<>(MessageController.getMessageService().findByChannel(id), HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<List<Channel>> findAllChannels(){
         return new ResponseEntity<>(channelService.findAll(), HttpStatus.OK);
@@ -47,11 +55,6 @@ public class ChannelController {
     public ResponseEntity<Set<User>> findAllUsersForChannel(@RequestBody Channel channel){
         return new ResponseEntity<>(channel.getUsers(), HttpStatus.OK);
     }
-
-//    @GetMapping("/{channelName}")
-//    public ResponseEntity<Set<Message>> findAllMessageForChannel(@RequestBody Channel channel){
-//        return new ResponseEntity<>(channelService.findAllMessages(channel), HttpStatus.OK);
-//    }
 
     // PUT
     //=============================================================================

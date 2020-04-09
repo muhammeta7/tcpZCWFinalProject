@@ -3,8 +3,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -56,20 +58,18 @@ public class ChannelModelTest {
         Assert.assertEquals(users,channel.getUsers());
     }
 
-//    @Test
-//    public void getAndSetMessagesTest(){
-//        // Given
-//        HashSet<Message> messages = new HashSet<>();
-//        messages.add(new Message());
-//        messages.add(new Message());
-//        Channel channel = new Channel();
-//
-//        // When
-//        channel.setMessages(messages);
-//
-//        // Then
-//        Assert.assertEquals(messages, channel.getMessages());
-//    }
+    @Test
+    public void getAndSetMessagesTest() {
+        List<Message> messages = new ArrayList<>();
+        messages.add(new Message());
+        messages.add(new Message());
+        Channel channel = new Channel();
+        channel.setMessages(messages);
+        Integer expected = 2;
+        Integer actual = channel.getMessages().size();
+        Assert.assertEquals(expected, actual);
+
+    }
 
     @Test
     public void channelPrivacyTest(){
