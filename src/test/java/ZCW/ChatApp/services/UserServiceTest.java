@@ -14,10 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
@@ -149,13 +147,15 @@ public class UserServiceTest {
 //    @DisplayName("Find Users By Channels")
 //    public void findUsersByChannelTest(){
 //        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
-//        User mockUser1 = new User("Moe", "Aydin", "password", "something", false);
+//        User mockUser1 = new User("Joe", "Aydin", "password", "something", false);
 //        HashSet<User> mockUsers = new HashSet<>();
 //        mockUsers.add(mockUser);
 //        mockUsers.add(mockUser1);
 //        Channel mockChannel = new Channel("Labs", mockUsers, false);
-//        doReturn(mockChannel).when(channelRepo).getOne(mockChannel.getId()).;
-//        doReturn(Arrays.asList(mockUser, mockUser1)).when(repo).findAll();
+//        System.out.println(mockChannel.getUsers().size());
+//        doReturn(mockChannel).when(channelRepo).getOne(mockChannel.getId());
+//        doReturn(Arrays.asList(mockUser, mockUser1)).when(repo).findAllByChannels(mockChannel);
+//
 //
 //        Integer expected = 2;
 //        Integer actual = userService.findUsersByChannel(mockChannel.getId()).size();
