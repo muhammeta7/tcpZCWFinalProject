@@ -98,6 +98,17 @@ public class UserController {
                 }).orElse(ResponseEntity.notFound().build());
     }
 
+    // TODO TEST
+    @PutMapping("/{id}/join")
+    public ResponseEntity<User> joinChannel(@PathVariable Long id, @RequestParam Long channelId){
+        return new ResponseEntity<>(userService.joinChannelById(id,channelId), HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/leave")
+    public ResponseEntity<User> leaveChannel(@PathVariable Long id, @RequestParam Long channelId){
+        return new ResponseEntity<>(userService.leaveChannelById(id,channelId), HttpStatus.OK);
+    }
+
     // DELETE
     //=============================================================================
     @DeleteMapping("/delete/{id}")
