@@ -48,7 +48,6 @@ public class UserService {
         return userRepo.findById(id);
     }
 
-    // TODO TEST
     public User getUser(Long id){
         return userRepo.getOne(id);
     }
@@ -58,6 +57,14 @@ public class UserService {
     public Optional<User> findUserByFirstName(String firstName) {return userRepo.findByFirstName(firstName);}
 
     public Optional<User> findUserByLastName(String lastName) { return userRepo.findByLastName(lastName);}
+
+//    public List<Message> getUserMessages(){
+//        return null;
+//    }
+
+    // TODO Get All User Messages ADD ENDPOINT TO CONTROLLER
+    // TODO GET ALL User Channels
+    // TODO GET ALL Messages By Channel
 
     // UPDATE
     //=============================================================================

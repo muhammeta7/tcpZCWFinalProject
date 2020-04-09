@@ -1,9 +1,7 @@
 package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Channel;
-import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
-import ZCW.ChatApp.repositories.ChannelRepository;
 import ZCW.ChatApp.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -77,6 +75,17 @@ public class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Test get user")
+    public void getUserTest(){
+        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
+        doReturn(mockUser).when(repo).getOne(mockUser.getId());
+
+        User returnUser = service.getUser(mockUser.getId());
+
+        Assertions.assertNotNull(returnUser);
+    }
+
+    @Test
     @DisplayName("Test findAllByUsername")
     public void findUsersByUserNameTest(){
         User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
@@ -123,6 +132,7 @@ public class UserServiceTest {
         Assertions.assertNotNull(returnUser, "Saved user should not be null");
     }
 
+
     // TODO Fix test
     @Test
     @DisplayName("Test create User Successful")
@@ -135,6 +145,7 @@ public class UserServiceTest {
         // Check Assertions
         Assertions.assertNotNull(returnUser, "The User should not be null");
     }
+
 
     // TODO Fix test
 //    @Test

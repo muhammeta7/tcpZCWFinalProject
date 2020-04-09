@@ -1,6 +1,5 @@
 package ZCW.ChatApp.services;
 
-import ZCW.ChatApp.controllers.MessageController;
 import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
@@ -70,6 +69,17 @@ public class ChannelServiceTest {
         List<Channel> returnList = channelService.findAll();
 
         Assertions.assertEquals(2, returnList.size(), "findAll should return 2 channels.");
+    }
+
+    @Test
+    @DisplayName("get existing channel test")
+    public void getChannelTest(){
+        Channel mockChannel = new Channel();
+        doReturn(mockChannel).when(channelRepository).getOne(mockChannel.getId());
+
+        Channel returnChannel = channelService.getChannel(mockChannel.getId());
+
+        Assertions.assertNotNull(returnChannel);
     }
 
     @Test
