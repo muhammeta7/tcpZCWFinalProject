@@ -77,16 +77,16 @@ public class MessageServiceTest {
         Assertions.assertEquals(2, returnList.size(), "findAll should return 2 messages");
     }
 
-    @Test
-    @DisplayName("Test create Message")
-    public void createMessageTest() {
-        Message mockMessage = new Message(new User(), "testing time", new Date(), new Channel());
-        doReturn(mockMessage).when(repo).save(any());
-
-        Message returnMessage = service.create(mockMessage);
-
-        Assertions.assertNotNull(returnMessage, "The Message should not be null");
-    }
+//    @Test
+//    @DisplayName("Test create Message")
+//    public void createMessageTest() {
+//        Message mockMessage = new Message(new User(), "testing time", new Date(), new Channel());
+//        doReturn(mockMessage).when(repo).save(any());
+//
+//        Message returnMessage = service.create(mockMessage);
+//
+//        Assertions.assertNotNull(returnMessage, "The Message should not be null");
+//    }
 
     @Test
     public void getMessageTest(){

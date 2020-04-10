@@ -3,6 +3,7 @@ package ZCW.ChatApp.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @Entity
@@ -13,9 +14,11 @@ public class Message {
     private Long id;
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User sender;
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "channel_id")
     private Channel channel;
     private String content;
     private Date timestamp;
