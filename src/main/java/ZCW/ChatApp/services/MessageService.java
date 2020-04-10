@@ -4,16 +4,22 @@ import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.repositories.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 @Service
 public class MessageService {
 
     private MessageRepository messageRepository;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ChannelService channelService;
 
     @Autowired
     public MessageService(MessageRepository messageRepository) {
@@ -25,9 +31,20 @@ public class MessageService {
     // POST
     //=============================================================================
 
+    // TODO Fix this to set channel ids, and sender ids
     public Message create(Message message) {
+        message.setTimestamp(new Date());
         return messageRepository.save(message);
     }
+
+    // TODO Fix this
+//    public Message postInChannel(Message message, Long channelId){
+//        message.setTimestamp(new Date());
+//        Channel channel = channelService.getChannel(channelId);
+//        channel.getMessages().add(message);
+//        channelService.saveChannel(channel);
+//        return messageRepository.save(message);
+//    }
 
     // GET
     //=============================================================================
@@ -36,22 +53,27 @@ public class MessageService {
         return messageRepository.findById(id);
     }
 
+    public Message getMessage(Long id){
+        return messageRepository.getOne(id);
+    }
+
     public List<Message> findAll() {
         return messageRepository.findAll();
     }
 
-
-    public List<Message> findBySender(String sender, Pageable pageable) {
-        return messageRepository.findMessageBySender(sender, pageable);
-    }
-
     public List<Message> findByChannel(Long channelId){
-        return new ArrayList<>(messageRepository.findByChannelId(channelId));
+        return messageRepository.findByChannelId(channelId);
     }
 
-//    public Message findByTimeStamp(Long id) {
-//        return messageRepository.findMessageByTimestamp(id);
-//    }
+    // TODO Test
+    public List<Message> findMessagesByUserId(Long userId){
+        return messageRepository.findMessagesBySender_Id(userId);
+    }
+
+
+    // UPDATE
+    //=============================================================================
+
 
     // DELETE
     //=============================================================================
@@ -65,4 +87,6 @@ public class MessageService {
         messageRepository.deleteAll();
         return true;
     }
+
+
 }

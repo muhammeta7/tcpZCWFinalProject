@@ -1,5 +1,6 @@
 package ZCW.ChatApp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ public class Channel {
     private Long id;
     private String channelName;
     private Boolean isPrivate;
-    @JsonIgnoreProperties
+    @JsonIgnore
     @ManyToMany
     private Set<User> users;
 
@@ -30,7 +31,7 @@ public class Channel {
         this.channelName = channelName;
         this.users = users;
         this.isPrivate = isPrivate;
-        this.users = new HashSet<>();
+        //this.users = new HashSet<>();
         this.messages = new ArrayList<>();
     }
 

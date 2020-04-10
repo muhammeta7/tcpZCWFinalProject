@@ -1,16 +1,26 @@
 package ZCW.ChatApp.services;
 
+import ZCW.ChatApp.models.Channel;
+import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.repositories.ChannelRepository;
 import ZCW.ChatApp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
 
     private UserRepository userRepo;
+
+    @Autowired
+    private ChannelService channelService;
+
+    @Autowired
+    private MessageService messageService;
 
     @Autowired
     public UserService(UserRepository userRepo) {
@@ -30,6 +40,24 @@ public class UserService {
         throw new Exception("Username is taken. Try something else.");
     }
 
+    // TODO send message to user
+    public Message sendPersonalMessage(Long senderId, Long recipientId){
+        User sender = userRepo.getOne(senderId);
+        User recipient = userRepo.getOne(recipientId);
+        Message message = messageService.create(new Message());
+        return null;
+    }
+
+    // TODO Refactor Too much going on here
+    public Message sendMessageToChannel(Long messageId, Long channelId){
+        Message message = messageService.getMessage(messageId);
+        Channel channel = channelService.getChannel(channelId);
+        message.setChannel(channel);
+        channel.getMessages().add(message);
+        channelService.saveChannel(channel);
+        return messageService.save(message);
+    }
+
     // GET
     //=============================================================================
 
@@ -41,17 +69,19 @@ public class UserService {
         return userRepo.findById(id);
     }
 
+    public User getUser(Long id){
+        return userRepo.getOne(id);
+    }
+
     public Optional<User> findUserByUsername(String username){ return userRepo.findByUserName(username); }
 
-    public Optional<User> findUserByFirstName(String firstName) {return userRepo.findByFirstName(firstName);}
-
-    public Optional<User> findUserByLastName(String lastName) { return userRepo.findByLastName(lastName);}
-
-    // TODO Get Messages & getChannels
+    // TODO TEST
+    public List<User> findUsersByChannel(Long id){
+        return userRepo.findAllByChannels(channelService.getChannel(id));
+    }
 
     // UPDATE
     //=============================================================================
-
     public User updateConnection(Long id){
         User original = userRepo.getOne(id);
         if (original.isConnected()) {
@@ -59,6 +89,25 @@ public class UserService {
         } else {
             original.setConnected(true);
         }
+        return userRepo.save(original);
+    }
+
+    public User joinChannelById(Long userId, Long channelId){
+        User original = userRepo.getOne(userId);
+        Channel channel = channelService.getChannel(channelId);
+        if(!channel.getPrivate()){
+            original.getChannels().add(channel);
+            channel.getUsers().add(original);
+            channelService.saveChannel(channel);
+        }
+        return userRepo.save(original);
+    }
+
+    public User leaveChannelById(Long userId, Long channelId){
+        User original = userRepo.getOne(userId);
+        Channel channel = channelService.getChannel(channelId);
+        original.getChannels().remove(channel);
+        channelService.saveChannel(channel);
         return userRepo.save(original);
     }
 

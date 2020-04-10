@@ -1,6 +1,8 @@
 package ZCW.ChatApp.controllers;
 
+import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.services.MessageService;
 import ZCW.ChatApp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,6 +38,7 @@ public class UserController {
         }
     }
 
+
     // GET
     //=============================================================================
     @GetMapping("/{id}")
@@ -63,6 +66,11 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<User>> findAllUsers(){
         return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("/channel/{channelId}")
+    public ResponseEntity<List<User>> findByChannel(@PathVariable Long channelId){
+        return new ResponseEntity<>(userService.findUsersByChannel(channelId), HttpStatus.OK);
     }
 
     // PUT
@@ -96,6 +104,17 @@ public class UserController {
                         return ResponseEntity.status(HttpStatus.MULTI_STATUS.INTERNAL_SERVER_ERROR).build();
                     }
                 }).orElse(ResponseEntity.notFound().build());
+    }
+
+    // TODO TEST
+    @PutMapping("/{id}/join")
+    public ResponseEntity<User> joinChannel(@PathVariable Long id, @RequestParam Long channelId){
+        return new ResponseEntity<>(userService.joinChannelById(id,channelId), HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/leave")
+    public ResponseEntity<User> leaveChannel(@PathVariable Long id, @RequestParam Long channelId){
+        return new ResponseEntity<>(userService.leaveChannelById(id,channelId), HttpStatus.OK);
     }
 
     // DELETE
