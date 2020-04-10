@@ -14,9 +14,11 @@ public class Message {
     private Long id;
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User sender;
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "channel_id")
     private Channel channel;
     private String content;
     private Date timestamp;

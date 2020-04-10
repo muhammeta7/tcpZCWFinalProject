@@ -89,6 +89,7 @@ public class UserService {
         User original = userRepo.getOne(userId);
         Channel channel = channelService.getChannel(channelId);
         original.getChannels().remove(channel);
+        channel.getUsers().remove(original);
         channelService.saveChannel(channel);
         return userRepo.save(original);
     }

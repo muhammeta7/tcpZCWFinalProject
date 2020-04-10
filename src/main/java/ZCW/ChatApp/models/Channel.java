@@ -19,9 +19,14 @@ public class Channel {
     private Boolean isPrivate;
     @JsonIgnore
     @ManyToMany
+    @JoinTable(
+            name = "users_channels",
+            joinColumns = @JoinColumn(name = "channel_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private Set<User> users;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "channel")
     private List<Message> messages;
 
 
