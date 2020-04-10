@@ -36,7 +36,6 @@ public class Channel {
         this.channelName = channelName;
         this.users = users;
         this.isPrivate = isPrivate;
-        //this.users = new HashSet<>();
         this.messages = new ArrayList<>();
     }
 

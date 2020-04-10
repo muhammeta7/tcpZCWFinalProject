@@ -36,9 +36,9 @@ public class MessageController {
 
     // POST
     //=============================================================================
-    @PostMapping("create/user/{userId}")
-    public ResponseEntity<Message> create(@RequestBody Message message, @PathVariable Long userId){
-        return new ResponseEntity<>(messageService.create(message, userId), HttpStatus.OK);
+    @PostMapping("create/sender/{userId}/channel/{channelId}")
+    public ResponseEntity<Message> create(@RequestBody Message message, @PathVariable Long userId, @PathVariable Long channelId){
+        return new ResponseEntity<>(messageService.create(message, userId, channelId), HttpStatus.OK);
     }
 
 //    @PostMapping("/channel/{channelId}")

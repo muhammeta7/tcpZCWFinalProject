@@ -33,10 +33,13 @@ public class MessageService {
     //=============================================================================
 
     // TODO Fix this to set channel ids, and sender ids
-    public Message create(Message message, Long userId) {
+    public Message create(Message message, Long userId, Long channelId) {
         message.setTimestamp(new Date());
         User user = userService.getUser(userId);
+        Channel channel = channelService.getChannel(channelId);
         message.setSender(user);
+        message.setChannel(channel);
+        channelService.saveChannel(channel);
         userService.save(user);
         return messageRepository.save(message);
     }
@@ -69,14 +72,14 @@ public class MessageService {
     // UPDATE
     //=============================================================================
 
-    public Message sendMessageToChannel(Long messageId, Long channelId){
-        Message message = messageRepository.getOne(messageId);
-        Channel channel = channelService.getChannel(channelId);
-        message.setChannel(channel);
-        channel.getMessages().add(message);
-        channelService.saveChannel(channel);
-        return messageRepository.save(message);
-    }
+//    public Message sendMessageToChannel(Long messageId, Long channelId){
+//        Message message = messageRepository.getOne(messageId);
+//        Channel channel = channelService.getChannel(channelId);
+//        message.setChannel(channel);
+//        channel.getMessages().add(message);
+//        channelService.saveChannel(channel);
+//        return messageRepository.save(message);
+//    }
 
 
     // DELETE
