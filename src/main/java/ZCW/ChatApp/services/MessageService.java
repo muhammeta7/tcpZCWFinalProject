@@ -32,7 +32,6 @@ public class MessageService {
     // POST
     //=============================================================================
 
-    // TODO Fix this to set channel ids, and sender ids
     public Message create(Message message, Long userId, Long channelId) {
         message.setTimestamp(new Date());
         User user = userService.getUser(userId);
@@ -68,19 +67,8 @@ public class MessageService {
         return messageRepository.findMessagesBySender_Id(userId);
     }
 
-
     // UPDATE
     //=============================================================================
-
-//    public Message sendMessageToChannel(Long messageId, Long channelId){
-//        Message message = messageRepository.getOne(messageId);
-//        Channel channel = channelService.getChannel(channelId);
-//        message.setChannel(channel);
-//        channel.getMessages().add(message);
-//        channelService.saveChannel(channel);
-//        return messageRepository.save(message);
-//    }
-
 
     // DELETE
     //=============================================================================
