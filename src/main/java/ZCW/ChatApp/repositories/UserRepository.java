@@ -17,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
         List<User> findAllByChannels(Channel channel);
 
+//        List<Message> findAllById()
+
 }

@@ -21,7 +21,7 @@ public class Channel {
     @ManyToMany
     private Set<User> users;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Message> messages;
 
 

@@ -117,6 +117,8 @@ public class UserController {
         return new ResponseEntity<>(userService.leaveChannelById(id,channelId), HttpStatus.OK);
     }
 
+
+
     // DELETE
     //=============================================================================
     @DeleteMapping("/delete/{id}")

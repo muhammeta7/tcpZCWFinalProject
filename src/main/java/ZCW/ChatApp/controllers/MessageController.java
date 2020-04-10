@@ -36,9 +36,9 @@ public class MessageController {
 
     // POST
     //=============================================================================
-    @PostMapping("/create")
-    public ResponseEntity<Message> sendMessage(@RequestBody Message message){
-        return new ResponseEntity<>(messageService.create(message), HttpStatus.OK);
+    @PostMapping("create/user/{userId}")
+    public ResponseEntity<Message> create(@RequestBody Message message, @PathVariable Long userId){
+        return new ResponseEntity<>(messageService.create(message, userId), HttpStatus.OK);
     }
 
 //    @PostMapping("/channel/{channelId}")
@@ -66,11 +66,10 @@ public class MessageController {
         return new ResponseEntity<>((messageService.findAll()), HttpStatus.OK);
     }
 
-//    // TODO Fix this to pass in user
-//    @GetMapping("/sender/{user}")
-//    public ResponseEntity<List<Message>> findBySender(@PathVariable User user, Pageable pageable){
-//        return new ResponseEntity<>(messageService.findBySender(user, pageable), HttpStatus.OK);
-//    }
+    @GetMapping("/sender/{userId}")
+    public ResponseEntity<List<Message>> findBySender(@PathVariable Long userId){
+        return new ResponseEntity<>(messageService.findMessagesByUserId(userId), HttpStatus.OK);
+    }
 
     // PUT
     //=============================================================================
@@ -100,7 +99,7 @@ public class MessageController {
     }
 
     @DeleteMapping("/deleteAll")
-    public ResponseEntity<Boolean> deleteAllUsers() {
+    public ResponseEntity<Boolean> deleteAllMessages() {
         return new ResponseEntity<>(messageService.deleteAll(), HttpStatus.NOT_FOUND);
     }
 

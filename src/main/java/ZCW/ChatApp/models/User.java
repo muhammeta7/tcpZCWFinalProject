@@ -18,12 +18,12 @@ public class User {
     private String password;
     private Boolean connected = false;
     @JsonIgnore
-    @OneToMany
-    @Column(name="messages")
+    @OneToMany(cascade = CascadeType.ALL)
+    @Column(name="message")
     private List<Message> messages;
     @JsonIgnore
     @ManyToMany
-    @Column(name="channels")
+    @Column(name="channel")
     private Set<Channel> channels;
 
     public User (){};
