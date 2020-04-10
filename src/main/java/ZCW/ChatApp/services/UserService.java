@@ -20,9 +20,6 @@ public class UserService {
     private ChannelService channelService;
 
     @Autowired
-    private MessageService messageService;
-
-    @Autowired
     public UserService(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
