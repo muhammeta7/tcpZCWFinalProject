@@ -30,11 +30,11 @@ public class UserService {
 
     // POST
     //=============================================================================
-    public User create(User user) throws Exception{
+    public User create(User user) throws IllegalArgumentException{
         if(!userRepo.findByUserName(user.getUserName()).isPresent()){
             return userRepo.save(user);
         }
-        throw new Exception("Username is taken. Try something else.");
+        throw new IllegalArgumentException("Username is taken. Try something else.");
     }
 
     // GET
