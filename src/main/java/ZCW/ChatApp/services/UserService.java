@@ -68,24 +68,30 @@ public class UserService {
         return userRepo.save(original);
     }
 
-    public User joinChannelById(Long userId, Long channelId){
-        User original = userRepo.getOne(userId);
-        Channel channel = channelService.getChannel(channelId);
-        if(!channel.getPrivate()){
-            original.getChannels().add(channel);
-            channel.getUsers().add(original);
-            channelService.saveChannel(channel);
+    public Optional<User> joinChannelById(Long userId, Long channelId) throws Exception {
+        Optional<User> original = userRepo.findById(userId);
+        Optional<Channel> channel = channelService.findById(channelId);
+        if(!channel.get().getPrivate()){
+            original.get().getChannels().add(channel.get());
+            channel.get().getUsers().add(original.get());
+            channelService.saveChannel(channel.get());
+            userRepo.save(original.get());
+        } else {
+            throw new Exception("Sorry this channel is private or doesn't exist");
         }
-        return userRepo.save(original);
+        return original;
     }
 
-    public User leaveChannelById(Long userId, Long channelId){
-        User original = userRepo.getOne(userId);
-        Channel channel = channelService.getChannel(channelId);
-        original.getChannels().remove(channel);
-        channel.getUsers().remove(original);
-        channelService.saveChannel(channel);
-        return userRepo.save(original);
+    public Optional<User> leaveChannelById(Long userId, Long channelId){
+        Optional<User> original = userRepo.findById(userId);
+        Optional<Channel> channel = channelService.findById(channelId);
+        if(original.get().getChannels().contains(channel.get())){
+            original.get().getChannels().remove(channel.get());
+            channel.get().getUsers().remove(original.get());
+            channelService.saveChannel(channel.get());
+            userRepo.save(original.get());
+        }
+        return original;
     }
 
 

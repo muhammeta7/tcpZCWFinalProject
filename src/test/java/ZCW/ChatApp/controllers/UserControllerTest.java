@@ -174,7 +174,7 @@ public class UserControllerTest {
 
     @Test
     @DisplayName("PUT /users/1/connect - Success")
-    void connectTest() throws Exception {
+    public void connectTest() throws Exception {
         Long givenId = 1L;
         User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
         User mockUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
@@ -194,7 +194,7 @@ public class UserControllerTest {
 
     @Test
     @DisplayName("PUT /users/1/disconnect - Success")
-    void disconnectTest() throws Exception {
+    public void disconnectTest() throws Exception {
         Long givenId = 1L;
         User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
         User mockUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
@@ -246,7 +246,7 @@ public class UserControllerTest {
 
     @Test
     @DisplayName("PUT /users/update/password/1 - Success")
-    void updatePasswordSuccessTest() throws Exception {
+    public void updatePasswordSuccessTest() throws Exception {
         Long givenId = 1L;
         User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
         String newPassword = "anything";
@@ -255,16 +255,15 @@ public class UserControllerTest {
         mockMvc.perform(put("/users/update/password/{id}", givenId)
                 .header(HttpHeaders.IF_MATCH, 1)
                 .param("password", newPassword))
-
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.password", is("password")));
     }
 
     @Test
     @DisplayName("PUT /users/update/password/1 - Fail")
-    void updateFailSuccessTest() throws Exception {
+    void updatePasswordFailTest() throws Exception {
         Long givenId = 1L;
         String newPassword = "anything";
         given(userService.updatePassword(givenId, newPassword)).willReturn(Optional.empty());
@@ -275,6 +274,10 @@ public class UserControllerTest {
 
                 .andExpect(status().isNotFound());
     }
+
+
+
+
 
     // TODO join channel
     // TODO leave channel
@@ -306,6 +309,5 @@ public class UserControllerTest {
             throw new RuntimeException(e);
         }
     }
-
 
 }
