@@ -27,7 +27,7 @@ public class UserController {
     // POST
     //=============================================================================
     @PostMapping("/create")
-    public ResponseEntity<User> createUser(@RequestBody User user) throws Exception {
+    public ResponseEntity<User> createUser(@RequestBody User user) {
         User newUser = userService.create(user);
         try{
             return ResponseEntity
@@ -85,26 +85,26 @@ public class UserController {
         return new ResponseEntity<>(userService.updateConnection(id), HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable Long id){
-        Optional<User> existingUser = userService.findById(id);
-        return existingUser
-                .map(u -> {
-                    u.setFirstName(user.getFirstName());
-                    u.setLastName(user.getLastName());
-                    u.setPassword(user.getPassword());
-                    u.setUserName(user.getUserName());
-                    userService.save(u);
-                    try{
-                        return ResponseEntity
-                                .ok()
-                                .location(new URI("/" + u.getId()))
-                                .body(u);
-                    }catch(URISyntaxException e){
-                        return ResponseEntity.status(HttpStatus.MULTI_STATUS.INTERNAL_SERVER_ERROR).build();
-                    }
-                }).orElse(ResponseEntity.notFound().build());
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable Long id){
+//        Optional<User> existingUser = userService.findById(id);
+//        return existingUser
+//                .map(u -> {
+//                    u.setFirstName(user.getFirstName());
+//                    u.setLastName(user.getLastName());
+//                    u.setPassword(user.getPassword());
+//                    u.setUserName(user.getUserName());
+//                    userService.save(u);
+//                    try{
+//                        return ResponseEntity
+//                                .ok()
+//                                .location(new URI("/" + u.getId()))
+//                                .body(u);
+//                    }catch(URISyntaxException e){
+//                        return ResponseEntity.status(HttpStatus.MULTI_STATUS.INTERNAL_SERVER_ERROR).build();
+//                    }
+//                }).orElse(ResponseEntity.notFound().build());
+//    }
 
 
     @PutMapping("/{id}/join")
@@ -117,13 +117,14 @@ public class UserController {
         return new ResponseEntity<>(userService.leaveChannelById(id,channelId), HttpStatus.OK);
     }
 
-
-
     // DELETE
     //=============================================================================
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Boolean> deleteUser(@PathVariable Long id) {
-        return new ResponseEntity<>(userService.deleteUser(id), HttpStatus.NOT_FOUND);
+        if(userService.deleteUser(id)){
+            return ResponseEntity.ok().build();
+        } else
+            return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/deleteAll")

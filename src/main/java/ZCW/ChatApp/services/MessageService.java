@@ -32,6 +32,7 @@ public class MessageService {
     // POST
     //=============================================================================
 
+    // TODO Test
     public Message create(Message message, Long userId, Long channelId) {
         message.setTimestamp(new Date());
         User user = userService.getUser(userId);
