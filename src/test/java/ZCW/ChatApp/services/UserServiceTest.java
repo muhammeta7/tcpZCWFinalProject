@@ -2,7 +2,6 @@ package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.User;
-import ZCW.ChatApp.repositories.ChannelRepository;
 import ZCW.ChatApp.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import static org.mockito.BDDMockito.given;
 
 import java.util.*;
 
@@ -37,37 +37,32 @@ public class UserServiceTest {
 
     @Test
     public void findByIdSuccessTest(){
-        // Set Up mock object and repo
         User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
         doReturn(Optional.of(mockUser)).when(repo).findById(mockUser.getId());
 
-        // Execute Call
         Optional<User> returnUser = userService.findById(mockUser.getId());
 
-        // Check Assertions
         Assertions.assertTrue(returnUser.isPresent(), "No User was found");
         Assertions.assertSame(returnUser.get(), mockUser, "Models don't match");
     }
 
     @Test
     public void findByIdFailTest(){
-        // Set up mock repo
         doReturn(Optional.empty()).when(repo).findById(1L);
-        // Execute Call
+
         Optional<User> returnUser = userService.findById(1L);
-        // Check assertions
+
         Assertions.assertFalse(returnUser.isPresent(), "User found it shouldn't be.");
     }
 
     @Test
     public void findAllUsersTest(){
-        // Setup mock objects and repo
         User mockUser1 = new User("Moe", "Aydin", "muhammeta7", "password", false);
         User mockUser2 = new User("Jack", "Black", "jack7", "password2", false);
         doReturn(Arrays.asList(mockUser1, mockUser2)).when(repo).findAll();
-        // Execute service call
+
         List<User> returnList = userService.findAll();
-        // Check Assertions
+
         Assertions.assertEquals(2, returnList.size(), "findAll should return 2 users");
     }
 
@@ -125,10 +120,8 @@ public class UserServiceTest {
         User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
         doReturn(mockUser).when(repo).save(any());
 
-        // Execute service call
         User returnUser = userService.create(mockUser);
 
-        // Check Assertions
         Assertions.assertNotNull(returnUser, "The User should not be null");
     }
 
@@ -141,6 +134,46 @@ public class UserServiceTest {
         doReturn(Optional.of(mockUser2)).when(repo).findByUserName(any());
 
         Assertions.assertThrows(IllegalArgumentException.class , () -> userService.create(mockUser2));
+    }
+
+    @Test
+    public void updateUsernameSuccessTest() throws IllegalArgumentException{
+        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        given(repo.findById(mockUser.getId())).willReturn(Optional.of(mockUser));
+        given(repo.save(mockUser)).willReturn(any());
+
+        Optional<User> returnUser = userService.updateUserName(mockUser.getId(), "newUserName");
+        String expected = "newUserName";
+        String actual = returnUser.get().getUserName();
+
+        Assertions.assertEquals(expected,actual);
+    }
+
+    @Test
+    public void updateUserNameFailsTest() {
+        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
+        User mockUser2 = new User("Jack", "Black", "jack", "password2", false);
+        doReturn(Optional.of(mockUser)).when(repo).findByUserName(any());
+        doReturn(Optional.of(mockUser)).when(repo).save(any());
+        doReturn(Optional.of(mockUser2)).when(repo).findByUserName(any());
+        doReturn(Optional.of(mockUser2)).when(repo).save(any());
+        Long id = mockUser2.getId();
+        String fail = "muhammeta7";
+
+        Assertions.assertThrows(IllegalArgumentException.class , () -> userService.updateUserName(id,fail));
+    }
+
+    @Test
+    public void updatePasswordTest(){
+        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        given(repo.findById(mockUser.getId())).willReturn(Optional.of(mockUser));
+        given(repo.save(mockUser)).willReturn(any());
+
+        Optional<User> returnUser = userService.updatePassword(mockUser.getId(), "somethingElse");
+        String expected = "somethingElse";
+        String actual = returnUser.get().getPassword();
+
+        Assertions.assertEquals(expected,actual);
     }
 
 

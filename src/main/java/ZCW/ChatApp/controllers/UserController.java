@@ -85,26 +85,41 @@ public class UserController {
         return new ResponseEntity<>(userService.updateConnection(id), HttpStatus.OK);
     }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable Long id){
-//        Optional<User> existingUser = userService.findById(id);
-//        return existingUser
-//                .map(u -> {
-//                    u.setFirstName(user.getFirstName());
-//                    u.setLastName(user.getLastName());
-//                    u.setPassword(user.getPassword());
-//                    u.setUserName(user.getUserName());
-//                    userService.save(u);
-//                    try{
-//                        return ResponseEntity
-//                                .ok()
-//                                .location(new URI("/" + u.getId()))
-//                                .body(u);
-//                    }catch(URISyntaxException e){
-//                        return ResponseEntity.status(HttpStatus.MULTI_STATUS.INTERNAL_SERVER_ERROR).build();
-//                    }
-//                }).orElse(ResponseEntity.notFound().build());
-//    }
+    @PutMapping("/update/username/{id}")
+    public ResponseEntity<?> updateUserName(@PathVariable Long id, @RequestParam String username){
+        Optional<User> updatedUser = userService.updateUserName(id, username);
+
+        return updatedUser
+                .map(u -> {
+                    try{
+                        return ResponseEntity
+                                .ok()
+                                .location(new URI("/update/username/" + u.getId()))
+                                .body(u);
+                    }catch(URISyntaxException e){
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                    }
+                }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/update/password/{id}")
+    public ResponseEntity<?> updatePassword(@PathVariable Long id, @RequestParam String password){
+        Optional<User> updatedUser = userService.updatePassword(id, password);
+
+        return updatedUser
+                .map(u -> {
+                    try{
+                        return ResponseEntity
+                                .ok()
+                                .location(new URI("/update/password/" + u.getId()))
+                                .body(u);
+                    }catch(URISyntaxException e){
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                    }
+                }).orElse(ResponseEntity.notFound().build());
+    }
+
+
 
 
     @PutMapping("/{id}/join")

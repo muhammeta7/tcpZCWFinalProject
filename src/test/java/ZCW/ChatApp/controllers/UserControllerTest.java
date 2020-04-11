@@ -44,14 +44,16 @@ public class UserControllerTest {
         User postUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
         User mockUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
         given(userService.create(postUser)).willReturn(mockUser);
-        mockMvc.perform(post("/users/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(postUser)))
+        mockMvc.perform(
+                     post("/users/create")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(asJsonString(postUser))
+                )
 
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-
                 .andExpect(header().string(HttpHeaders.LOCATION, "/create/1"))
+
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.firstName", is("Moe")))
                 .andExpect(jsonPath("$.lastName", is("Aydin")))
@@ -210,6 +212,8 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.connected", is(false)));
 
     }
+
+
 
     // TODO join channel
     // TODO leave channel

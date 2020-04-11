@@ -1,15 +1,12 @@
 package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Channel;
-import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
-import ZCW.ChatApp.repositories.ChannelRepository;
 import ZCW.ChatApp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserService {
@@ -91,8 +88,24 @@ public class UserService {
         return userRepo.save(original);
     }
 
-    // Update username, password for user
 
+    public Optional<User> updateUserName(Long id, String username){
+        Optional<User> original = userRepo.findById(id);
+        if(!userRepo.findByUserName(username).isPresent()){
+            original.get().setUserName(username);
+            userRepo.save(original.get());
+        } else {
+            throw new IllegalArgumentException("Username is taken. Try something else.");
+        }
+        return original;
+    }
+
+    public Optional<User> updatePassword(Long id, String password){
+        Optional<User> original = userRepo.findById(id);
+        original.get().setPassword(password);
+        userRepo.save(original.get());
+        return original;
+    }
 
     // DELETE
     //=============================================================================
