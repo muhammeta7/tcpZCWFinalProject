@@ -14,11 +14,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import java.util.*;
-
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest

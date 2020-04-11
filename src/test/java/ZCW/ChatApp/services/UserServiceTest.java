@@ -36,6 +36,32 @@ public class UserServiceTest {
     @MockBean
     private ChannelService channelService;
 
+    // POST
+    //===================================================================================================================================
+
+    @Test
+    public void createUserSuccessTest() throws IllegalArgumentException {
+        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        doReturn(mockUser).when(repo).save(any());
+
+        User returnUser = userService.create(mockUser);
+
+        Assertions.assertNotNull(returnUser, "The User should not be null");
+    }
+
+    @Test
+    public void createUserNameFailsTest() {
+        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
+        User mockUser2 = new User("Jack", "Black", "muhammeta7", "password2", false);
+        doReturn(Optional.of(mockUser)).when(repo).findByUserName(any());
+        doReturn(Optional.of(mockUser)).when(repo).save(any());
+        doReturn(Optional.of(mockUser2)).when(repo).findByUserName(any());
+
+        Assertions.assertThrows(IllegalArgumentException.class , () -> userService.create(mockUser2));
+    }
+
+    // GET
+    //===================================================================================================================================
     @Test
     public void findByIdSuccessTest(){
         User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
@@ -116,26 +142,8 @@ public class UserServiceTest {
         Assertions.assertNotNull(returnUser, "Saved user should not be null");
     }
 
-    @Test
-    public void createUserSuccessTest() throws IllegalArgumentException {
-        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
-        doReturn(mockUser).when(repo).save(any());
-
-        User returnUser = userService.create(mockUser);
-
-        Assertions.assertNotNull(returnUser, "The User should not be null");
-    }
-
-    @Test
-    public void createUserNameFailsTest() {
-        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
-        User mockUser2 = new User("Jack", "Black", "muhammeta7", "password2", false);
-        doReturn(Optional.of(mockUser)).when(repo).findByUserName(any());
-        doReturn(Optional.of(mockUser)).when(repo).save(any());
-        doReturn(Optional.of(mockUser2)).when(repo).findByUserName(any());
-
-        Assertions.assertThrows(IllegalArgumentException.class , () -> userService.create(mockUser2));
-    }
+    // PUT
+    //===================================================================================================================================
 
     @Test
     public void updateUsernameSuccessTest() throws IllegalArgumentException{
@@ -252,6 +260,9 @@ public class UserServiceTest {
         Assertions.assertEquals(expected, actual);
         Assertions.assertFalse(mockUser.getChannels().contains(mockChannel));
     }
+
+    // DELETE
+    //===================================================================================================================================
 
     @Test
     public void deleteUserTest(){
