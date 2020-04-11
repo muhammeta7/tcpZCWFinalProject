@@ -139,16 +139,16 @@ public class UserControllerTest {
     }
 
     @Test
-    @DisplayName("GET /users")
+    @DisplayName("GET /users/channel/{channelId}")
     public void findAllUsersTestByChannel() throws Exception {
-
+        Long channelId = 1L;
         User user1 = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
         User user2 = new User(2L,"Moe", "Aydin", "juju7", "password", false);
 
         List<User> userList = new ArrayList<>(Arrays.asList(user1,user2));
-        given(userService.findAll()).willReturn(userList);
+        given(userService.findUsersByChannel(channelId)).willReturn(userList);
 
-        mockMvc.perform(get("/users"))
+        mockMvc.perform(get("/users/channel/{channelId}", channelId))
 
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -169,6 +169,28 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[1].connected", is(false)))
                 .andExpect(jsonPath("$[1].password", is("password")));
     }
+
+    @Test
+    @DisplayName("PUT /users/1/connect - Success")
+    void connectTest() throws Exception {
+        Long givenId = 1L;
+        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        User mockUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+
+        given(userService.updateConnection(putUser.getId())).willReturn(mockUser);
+
+        mockMvc.perform(put("/users/{id}/connect", givenId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.IF_MATCH, 1)
+                .content(asJsonString(putUser)))
+
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+
+                .andExpect(jsonPath("$.connected", is(true)));
+    }
+
+
 
     static String asJsonString(final Object obj){
         try{
