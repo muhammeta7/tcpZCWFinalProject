@@ -1,6 +1,8 @@
 package ZCW.ChatApp.services;
 
+import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
+import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.repositories.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,12 @@ public class MessageService {
     private MessageRepository messageRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ChannelService channelService;
+
+    @Autowired
     public MessageService(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
     }
@@ -24,8 +32,14 @@ public class MessageService {
     // POST
     //=============================================================================
 
-    public Message create(Message message) {
+    public Message create(Message message, Long userId, Long channelId) {
         message.setTimestamp(new Date());
+        User user = userService.getUser(userId);
+        Channel channel = channelService.getChannel(channelId);
+        message.setSender(user);
+        message.setChannel(channel);
+        channelService.saveChannel(channel);
+        userService.save(user);
         return messageRepository.save(message);
     }
 
@@ -53,10 +67,8 @@ public class MessageService {
         return messageRepository.findMessagesBySender_Id(userId);
     }
 
-
     // UPDATE
     //=============================================================================
-
 
     // DELETE
     //=============================================================================

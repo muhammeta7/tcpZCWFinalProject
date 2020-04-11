@@ -1,7 +1,9 @@
 package ZCW.ChatApp.controllers;
 
+import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.services.ChannelService;
 import ZCW.ChatApp.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -18,8 +20,10 @@ import java.util.Optional;
 @RequestMapping("/messages")
 public class MessageController {
 
-
+    @Autowired
     private static MessageService messageService;
+    @Autowired
+    private static ChannelService channelService;
 
     @Autowired
     public MessageController(MessageService messageService) {
@@ -32,10 +36,23 @@ public class MessageController {
 
     // POST
     //=============================================================================
-    @PostMapping("/create")
-    public ResponseEntity<Message> sendMessage(@RequestBody Message message){
-        return new ResponseEntity<>(messageService.create(message), HttpStatus.OK);
+    @PostMapping("create/sender/{userId}/channel/{channelId}")
+    public ResponseEntity<Message> create(@RequestBody Message message, @PathVariable Long userId, @PathVariable Long channelId){
+        return new ResponseEntity<>(messageService.create(message, userId, channelId), HttpStatus.OK);
     }
+
+//    @PostMapping("/channel/{channelId}")
+//    public ResponseEntity<Message> addMessageToChannel(@RequestBody Message message, @PathVariable Long channelId){
+//        Channel channel= channelService.getChannel(channelId);
+//        message = messageService.postInChannel(message, channel.getId());
+//        try{
+//            return ResponseEntity
+//                    .created(new URI( "/channel/" + channelId))
+//                    .body(message);
+//        } catch (URISyntaxException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
 
     // GET
     //=============================================================================
@@ -49,11 +66,10 @@ public class MessageController {
         return new ResponseEntity<>((messageService.findAll()), HttpStatus.OK);
     }
 
-//    // TODO Fix this to pass in user
-//    @GetMapping("/sender/{user}")
-//    public ResponseEntity<List<Message>> findBySender(@PathVariable User user, Pageable pageable){
-//        return new ResponseEntity<>(messageService.findBySender(user, pageable), HttpStatus.OK);
-//    }
+    @GetMapping("/sender/{userId}")
+    public ResponseEntity<List<Message>> findBySender(@PathVariable Long userId){
+        return new ResponseEntity<>(messageService.findMessagesByUserId(userId), HttpStatus.OK);
+    }
 
     // PUT
     //=============================================================================
@@ -83,7 +99,7 @@ public class MessageController {
     }
 
     @DeleteMapping("/deleteAll")
-    public ResponseEntity<Boolean> deleteAllUsers() {
+    public ResponseEntity<Boolean> deleteAllMessages() {
         return new ResponseEntity<>(messageService.deleteAll(), HttpStatus.NOT_FOUND);
     }
 

@@ -1,6 +1,8 @@
 package ZCW.ChatApp.controllers;
 
+import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.services.MessageService;
 import ZCW.ChatApp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +37,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
     // GET
     //=============================================================================
@@ -103,7 +106,7 @@ public class UserController {
                 }).orElse(ResponseEntity.notFound().build());
     }
 
-    // TODO TEST
+
     @PutMapping("/{id}/join")
     public ResponseEntity<User> joinChannel(@PathVariable Long id, @RequestParam Long channelId){
         return new ResponseEntity<>(userService.joinChannelById(id,channelId), HttpStatus.OK);
@@ -113,6 +116,8 @@ public class UserController {
     public ResponseEntity<User> leaveChannel(@PathVariable Long id, @RequestParam Long channelId){
         return new ResponseEntity<>(userService.leaveChannelById(id,channelId), HttpStatus.OK);
     }
+
+
 
     // DELETE
     //=============================================================================

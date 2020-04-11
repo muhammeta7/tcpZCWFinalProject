@@ -20,9 +20,6 @@ public class UserService {
     private ChannelService channelService;
 
     @Autowired
-    private MessageService messageService;
-
-    @Autowired
     public UserService(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
@@ -33,29 +30,11 @@ public class UserService {
 
     // POST
     //=============================================================================
-    public User create(User user) throws Exception{
+    public User create(User user) throws IllegalArgumentException{
         if(!userRepo.findByUserName(user.getUserName()).isPresent()){
             return userRepo.save(user);
         }
-        throw new Exception("Username is taken. Try something else.");
-    }
-
-    // TODO send message to user
-//    public Message sendMessageToUser(Long senderId, Long recipientId){
-//        User sender = userRepo.getOne(senderId);
-//        User recipient = userRepo.getOne(recipientId);
-//        Message message = messageService.create(new Message());
-//        return null;
-//    }
-
-    // TODO Refactor Too much going on here
-    public Message sendMessageToChannel(Long messageId, Long channelId){
-        Message message = messageService.getMessage(messageId);
-        Channel channel = channelService.getChannel(channelId);
-        message.setChannel(channel);
-        channel.getMessages().add(message);
-        channelService.saveChannel(channel);
-        return messageService.save(message);
+        throw new IllegalArgumentException("Username is taken. Try something else.");
     }
 
     // GET
@@ -106,8 +85,11 @@ public class UserService {
         User original = userRepo.getOne(userId);
         Channel channel = channelService.getChannel(channelId);
         original.getChannels().remove(channel);
+        channel.getUsers().remove(original);
+        channelService.saveChannel(channel);
         return userRepo.save(original);
     }
+
 
     // DELETE
     //=============================================================================
