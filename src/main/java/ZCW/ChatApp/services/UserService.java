@@ -51,7 +51,6 @@ public class UserService {
 
     public Optional<User> findUserByUsername(String username){ return userRepo.findByUserName(username); }
 
-    // TODO TEST
     public List<User> findUsersByChannel(Long id){
         return userRepo.findAllByChannels(channelService.getChannel(id));
     }
@@ -124,8 +123,12 @@ public class UserService {
     }
 
     public Boolean deleteAll(){
-        userRepo.deleteAll();
-        return true;
+        if(findAll().isEmpty()){
+            return false;
+        } else {
+            userRepo.deleteAll();
+            return true;
+        }
     }
 
 }
