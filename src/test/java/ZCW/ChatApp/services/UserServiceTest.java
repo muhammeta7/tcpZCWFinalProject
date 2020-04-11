@@ -199,11 +199,17 @@ public class UserServiceTest {
     @Test
     public void deleteUserTest(){
         User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
-        doReturn(mockUser).when(repo).getOne(1L);
+        doReturn(Optional.of(mockUser)).when(repo).findById(1L);
 
         Boolean actual = userService.deleteUser(1L);
 
         Assertions.assertTrue(actual);
+    }
+
+    @Test
+    public void deleteUserThatExistsTest(){
+        Boolean actual = userService.deleteUser(1L);
+        Assertions.assertFalse(actual);
     }
 
     @Test

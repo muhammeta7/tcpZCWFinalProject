@@ -97,8 +97,11 @@ public class UserService {
     // DELETE
     //=============================================================================
     public Boolean deleteUser(Long id){
-        userRepo.deleteById(id);
-        return true;
+        if(findById(id).isPresent()){
+            userRepo.deleteById(id);
+            return true;
+        }
+        else return false;
     }
 
     public Boolean deleteAll(){

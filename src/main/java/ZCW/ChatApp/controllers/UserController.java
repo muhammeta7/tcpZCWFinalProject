@@ -117,13 +117,14 @@ public class UserController {
         return new ResponseEntity<>(userService.leaveChannelById(id,channelId), HttpStatus.OK);
     }
 
-
-
     // DELETE
     //=============================================================================
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Boolean> deleteUser(@PathVariable Long id) {
-        return new ResponseEntity<>(userService.deleteUser(id), HttpStatus.NOT_FOUND);
+        if(userService.deleteUser(id)){
+            return ResponseEntity.ok().build();
+        } else
+            return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/deleteAll")

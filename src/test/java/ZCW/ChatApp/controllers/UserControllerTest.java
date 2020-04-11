@@ -214,7 +214,6 @@ public class UserControllerTest {
     // TODO join channel
     // TODO leave channel
 
-
     @Test
     @DisplayName("DELETE /users/delete/1 - Success")
     void deleteUserTest() throws Exception {
@@ -234,10 +233,6 @@ public class UserControllerTest {
         mockMvc.perform(delete("/users/delete/{id}", givenId))
                 .andExpect(status().isNotFound());
     }
-
-
-
-
 
     static String asJsonString(final Object obj){
         try{
