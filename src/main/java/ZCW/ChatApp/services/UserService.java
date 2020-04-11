@@ -75,21 +75,9 @@ public class UserService {
 
     public Optional<User> findUserByUsername(String username){ return userRepo.findByUserName(username); }
 
-<<<<<<< HEAD
-    public Optional<User> findUserByFirstName(String firstName) {return userRepo.findByFirstName(firstName);}
-
-    public Optional<User> findUserByLastName(String lastName) { return userRepo.findByLastName(lastName);}
-
-
-    // TODO Get All User Messages user message Service ADD ENDPOINT TO CONTROLLER
-    // TODO GET ALL User Channels
-    // TODO GET ALL Messages By Channel
-=======
-    // TODO TEST
     public List<User> findUsersByChannel(Long id){
         return userRepo.findAllByChannels(channelService.getChannel(id));
     }
->>>>>>> dcc084e212a3b701ab23e11a6f8681b88789a89c
 
     // UPDATE
     //=============================================================================
