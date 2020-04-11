@@ -64,6 +64,8 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.password", is("password")));
     }
 
+    // TODO Test create user failing
+
     // GET
     //===================================================================================================================================
 
