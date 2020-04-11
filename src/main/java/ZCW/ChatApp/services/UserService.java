@@ -91,6 +91,8 @@ public class UserService {
         return userRepo.save(original);
     }
 
+    // Update username, password for user
+
 
     // DELETE
     //=============================================================================

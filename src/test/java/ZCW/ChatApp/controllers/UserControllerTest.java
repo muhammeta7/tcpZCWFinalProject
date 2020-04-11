@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -37,6 +36,7 @@ public class UserControllerTest {
 
     @MockBean
     private UserService userService;
+
 
     @Test
     @DisplayName("POST /user - Success")
@@ -189,6 +189,53 @@ public class UserControllerTest {
 
                 .andExpect(jsonPath("$.connected", is(true)));
     }
+
+    @Test
+    @DisplayName("PUT /users/1/disconnect - Success")
+    void disconnectTest() throws Exception {
+        Long givenId = 1L;
+        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        User mockUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+
+        given(userService.updateConnection(putUser.getId())).willReturn(mockUser);
+
+        mockMvc.perform(put("/users/{id}/disconnect", givenId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.IF_MATCH, 1)
+                .content(asJsonString(putUser)))
+
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+
+                .andExpect(jsonPath("$.connected", is(false)));
+
+    }
+
+    // TODO join channel
+    // TODO leave channel
+
+
+    @Test
+    @DisplayName("DELETE /users/delete/1 - Success")
+    void deleteUserTest() throws Exception {
+        Long givenId = 1L;
+        given(userService.deleteUser(givenId)).willReturn(true);
+
+        mockMvc.perform(delete("/users/delete/{id}", givenId))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("DELETE /users/delete/1 - Not Found")
+    void deleteUserNotFoundTest() throws Exception {
+        Long givenId = 1L;
+        given(userService.deleteUser(givenId)).willReturn(false);
+
+        mockMvc.perform(delete("/users/delete/{id}", givenId))
+                .andExpect(status().isNotFound());
+    }
+
+
 
 
 

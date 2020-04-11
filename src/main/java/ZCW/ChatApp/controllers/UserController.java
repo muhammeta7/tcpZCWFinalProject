@@ -85,26 +85,26 @@ public class UserController {
         return new ResponseEntity<>(userService.updateConnection(id), HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable Long id){
-        Optional<User> existingUser = userService.findById(id);
-        return existingUser
-                .map(u -> {
-                    u.setFirstName(user.getFirstName());
-                    u.setLastName(user.getLastName());
-                    u.setPassword(user.getPassword());
-                    u.setUserName(user.getUserName());
-                    userService.save(u);
-                    try{
-                        return ResponseEntity
-                                .ok()
-                                .location(new URI("/" + u.getId()))
-                                .body(u);
-                    }catch(URISyntaxException e){
-                        return ResponseEntity.status(HttpStatus.MULTI_STATUS.INTERNAL_SERVER_ERROR).build();
-                    }
-                }).orElse(ResponseEntity.notFound().build());
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable Long id){
+//        Optional<User> existingUser = userService.findById(id);
+//        return existingUser
+//                .map(u -> {
+//                    u.setFirstName(user.getFirstName());
+//                    u.setLastName(user.getLastName());
+//                    u.setPassword(user.getPassword());
+//                    u.setUserName(user.getUserName());
+//                    userService.save(u);
+//                    try{
+//                        return ResponseEntity
+//                                .ok()
+//                                .location(new URI("/" + u.getId()))
+//                                .body(u);
+//                    }catch(URISyntaxException e){
+//                        return ResponseEntity.status(HttpStatus.MULTI_STATUS.INTERNAL_SERVER_ERROR).build();
+//                    }
+//                }).orElse(ResponseEntity.notFound().build());
+//    }
 
 
     @PutMapping("/{id}/join")
