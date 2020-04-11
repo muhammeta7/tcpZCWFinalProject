@@ -107,12 +107,12 @@ public class UserController {
         Optional<User> updatedUser = userService.updatePassword(id, password);
 
         return updatedUser
-                .map(u -> {
+                .map(p -> {
                     try{
                         return ResponseEntity
                                 .ok()
-                                .location(new URI("/update/password/" + u.getId()))
-                                .body(u);
+                                .location(new URI("/update/password/" + p.getId()))
+                                .body(p);
                     }catch(URISyntaxException e){
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
                     }

@@ -231,6 +231,20 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("PUT /users/update/username/1 - Fail")
+    void updateUserNameFailTest() throws Exception {
+        Long givenId = 1L;
+        String newUsername = "anything";
+        given(userService.updateUserName(givenId, newUsername)).willReturn(Optional.empty());
+
+        mockMvc.perform(put("/users/update/username/{id}", givenId)
+                .header(HttpHeaders.IF_MATCH, 1)
+                .param("username", newUsername))
+
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     @DisplayName("PUT /users/update/password/1 - Success")
     void updatePasswordSuccessTest() throws Exception {
         Long givenId = 1L;
@@ -246,6 +260,20 @@ public class UserControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 
                 .andExpect(jsonPath("$.password", is("password")));
+    }
+
+    @Test
+    @DisplayName("PUT /users/update/password/1 - Fail")
+    void updateFailSuccessTest() throws Exception {
+        Long givenId = 1L;
+        String newPassword = "anything";
+        given(userService.updatePassword(givenId, newPassword)).willReturn(Optional.empty());
+
+        mockMvc.perform(put("/users/update/password/{id}", givenId)
+                .header(HttpHeaders.IF_MATCH, 1)
+                .param("password", newPassword))
+
+                .andExpect(status().isNotFound());
     }
 
     // TODO join channel
