@@ -38,7 +38,7 @@ public class UserController {
         }
     }
 
-    // GET
+    // GET TODO Write Failing tests findAll Users, FindByChannel
     //=============================================================================
     @GetMapping("/{id}")
     public ResponseEntity<?> findUserById(@PathVariable Long id){
@@ -72,8 +72,9 @@ public class UserController {
         return new ResponseEntity<>(userService.findUsersByChannel(channelId), HttpStatus.OK);
     }
 
-    // PUT
+    // PUT TODO change last 2 methods to optionals and write Fail tests
     //=============================================================================
+
     @PutMapping("/{id}/connect")
     public ResponseEntity<User> connect(@PathVariable Long id){
         return new ResponseEntity<>(userService.updateConnection(id), HttpStatus.OK);
