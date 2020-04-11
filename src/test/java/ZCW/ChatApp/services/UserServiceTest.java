@@ -19,7 +19,8 @@ import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
-
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -157,6 +158,7 @@ public class UserServiceTest {
         doReturn(Optional.of(mockUser)).when(repo).save(any());
         doReturn(Optional.of(mockUser2)).when(repo).findByUserName(any());
         doReturn(Optional.of(mockUser2)).when(repo).save(any());
+
         Long id = mockUser2.getId();
         String fail = "muhammeta7";
 
@@ -201,13 +203,13 @@ public class UserServiceTest {
     }
 
     @Test
-    public void joinChannelByIdTest(){
+    public void joinChannelByIdTest() throws Exception {
         User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
         Channel mockChannel = new Channel("Labs", new HashSet<>(), false);
-        doReturn(mockUser).when(repo).getOne(1L);
-        doReturn(mockChannel).when(channelService).getChannel(1L);
+        doReturn(Optional.of(mockUser)).when(repo).findById(any());
+        doReturn(Optional.of(mockChannel)).when(channelService).findById(any());
 
-        userService.joinChannelById(1L, 1L);
+        userService.joinChannelById(mockUser.getId(), mockChannel.getId());
         Integer expected = 1;
         Integer actual = mockUser.getChannels().size();
 
@@ -215,34 +217,58 @@ public class UserServiceTest {
     }
 
     @Test
-    public void leaveChannelByIdTest(){
+    public void joinChannelByIdFailTest() {
+        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        Channel mockChannel = new Channel("Labs", new HashSet<>(), true);
+        doReturn(Optional.of(mockUser)).when(repo).findById(any());
+        doReturn(Optional.of(mockChannel)).when(channelService).findById(any());
+
+        Long channelId = mockChannel.getId();
+        Long userId = mockUser.getId();
+
+        Assertions.assertThrows(Exception.class, () -> userService.joinChannelById(userId, channelId));
+    }
+
+    @Test
+    public void leaveChannelByIdTest() throws Exception {
         User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
         Channel mockChannel = new Channel("Labs", new HashSet<>(), false);
-        doReturn(mockUser).when(repo).getOne(1L);
-        doReturn(mockChannel).when(channelService).getChannel(1L);
+        Channel mockChannel1 = new Channel("Labs", new HashSet<>(), false);
 
-        userService.leaveChannelById(1L, 1L);
-        Integer expected = 0;
+        doReturn(Optional.of(mockUser)).when(repo).findById(any());
+        doReturn(Optional.of(mockChannel1)).when(channelService).findById(any());
+        doReturn(Optional.of(mockChannel)).when(channelService).findById(any());
+
+        userService.joinChannelById(mockUser.getId(), mockChannel.getId());
+        userService.joinChannelById(mockUser.getId(), mockChannel1.getId());
+
+        mockUser.getChannels().add(mockChannel);
+        mockUser.getChannels().add(mockChannel1);
+
+        userService.leaveChannelById(mockUser.getId(), mockChannel.getId());
+        Integer expected = 1;
         Integer actual = mockUser.getChannels().size();
 
         Assertions.assertEquals(expected, actual);
-        Assertions.assertFalse(mockChannel.getUsers().contains(mockUser));
+        Assertions.assertFalse(mockUser.getChannels().contains(mockChannel));
     }
 
     @Test
     public void deleteUserTest(){
         User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
-        doReturn(Optional.of(mockUser)).when(repo).findById(1L);
+        doReturn(Optional.of(mockUser)).when(repo).findById(any());
 
-        Boolean actual = userService.deleteUser(1L);
+        Boolean actual = userService.deleteUser(mockUser.getId());
 
         Assertions.assertTrue(actual);
+        verify(repo, times(1)).deleteById(mockUser.getId());
     }
 
     @Test
     public void deleteUserThatExistsTest(){
         Boolean actual = userService.deleteUser(1L);
         Assertions.assertFalse(actual);
+        verify(repo, times(0)).deleteById(1l);
     }
 
     @Test

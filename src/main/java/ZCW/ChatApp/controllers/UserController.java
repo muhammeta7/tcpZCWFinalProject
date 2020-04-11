@@ -38,7 +38,6 @@ public class UserController {
         }
     }
 
-
     // GET
     //=============================================================================
     @GetMapping("/{id}")
@@ -107,29 +106,50 @@ public class UserController {
         Optional<User> updatedUser = userService.updatePassword(id, password);
 
         return updatedUser
-                .map(p -> {
+                .map(u -> {
                     try{
                         return ResponseEntity
                                 .ok()
-                                .location(new URI("/update/password/" + p.getId()))
-                                .body(p);
+                                .location(new URI("/update/password/" + u.getId()))
+                                .body(u);
                     }catch(URISyntaxException e){
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
                     }
                 }).orElse(ResponseEntity.notFound().build());
     }
 
-
-
-
     @PutMapping("/{id}/join")
-    public ResponseEntity<User> joinChannel(@PathVariable Long id, @RequestParam Long channelId){
-        return new ResponseEntity<>(userService.joinChannelById(id,channelId), HttpStatus.OK);
+    public ResponseEntity<?> joinChannel(@PathVariable Long id, @RequestParam Long channelId) throws Exception {
+        Optional<User> updatedUser = userService.joinChannelById(id, channelId);
+        return updatedUser
+                .map(u -> {
+                    try{
+                        return ResponseEntity
+                                .ok()
+                                .location(new URI(u.getId() + "/join"))
+                                .body(u);
+                    }catch(URISyntaxException e){
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                    }
+                }).orElse(ResponseEntity.notFound().build());
+
     }
 
     @PutMapping("/{id}/leave")
-    public ResponseEntity<User> leaveChannel(@PathVariable Long id, @RequestParam Long channelId){
-        return new ResponseEntity<>(userService.leaveChannelById(id,channelId), HttpStatus.OK);
+    public ResponseEntity<?> leaveChannel(@PathVariable Long id, @RequestParam Long channelId){
+        Optional<User> updatedUser = userService.leaveChannelById(id, channelId);
+        return updatedUser
+                .map(u -> {
+                    try{
+                        return ResponseEntity
+                                .ok()
+                                .location(new URI(u.getId() + "/leave"))
+                                .body(u);
+                    }catch(URISyntaxException e){
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                    }
+                }).orElse(ResponseEntity.notFound().build());
+        //return new ResponseEntity<>(userService.leaveChannelById(id,channelId), HttpStatus.OK);
     }
 
     // DELETE
