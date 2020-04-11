@@ -23,8 +23,10 @@ import java.util.List;
 import java.util.Optional;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.Mockito.times;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -37,7 +39,8 @@ public class UserControllerTest {
     @MockBean
     private UserService userService;
 
-
+    // POST
+    //=============================================================================
     @Test
     @DisplayName("POST /user - Success")
     public void createUserTest() throws Exception {
@@ -62,6 +65,8 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.password", is("password")));
     }
 
+    // GET
+    //=============================================================================
     @Test
     @DisplayName("GET /user/1 - Success")
     public void findUserByIDFoundTest() throws Exception {
@@ -276,9 +281,6 @@ public class UserControllerTest {
     }
 
 
-
-
-
     // TODO join channel
     // TODO leave channel
 
@@ -300,6 +302,31 @@ public class UserControllerTest {
 
         mockMvc.perform(delete("/users/delete/{id}", givenId))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("DELETE /users/deleteAll Success")
+    void deleteAllTest() throws Exception {
+        User user1 = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        User user2 = new User(2L,"Moe", "Aydin", "juju7", "password", false);
+        given(userService.create(user1)).willReturn(user1);
+        given(userService.create(user2)).willReturn(user2);
+        given(userService.deleteAll()).willReturn(true);
+
+        mockMvc.perform(delete("/users/deleteAll"))
+                .andExpect(status().isOk());
+
+        verify(userService, times(1)).deleteAll();
+    }
+
+    @Test
+    @DisplayName("DELETE /users/deleteAll False")
+    void deleteAllFalseTest() throws Exception {
+        given(userService.deleteAll()).willReturn(false);
+
+        mockMvc.perform(delete("/users/deleteAll"))
+                .andExpect(status().isNotFound());
+
     }
 
     static String asJsonString(final Object obj){

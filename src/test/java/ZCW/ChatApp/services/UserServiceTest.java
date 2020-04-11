@@ -272,7 +272,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void deleteAllTest(){
+    public void deleteAllTrueTest(){
         User mockUser1 = new User("Moe", "Aydin", "muhammeta7", "password", false);
         User mockUser2 = new User("Jack", "Black", "jack7", "password2", false);
         doReturn(Arrays.asList(mockUser1, mockUser2)).when(repo).findAll();
@@ -283,6 +283,15 @@ public class UserServiceTest {
 
         Assertions.assertTrue(actual);
         Assertions.assertEquals(2, expected);
+        verify(repo, times(1)).deleteAll();
+    }
+
+    @Test
+    public void deleteAllFalseTest(){
+        Boolean actual = userService.deleteAll();
+
+        Assertions.assertFalse(actual);
+        verify(repo, times(0)).deleteAll();
     }
 
 }

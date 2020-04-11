@@ -149,22 +149,18 @@ public class UserController {
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
                     }
                 }).orElse(ResponseEntity.notFound().build());
-        //return new ResponseEntity<>(userService.leaveChannelById(id,channelId), HttpStatus.OK);
     }
 
     // DELETE
     //=============================================================================
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Boolean> deleteUser(@PathVariable Long id) {
-        if(userService.deleteUser(id)){
-            return ResponseEntity.ok().build();
-        } else
-            return ResponseEntity.notFound().build();
+        return (userService.deleteUser(id)) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/deleteAll")
-    public ResponseEntity<Boolean> deleteAllUsers() {
-        return new ResponseEntity<>(userService.deleteAll(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> deleteAllUsers() {
+        return (!userService.deleteAll()) ? ResponseEntity.notFound().build() : ResponseEntity.ok().build();
     }
 
 }
