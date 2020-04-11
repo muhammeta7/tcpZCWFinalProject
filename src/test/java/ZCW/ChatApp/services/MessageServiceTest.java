@@ -77,16 +77,18 @@ public class MessageServiceTest {
         Assertions.assertEquals(2, returnList.size(), "findAll should return 2 messages");
     }
 
-//    @Test
-//    @DisplayName("Test create Message")
-//    public void createMessageTest() {
-//        Message mockMessage = new Message(new User(), "testing time", new Date(), new Channel());
-//        doReturn(mockMessage).when(repo).save(any());
-//
-//        Message returnMessage = service.create(mockMessage);
-//
-//        Assertions.assertNotNull(returnMessage, "The Message should not be null");
-//    }
+    @Test
+    @DisplayName("Test create Message")
+    public void createMessageTest() {
+        User user = new User();
+        Channel channel = new Channel();
+        Message mockMessage = new Message(user, "testing time", new Date(), channel);
+        doReturn(mockMessage).when(repo).save(any());
+
+        Message returnMessage = service.create(mockMessage, 1L, 1L);
+
+        Assertions.assertNotNull(returnMessage, "The Message should not be null");
+    }
 
     @Test
     public void getMessageTest(){
@@ -107,6 +109,20 @@ public class MessageServiceTest {
         Message returnMessage = service.save(mockMessage);
 
         Assertions.assertNotNull(returnMessage, "The Message should not be null");
+    }
+
+    @Test
+    @DisplayName("Test find messages by user id")
+    public void findMessagesByUserIdTest(){
+        User user = new User();
+        user.setId(1L);
+        Message mockMessage = new Message(user, "testing", new Date(), new Channel());
+        Message mockMessage2 = new Message(user, "testing 2", new Date(), new Channel());
+        doReturn(Arrays.asList(mockMessage, mockMessage2)).when(repo).findMessagesBySender_Id(user.getId());
+
+        List<Message> expected = service.findMessagesByUserId(user.getId());
+
+        Assertions.assertEquals(expected.size(), 2);
     }
 
     @Test
