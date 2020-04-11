@@ -1,10 +1,7 @@
 package ZCW.ChatApp.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class User {
@@ -27,6 +24,17 @@ public class User {
     public User (){};
 
     public User(String firstName, String lastName, String userName, String password, Boolean isConnected) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.password = password;
+        this.connected = isConnected;
+        this.messages = new ArrayList<>();
+        this.channels = new HashSet<>();
+    }
+
+    public User(Long id, String firstName, String lastName, String userName, String password, Boolean isConnected) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
@@ -99,4 +107,18 @@ public class User {
     public void setChannels(HashSet<Channel> channels) {
         this.channels = channels;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) &&
+                Objects.equals(firstName, user.firstName) &&
+                Objects.equals(lastName, user.lastName) &&
+                Objects.equals(userName, user.userName) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(connected, user.connected);
+    }
+
 }
