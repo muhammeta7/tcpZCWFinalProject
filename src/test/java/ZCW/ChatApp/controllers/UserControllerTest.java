@@ -44,14 +44,16 @@ public class UserControllerTest {
         User postUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
         User mockUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
         given(userService.create(postUser)).willReturn(mockUser);
-        mockMvc.perform(post("/users/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(postUser)))
+        mockMvc.perform(
+                     post("/users/create")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(asJsonString(postUser))
+                )
 
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-
                 .andExpect(header().string(HttpHeaders.LOCATION, "/create/1"))
+
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.firstName", is("Moe")))
                 .andExpect(jsonPath("$.lastName", is("Aydin")))
@@ -208,7 +210,70 @@ public class UserControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 
                 .andExpect(jsonPath("$.connected", is(false)));
+    }
 
+    @Test
+    @DisplayName("PUT /users/update/username/1 - Success")
+    void updateUserNameSuccessTest() throws Exception {
+        Long givenId = 1L;
+        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        String newUsername = "anything";
+        given(userService.updateUserName(putUser.getId(), newUsername)).willReturn(Optional.of(putUser));
+
+        mockMvc.perform(put("/users/update/username/{id}", givenId)
+                .header(HttpHeaders.IF_MATCH, 1)
+                .param("username", newUsername))
+
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+
+                .andExpect(jsonPath("$.userName", is("muhammeta7")));
+    }
+
+    @Test
+    @DisplayName("PUT /users/update/username/1 - Fail")
+    void updateUserNameFailTest() throws Exception {
+        Long givenId = 1L;
+        String newUsername = "anything";
+        given(userService.updateUserName(givenId, newUsername)).willReturn(Optional.empty());
+
+        mockMvc.perform(put("/users/update/username/{id}", givenId)
+                .header(HttpHeaders.IF_MATCH, 1)
+                .param("username", newUsername))
+
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("PUT /users/update/password/1 - Success")
+    void updatePasswordSuccessTest() throws Exception {
+        Long givenId = 1L;
+        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        String newPassword = "anything";
+        given(userService.updatePassword(putUser.getId(), newPassword)).willReturn(Optional.of(putUser));
+
+        mockMvc.perform(put("/users/update/password/{id}", givenId)
+                .header(HttpHeaders.IF_MATCH, 1)
+                .param("password", newPassword))
+
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+
+                .andExpect(jsonPath("$.password", is("password")));
+    }
+
+    @Test
+    @DisplayName("PUT /users/update/password/1 - Fail")
+    void updateFailSuccessTest() throws Exception {
+        Long givenId = 1L;
+        String newPassword = "anything";
+        given(userService.updatePassword(givenId, newPassword)).willReturn(Optional.empty());
+
+        mockMvc.perform(put("/users/update/password/{id}", givenId)
+                .header(HttpHeaders.IF_MATCH, 1)
+                .param("password", newPassword))
+
+                .andExpect(status().isNotFound());
     }
 
     // TODO join channel
