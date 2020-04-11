@@ -3,6 +3,7 @@ import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.services.ChannelService;
+import ZCW.ChatApp.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,9 @@ import java.util.stream.Collectors;
 public class ChannelController {
 
     private ChannelService channelService;
+
+    @Autowired
+    private MessageService messageService;
 
     @Autowired
     public ChannelController(ChannelService channelService){

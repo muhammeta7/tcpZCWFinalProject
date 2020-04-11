@@ -1,15 +1,12 @@
 package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Channel;
-import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
-import ZCW.ChatApp.repositories.ChannelRepository;
 import ZCW.ChatApp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserService {
@@ -18,9 +15,6 @@ public class UserService {
 
     @Autowired
     private ChannelService channelService;
-
-    @Autowired
-    private MessageService messageService;
 
     @Autowired
     public UserService(UserRepository userRepo) {
@@ -33,29 +27,11 @@ public class UserService {
 
     // POST
     //=============================================================================
-    public User create(User user) throws Exception{
+    public User create(User user) throws IllegalArgumentException{
         if(!userRepo.findByUserName(user.getUserName()).isPresent()){
             return userRepo.save(user);
         }
-        throw new Exception("Username is taken. Try something else.");
-    }
-
-    // TODO send message to user
-//    public Message sendMessageToUser(Long senderId, Long recipientId){
-//        User sender = userRepo.getOne(senderId);
-//        User recipient = userRepo.getOne(recipientId);
-//        Message message = messageService.create(new Message());
-//        return null;
-//    }
-
-    // TODO Refactor Too much going on here
-    public Message sendMessageToChannel(Long messageId, Long channelId){
-        Message message = messageService.getMessage(messageId);
-        Channel channel = channelService.getChannel(channelId);
-        message.setChannel(channel);
-        channel.getMessages().add(message);
-        channelService.saveChannel(channel);
-        return messageService.save(message);
+        throw new IllegalArgumentException("Username is taken. Try something else.");
     }
 
     // GET
@@ -92,29 +68,59 @@ public class UserService {
         return userRepo.save(original);
     }
 
-    public User joinChannelById(Long userId, Long channelId){
-        User original = userRepo.getOne(userId);
-        Channel channel = channelService.getChannel(channelId);
-        if(!channel.getPrivate()){
-            original.getChannels().add(channel);
-            channel.getUsers().add(original);
-            channelService.saveChannel(channel);
+    public Optional<User> joinChannelById(Long userId, Long channelId) throws Exception {
+        Optional<User> original = userRepo.findById(userId);
+        Optional<Channel> channel = channelService.findById(channelId);
+        if(!channel.get().getPrivate()){
+            original.get().getChannels().add(channel.get());
+            channel.get().getUsers().add(original.get());
+            channelService.saveChannel(channel.get());
+            userRepo.save(original.get());
+        } else {
+            throw new Exception("Sorry this channel is private or doesn't exist");
         }
-        return userRepo.save(original);
+        return original;
     }
 
-    public User leaveChannelById(Long userId, Long channelId){
-        User original = userRepo.getOne(userId);
-        Channel channel = channelService.getChannel(channelId);
-        original.getChannels().remove(channel);
-        return userRepo.save(original);
+    public Optional<User> leaveChannelById(Long userId, Long channelId){
+        Optional<User> original = userRepo.findById(userId);
+        Optional<Channel> channel = channelService.findById(channelId);
+        if(original.get().getChannels().contains(channel.get())){
+            original.get().getChannels().remove(channel.get());
+            channel.get().getUsers().remove(original.get());
+            channelService.saveChannel(channel.get());
+            userRepo.save(original.get());
+        }
+        return original;
+    }
+
+
+    public Optional<User> updateUserName(Long id, String username){
+        Optional<User> original = userRepo.findById(id);
+        if(!userRepo.findByUserName(username).isPresent()){
+            original.get().setUserName(username);
+            userRepo.save(original.get());
+        } else {
+            throw new IllegalArgumentException("Username is taken. Try something else.");
+        }
+        return original;
+    }
+
+    public Optional<User> updatePassword(Long id, String password){
+        Optional<User> original = userRepo.findById(id);
+        original.get().setPassword(password);
+        userRepo.save(original.get());
+        return original;
     }
 
     // DELETE
     //=============================================================================
     public Boolean deleteUser(Long id){
-        userRepo.deleteById(id);
-        return true;
+        if(findById(id).isPresent()){
+            userRepo.deleteById(id);
+            return true;
+        }
+        else return false;
     }
 
     public Boolean deleteAll(){
