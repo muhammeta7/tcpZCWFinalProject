@@ -46,11 +46,17 @@ public class ChannelService {
     // DELETE
     //=============================================================================
     public Boolean delete(Long id){
-        channelRepository.deleteById(id);
-        return true;
+        if (findById(id).isPresent()){
+            channelRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     public Boolean deleteAll(){
+        if (findAll().isEmpty()){
+            return false;
+        }
         channelRepository.deleteAll();
         return true;
     }
