@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/channels")
+@CrossOrigin
 public class ChannelController {
 
     private ChannelService channelService;
