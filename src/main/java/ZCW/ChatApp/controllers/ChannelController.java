@@ -10,11 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/channels")
@@ -22,9 +20,6 @@ import java.util.stream.Collectors;
 public class ChannelController {
 
     private ChannelService channelService;
-
-    @Autowired
-    private MessageService messageService;
 
     @Autowired
     public ChannelController(ChannelService channelService){
@@ -35,7 +30,7 @@ public class ChannelController {
     //=============================================================================
     @PostMapping("/create")
     public ResponseEntity<Channel> createChannel(@RequestBody Channel channel){
-        return new ResponseEntity<>(channelService.create(channel), HttpStatus.OK);
+        return new ResponseEntity<>(channelService.create(channel), HttpStatus.CREATED);
     }
 
     // GET
@@ -86,12 +81,12 @@ public class ChannelController {
     //=============================================================================
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Boolean> deleteChannel(@PathVariable Long id){
-        return new ResponseEntity<>(channelService.delete(id), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(channelService.delete(id), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/deleteAll")
     public ResponseEntity<Boolean> deleteAllChannel(){
-        return new ResponseEntity<>(channelService.deleteAll(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(channelService.deleteAll(), HttpStatus.ACCEPTED);
     }
   
 }

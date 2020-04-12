@@ -1,8 +1,6 @@
 package ZCW.ChatApp.controllers;
 
-import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
-import ZCW.ChatApp.services.MessageService;
 import ZCW.ChatApp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
