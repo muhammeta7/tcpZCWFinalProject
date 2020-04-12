@@ -2,7 +2,6 @@ package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.User;
-import ZCW.ChatApp.repositories.ChannelRepository;
 import ZCW.ChatApp.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -14,12 +13,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import static org.mockito.BDDMockito.given;
 
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
-
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -35,39 +36,60 @@ public class UserServiceTest {
     @MockBean
     private ChannelService channelService;
 
+    // POST
+    //===================================================================================================================================
+
+    @Test
+    public void createUserSuccessTest() throws IllegalArgumentException {
+        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        doReturn(mockUser).when(repo).save(any());
+
+        User returnUser = userService.create(mockUser);
+
+        Assertions.assertNotNull(returnUser, "The User should not be null");
+    }
+
+    @Test
+    public void createUserNameFailsTest() {
+        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
+        User mockUser2 = new User("Jack", "Black", "muhammeta7", "password2", false);
+        doReturn(Optional.of(mockUser)).when(repo).findByUserName(any());
+        doReturn(Optional.of(mockUser)).when(repo).save(any());
+        doReturn(Optional.of(mockUser2)).when(repo).findByUserName(any());
+
+        Assertions.assertThrows(IllegalArgumentException.class , () -> userService.create(mockUser2));
+    }
+
+    // GET
+    //===================================================================================================================================
     @Test
     public void findByIdSuccessTest(){
-        // Set Up mock object and repo
         User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
         doReturn(Optional.of(mockUser)).when(repo).findById(mockUser.getId());
 
-        // Execute Call
         Optional<User> returnUser = userService.findById(mockUser.getId());
 
-        // Check Assertions
         Assertions.assertTrue(returnUser.isPresent(), "No User was found");
         Assertions.assertSame(returnUser.get(), mockUser, "Models don't match");
     }
 
     @Test
     public void findByIdFailTest(){
-        // Set up mock repo
         doReturn(Optional.empty()).when(repo).findById(1L);
-        // Execute Call
+
         Optional<User> returnUser = userService.findById(1L);
-        // Check assertions
+
         Assertions.assertFalse(returnUser.isPresent(), "User found it shouldn't be.");
     }
 
     @Test
     public void findAllUsersTest(){
-        // Setup mock objects and repo
         User mockUser1 = new User("Moe", "Aydin", "muhammeta7", "password", false);
         User mockUser2 = new User("Jack", "Black", "jack7", "password2", false);
         doReturn(Arrays.asList(mockUser1, mockUser2)).when(repo).findAll();
-        // Execute service call
+
         List<User> returnList = userService.findAll();
-        // Check Assertions
+
         Assertions.assertEquals(2, returnList.size(), "findAll should return 2 users");
     }
 
@@ -120,27 +142,48 @@ public class UserServiceTest {
         Assertions.assertNotNull(returnUser, "Saved user should not be null");
     }
 
+    // PUT
+    //===================================================================================================================================
+
     @Test
-    public void createUserSuccessTest() throws IllegalArgumentException {
+    public void updateUsernameSuccessTest() throws IllegalArgumentException{
         User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
-        doReturn(mockUser).when(repo).save(any());
+        given(repo.findById(mockUser.getId())).willReturn(Optional.of(mockUser));
+        given(repo.save(mockUser)).willReturn(any());
 
-        // Execute service call
-        User returnUser = userService.create(mockUser);
+        Optional<User> returnUser = userService.updateUserName(mockUser.getId(), "newUserName");
+        String expected = "newUserName";
+        String actual = returnUser.get().getUserName();
 
-        // Check Assertions
-        Assertions.assertNotNull(returnUser, "The User should not be null");
+        Assertions.assertEquals(expected,actual);
     }
 
     @Test
-    public void createUserNameFailsTest() {
+    public void updateUserNameFailsTest() {
         User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
-        User mockUser2 = new User("Jack", "Black", "muhammeta7", "password2", false);
+        User mockUser2 = new User("Jack", "Black", "jack", "password2", false);
         doReturn(Optional.of(mockUser)).when(repo).findByUserName(any());
         doReturn(Optional.of(mockUser)).when(repo).save(any());
         doReturn(Optional.of(mockUser2)).when(repo).findByUserName(any());
+        doReturn(Optional.of(mockUser2)).when(repo).save(any());
 
-        Assertions.assertThrows(IllegalArgumentException.class , () -> userService.create(mockUser2));
+        Long id = mockUser2.getId();
+        String fail = "muhammeta7";
+
+        Assertions.assertThrows(IllegalArgumentException.class , () -> userService.updateUserName(id,fail));
+    }
+
+    @Test
+    public void updatePasswordTest(){
+        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        given(repo.findById(mockUser.getId())).willReturn(Optional.of(mockUser));
+        given(repo.save(mockUser)).willReturn(any());
+
+        Optional<User> returnUser = userService.updatePassword(mockUser.getId(), "somethingElse");
+        String expected = "somethingElse";
+        String actual = returnUser.get().getPassword();
+
+        Assertions.assertEquals(expected,actual);
     }
 
 
@@ -168,13 +211,13 @@ public class UserServiceTest {
     }
 
     @Test
-    public void joinChannelByIdTest(){
+    public void joinChannelByIdTest() throws Exception {
         User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
         Channel mockChannel = new Channel("Labs", new HashSet<>(), false);
-        doReturn(mockUser).when(repo).getOne(1L);
-        doReturn(mockChannel).when(channelService).getChannel(1L);
+        doReturn(Optional.of(mockUser)).when(repo).findById(any());
+        doReturn(Optional.of(mockChannel)).when(channelService).findById(any());
 
-        userService.joinChannelById(1L, 1L);
+        userService.joinChannelById(mockUser.getId(), mockChannel.getId());
         Integer expected = 1;
         Integer actual = mockUser.getChannels().size();
 
@@ -182,32 +225,65 @@ public class UserServiceTest {
     }
 
     @Test
-    public void leaveChannelByIdTest(){
+    public void joinChannelByIdFailTest() {
+        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        Channel mockChannel = new Channel("Labs", new HashSet<>(), true);
+        doReturn(Optional.of(mockUser)).when(repo).findById(any());
+        doReturn(Optional.of(mockChannel)).when(channelService).findById(any());
+
+        Long channelId = mockChannel.getId();
+        Long userId = mockUser.getId();
+
+        Assertions.assertThrows(Exception.class, () -> userService.joinChannelById(userId, channelId));
+    }
+
+    @Test
+    public void leaveChannelByIdTest() throws Exception {
         User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
         Channel mockChannel = new Channel("Labs", new HashSet<>(), false);
-        doReturn(mockUser).when(repo).getOne(1L);
-        doReturn(mockChannel).when(channelService).getChannel(1L);
+        Channel mockChannel1 = new Channel("Labs", new HashSet<>(), false);
 
-        userService.leaveChannelById(1L, 1L);
-        Integer expected = 0;
+        doReturn(Optional.of(mockUser)).when(repo).findById(any());
+        doReturn(Optional.of(mockChannel1)).when(channelService).findById(any());
+        doReturn(Optional.of(mockChannel)).when(channelService).findById(any());
+
+        userService.joinChannelById(mockUser.getId(), mockChannel.getId());
+        userService.joinChannelById(mockUser.getId(), mockChannel1.getId());
+
+        mockUser.getChannels().add(mockChannel);
+        mockUser.getChannels().add(mockChannel1);
+
+        userService.leaveChannelById(mockUser.getId(), mockChannel.getId());
+        Integer expected = 1;
         Integer actual = mockUser.getChannels().size();
 
         Assertions.assertEquals(expected, actual);
-        Assertions.assertFalse(mockChannel.getUsers().contains(mockUser));
+        Assertions.assertFalse(mockUser.getChannels().contains(mockChannel));
     }
+
+    // DELETE
+    //===================================================================================================================================
 
     @Test
     public void deleteUserTest(){
         User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
-        doReturn(mockUser).when(repo).getOne(1L);
+        doReturn(Optional.of(mockUser)).when(repo).findById(any());
 
-        Boolean actual = userService.deleteUser(1L);
+        Boolean actual = userService.deleteUser(mockUser.getId());
 
         Assertions.assertTrue(actual);
+        verify(repo, times(1)).deleteById(mockUser.getId());
     }
 
     @Test
-    public void deleteAllTest(){
+    public void deleteUserThatExistsTest(){
+        Boolean actual = userService.deleteUser(1L);
+        Assertions.assertFalse(actual);
+        verify(repo, times(0)).deleteById(1l);
+    }
+
+    @Test
+    public void deleteAllTrueTest(){
         User mockUser1 = new User("Moe", "Aydin", "muhammeta7", "password", false);
         User mockUser2 = new User("Jack", "Black", "jack7", "password2", false);
         doReturn(Arrays.asList(mockUser1, mockUser2)).when(repo).findAll();
@@ -218,6 +294,15 @@ public class UserServiceTest {
 
         Assertions.assertTrue(actual);
         Assertions.assertEquals(2, expected);
+        verify(repo, times(1)).deleteAll();
+    }
+
+    @Test
+    public void deleteAllFalseTest(){
+        Boolean actual = userService.deleteAll();
+
+        Assertions.assertFalse(actual);
+        verify(repo, times(0)).deleteAll();
     }
 
 }

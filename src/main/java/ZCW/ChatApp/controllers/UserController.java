@@ -27,7 +27,7 @@ public class UserController {
     // POST
     //=============================================================================
     @PostMapping("/create")
-    public ResponseEntity<User> createUser(@RequestBody User user) throws Exception {
+    public ResponseEntity<User> createUser(@RequestBody User user) {
         User newUser = userService.create(user);
         try{
             return ResponseEntity
@@ -38,8 +38,7 @@ public class UserController {
         }
     }
 
-
-    // GET
+    // GET TODO Write Failing tests findAll Users, FindByChannel
     //=============================================================================
     @GetMapping("/{id}")
     public ResponseEntity<?> findUserById(@PathVariable Long id){
@@ -73,8 +72,9 @@ public class UserController {
         return new ResponseEntity<>(userService.findUsersByChannel(channelId), HttpStatus.OK);
     }
 
-    // PUT
+    // PUT TODO change last 2 methods to optionals and write Fail tests
     //=============================================================================
+
     @PutMapping("/{id}/connect")
     public ResponseEntity<User> connect(@PathVariable Long id){
         return new ResponseEntity<>(userService.updateConnection(id), HttpStatus.OK);
@@ -85,50 +85,83 @@ public class UserController {
         return new ResponseEntity<>(userService.updateConnection(id), HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable Long id){
-        Optional<User> existingUser = userService.findById(id);
-        return existingUser
+    @PutMapping("/update/username/{id}")
+    public ResponseEntity<?> updateUserName(@PathVariable Long id, @RequestParam String username){
+        Optional<User> updatedUser = userService.updateUserName(id, username);
+
+        return updatedUser
                 .map(u -> {
-                    u.setFirstName(user.getFirstName());
-                    u.setLastName(user.getLastName());
-                    u.setPassword(user.getPassword());
-                    u.setUserName(user.getUserName());
-                    userService.save(u);
                     try{
                         return ResponseEntity
                                 .ok()
-                                .location(new URI("/" + u.getId()))
+                                .location(new URI("/update/username/" + u.getId()))
                                 .body(u);
                     }catch(URISyntaxException e){
-                        return ResponseEntity.status(HttpStatus.MULTI_STATUS.INTERNAL_SERVER_ERROR).build();
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
                     }
                 }).orElse(ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/update/password/{id}")
+    public ResponseEntity<?> updatePassword(@PathVariable Long id, @RequestParam String password){
+        Optional<User> updatedUser = userService.updatePassword(id, password);
+
+        return updatedUser
+                .map(u -> {
+                    try{
+                        return ResponseEntity
+                                .ok()
+                                .location(new URI("/update/password/" + u.getId()))
+                                .body(u);
+                    }catch(URISyntaxException e){
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                    }
+                }).orElse(ResponseEntity.notFound().build());
+    }
 
     @PutMapping("/{id}/join")
-    public ResponseEntity<User> joinChannel(@PathVariable Long id, @RequestParam Long channelId){
-        return new ResponseEntity<>(userService.joinChannelById(id,channelId), HttpStatus.OK);
+    public ResponseEntity<?> joinChannel(@PathVariable Long id, @RequestParam Long channelId) throws Exception {
+        Optional<User> updatedUser = userService.joinChannelById(id, channelId);
+        return updatedUser
+                .map(u -> {
+                    try{
+                        return ResponseEntity
+                                .ok()
+                                .location(new URI(u.getId() + "/join"))
+                                .body(u);
+                    }catch(URISyntaxException e){
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                    }
+                }).orElse(ResponseEntity.notFound().build());
+
     }
 
     @PutMapping("/{id}/leave")
-    public ResponseEntity<User> leaveChannel(@PathVariable Long id, @RequestParam Long channelId){
-        return new ResponseEntity<>(userService.leaveChannelById(id,channelId), HttpStatus.OK);
+    public ResponseEntity<?> leaveChannel(@PathVariable Long id, @RequestParam Long channelId){
+        Optional<User> updatedUser = userService.leaveChannelById(id, channelId);
+        return updatedUser
+                .map(u -> {
+                    try{
+                        return ResponseEntity
+                                .ok()
+                                .location(new URI(u.getId() + "/leave"))
+                                .body(u);
+                    }catch(URISyntaxException e){
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                    }
+                }).orElse(ResponseEntity.notFound().build());
     }
-
-
 
     // DELETE
     //=============================================================================
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Boolean> deleteUser(@PathVariable Long id) {
-        return new ResponseEntity<>(userService.deleteUser(id), HttpStatus.NOT_FOUND);
+        return (userService.deleteUser(id)) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/deleteAll")
-    public ResponseEntity<Boolean> deleteAllUsers() {
-        return new ResponseEntity<>(userService.deleteAll(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> deleteAllUsers() {
+        return (!userService.deleteAll()) ? ResponseEntity.notFound().build() : ResponseEntity.ok().build();
     }
 
 }
