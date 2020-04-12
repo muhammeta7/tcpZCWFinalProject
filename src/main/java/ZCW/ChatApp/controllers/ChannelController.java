@@ -16,6 +16,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/channels")
+@CrossOrigin
 public class ChannelController {
 
     private ChannelService channelService;

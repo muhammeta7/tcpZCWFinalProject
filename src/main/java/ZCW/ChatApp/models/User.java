@@ -1,6 +1,8 @@
 package ZCW.ChatApp.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.*;
 
 @Entity
@@ -9,9 +11,18 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotEmpty(message = "First name can not be empty!")
+    @Size(min=3, max=15)
     private String firstName;
+    @NotEmpty(message = "Last name can not be empty!")
+    @Size(min=3, max=15)
     private String lastName;
+    @NotEmpty(message = "Username can not be empty!")
+    @Size(min=3, max=15)
     private String userName;
+    @NotEmpty(message = "Password can not be empty!")
+    @Size(min=5, max=15)
     private String password;
     private Boolean connected = false;
     @JsonIgnore
