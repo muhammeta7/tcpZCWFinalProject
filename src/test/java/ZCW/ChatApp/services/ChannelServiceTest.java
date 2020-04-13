@@ -128,6 +128,16 @@ public class ChannelServiceTest {
     }
 
     @Test
+    public void updateChannelPrivacy(){
+        Channel mockChannel = new Channel("Labs", new HashSet<>(), true);
+        given(channelRepository.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
+
+        Optional<Channel> returnChannel = channelService.changeChannelPrivate(mockChannel.getId(), false);
+
+        Assertions.assertFalse(returnChannel.get().getPrivate());
+    }
+
+    @Test
     @DisplayName("Test delete")
     public void deleteChannelTest(){
         Channel mockChannel = new Channel("Lab", new HashSet<>(), true);

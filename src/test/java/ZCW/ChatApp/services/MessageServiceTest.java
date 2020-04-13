@@ -126,6 +126,19 @@ public class MessageServiceTest {
     }
 
     @Test
+    public void findMessagesByChannelTest(){
+        Channel channel = new Channel();
+        Message mockMessage = new Message(new User(), "testing", new Date(), channel);
+        Message mockMessage2 = new Message(new User(), "testing 2", new Date(), channel);
+
+        doReturn(Arrays.asList(mockMessage, mockMessage2)).when(repo).findByChannelId(channel.getId());
+
+        List<Message> expected = service.findByChannel(channel.getId());
+
+        Assertions.assertEquals(expected.size(), 2);
+    }
+
+    @Test
     public void deleteMessageTest(){
         Message mockMessage = new Message(new User(), "testing time", new Date(), new Channel());
         doReturn(mockMessage).when(repo).save(mockMessage);

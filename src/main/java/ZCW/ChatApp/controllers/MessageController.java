@@ -42,19 +42,6 @@ public class MessageController {
         return new ResponseEntity<>(messageService.create(message, userId, channelId), HttpStatus.OK);
     }
 
-//    @PostMapping("/channel/{channelId}")
-//    public ResponseEntity<Message> addMessageToChannel(@RequestBody Message message, @PathVariable Long channelId){
-//        Channel channel= channelService.getChannel(channelId);
-//        message = messageService.postInChannel(message, channel.getId());
-//        try{
-//            return ResponseEntity
-//                    .created(new URI( "/channel/" + channelId))
-//                    .body(message);
-//        } catch (URISyntaxException e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
-
     // GET
     //=============================================================================
     @GetMapping("/{id}")
