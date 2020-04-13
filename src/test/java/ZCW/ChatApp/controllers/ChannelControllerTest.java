@@ -105,9 +105,9 @@ public class ChannelControllerTest {
 
 
     @Test
-    @DisplayName("DELETE /channels/delete/1")
+    @DisplayName("DELETE /channels/1")
     public void deleteChannelTest() throws Exception {
-        mockMvc.perform(delete("/channels/delete/1"))
+        mockMvc.perform(delete("/channels/1"))
                 .andExpect(status().isAccepted());
     }
 

@@ -41,7 +41,7 @@ public class ChannelController {
                 ResponseEntity.ok().body(channel)).orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{id}/chat")
+    @GetMapping("/chat/{id}")
     public ResponseEntity<List<Message>> findAllMessages(@PathVariable Long id){
         return new ResponseEntity<>(MessageController.getMessageService().findByChannel(id), HttpStatus.OK);
     }
@@ -79,7 +79,7 @@ public class ChannelController {
 
     // DELETE
     //=============================================================================
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteChannel(@PathVariable Long id){
         return new ResponseEntity<>(channelService.delete(id), HttpStatus.ACCEPTED);
     }

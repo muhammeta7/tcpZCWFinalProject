@@ -22,7 +22,7 @@ public class Message {
     @JoinColumn(name = "channel_id")
     private Channel channel;
     @NotEmpty(message = "Message Content can not be empty!")
-    @Size(min=3, max=15)
+    @Size(min=3, max=100)
     private String content;
     private Date timestamp;
 
