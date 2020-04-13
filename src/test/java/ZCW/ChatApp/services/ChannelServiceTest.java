@@ -160,12 +160,11 @@ public class ChannelServiceTest {
         Channel mockChannel = new Channel("test", new HashSet<>(), false);
         Message mockMessage1 = new Message(new User(), "test", new Date(), mockChannel);
         Message mockMessage2 = new Message(new User(), "test", new Date(), mockChannel);
-        doReturn(mockChannel).when(channelRepository).save(mockChannel);
-        doReturn(mockMessage1).when(messageRepository).save(mockMessage1);
-        doReturn(mockMessage2).when(messageRepository).save(mockMessage2);
-        doReturn(Arrays.asList(mockMessage1, mockMessage2)).when(messageRepository).findByChannelId(mockChannel.getId());
+        List<Message> messages = Arrays.asList(mockMessage1, mockMessage2);
+        mockChannel.setMessages(messages);
+        doReturn(Optional.of(mockChannel)).when(channelRepository).findById(any());
 
-        List<Message> actual = messageService.findByChannel(mockChannel.getId());
+        List<Message> actual = channelService.findAllMessages(1L);
 
         Assertions.assertEquals(actual.size(),2);
     }

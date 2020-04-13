@@ -43,7 +43,7 @@ public class ChannelController {
 
     @GetMapping("/chat/{id}")
     public ResponseEntity<List<Message>> findAllMessages(@PathVariable Long id){
-        return new ResponseEntity<>(MessageController.getMessageService().findByChannel(id), HttpStatus.OK);
+        return new ResponseEntity<>(channelService.findAllMessages(id), HttpStatus.OK);
     }
 
     @GetMapping
