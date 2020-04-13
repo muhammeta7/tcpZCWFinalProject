@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
@@ -20,6 +21,8 @@ public class Message {
     @ManyToOne
     @JoinColumn(name = "channel_id")
     private Channel channel;
+    @NotEmpty(message = "Message Content can not be empty!")
+    @Size(min=3, max=100)
     private String content;
     private Date timestamp;
 

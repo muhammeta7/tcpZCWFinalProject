@@ -53,6 +53,12 @@ public class ChannelService {
 
     // UPDATE
     //=============================================================================
+    public Optional<Channel> changeChannelName(Long id,String name ){
+        Optional<Channel> original = channelRepository.findById(id);
+        original.get().setChannelName(name);
+        channelRepository.save(original.get());
+        return original;
+    }
 
     // DELETE
     //=============================================================================

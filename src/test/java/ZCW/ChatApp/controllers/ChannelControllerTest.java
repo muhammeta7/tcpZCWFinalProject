@@ -105,9 +105,9 @@ public class ChannelControllerTest {
 
 
     @Test
-    @DisplayName("DELETE /channels/delete/1")
+    @DisplayName("DELETE /channels/1")
     public void deleteChannelTest() throws Exception {
-        mockMvc.perform(delete("/channels/delete/1"))
+        mockMvc.perform(delete("/channels/1"))
                 .andExpect(status().isAccepted());
     }
 
@@ -116,6 +116,25 @@ public class ChannelControllerTest {
     public void deleteAllChannelTest() throws Exception {
         mockMvc.perform(delete("/channels/deleteAll"))
                 .andExpect(status().isAccepted());
+    }
+
+
+    @Test
+    @DisplayName("PUT /channels/{id}/changeName - Success")
+    void updateChannelNameSuccessTest() throws Exception {
+        Channel channel = new Channel(1L, "General", new HashSet<>(), true);
+        Channel channel1 = new Channel(1L, "Updated", new HashSet<>(), true);
+        String newName = "Updated";
+        given(channelService.changeChannelName(channel.getId(), newName)).willReturn(Optional.of(channel1));
+
+        mockMvc.perform(put("/channels/{id}/changeName", channel.getId())
+                .header(HttpHeaders.IF_MATCH, 1)
+                .param("channelName", newName))
+
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+
+                .andExpect(jsonPath("$.channelName", is("Updated")));
     }
 
     public static String asJsonString(final Object obj){
