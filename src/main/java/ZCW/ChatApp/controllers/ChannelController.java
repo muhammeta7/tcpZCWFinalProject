@@ -58,23 +58,23 @@ public class ChannelController {
 
     // PUT
     //=============================================================================
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateChannel(@RequestBody Channel newChannel, @PathVariable Long id){
-        Optional<Channel> existingChannel = channelService.findById(id);
-        return existingChannel.map(channel -> {
-            channel.setChannelName(newChannel.getChannelName());
-            channel.setPrivate(newChannel.getPrivate());
-            channel.setUsers(newChannel.getUsers());
-            channelService.saveChannel(channel);
-            try{
-                return ResponseEntity
-                        .ok()
-                        .location(new URI("/"+ channel.getId()))
-                        .body(channel);
-            } catch (URISyntaxException e) {
-                return ResponseEntity.status(HttpStatus.MULTI_STATUS.INTERNAL_SERVER_ERROR).build();
-            }
-        }).orElse(ResponseEntity.notFound().build());
+
+    @PutMapping("/{id}/changeName")
+    public ResponseEntity<?> updateChannelName(@PathVariable Long id, @RequestParam String channelName){
+        Optional<Channel> updatedChannel = channelService.changeChannelName(id, channelName);
+
+        return updatedChannel
+                .map(c -> {
+                    try{
+                        return ResponseEntity
+                                .ok()
+                                .location(new URI(c.getId() +"/changeName" ))
+                                .body(c);
+                    }catch(URISyntaxException e){
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                    }
+                }).orElse(ResponseEntity.notFound().build());
+
     }
 
     // DELETE

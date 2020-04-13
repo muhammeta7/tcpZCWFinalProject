@@ -18,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 
@@ -112,6 +113,18 @@ public class ChannelServiceTest {
         Channel returnChannel = channelService.create(mockChannel, 1L);
 
         Assertions.assertEquals(returnChannel, mockChannel, "They should be equal");
+    }
+
+    @Test
+    public void updateChannelNameTest(){
+        Channel mockChannel = new Channel("Labs", new HashSet<>(), true);
+        given(channelRepository.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
+
+        Optional<Channel> returnChannel = channelService.changeChannelName(mockChannel.getId(), "NewName");
+        String expected = "NewName";
+        String actual = returnChannel.get().getChannelName();
+
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
