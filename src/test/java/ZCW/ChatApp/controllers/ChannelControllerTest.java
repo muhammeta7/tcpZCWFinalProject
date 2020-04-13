@@ -1,6 +1,7 @@
 package ZCW.ChatApp.controllers;
 
 import ZCW.ChatApp.models.Channel;
+import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.services.ChannelService;
 import ZCW.ChatApp.services.UserService;
@@ -75,6 +76,30 @@ public class ChannelControllerTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.channelName", is("General")))
                 .andExpect(jsonPath("$.private", is(true)));
+    }
+
+    @Test
+    @DisplayName("GET /channels/chat/{id}")
+    public void findAllMessagesTest() throws Exception {
+        HashSet<User> users = new HashSet<>();
+        Channel mockChannel = new Channel(1L, "General", users, true);
+        Message mockMessage1 = new Message(new User(), "Hello", new Date(), mockChannel);
+        Message mockMessage2 = new Message(new User(), "Hi", new Date(), mockChannel);
+        List<Message> messages = Arrays.asList(mockMessage1, mockMessage2);
+        mockChannel.setMessages(messages);
+        given(channelService.findAllMessages(1L)).willReturn(messages);
+
+        mockMvc.perform(
+                get("/channels/chat/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(asJsonString(messages))
+            )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+                .andExpect(jsonPath("$[0].content", is("Hello")))
+
+                .andExpect(jsonPath("$[1].content", is("Hi")));
     }
 
 
