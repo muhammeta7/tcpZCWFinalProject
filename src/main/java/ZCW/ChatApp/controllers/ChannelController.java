@@ -16,6 +16,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/channels")
+@CrossOrigin
 public class ChannelController {
 
 
@@ -29,9 +30,9 @@ public class ChannelController {
 
     // POST
     //=============================================================================
-    @PostMapping("/create")
-    public ResponseEntity<Channel> createChannel(@RequestBody Channel channel){
-        return new ResponseEntity<>(channelService.create(channel), HttpStatus.CREATED);
+    @PostMapping("/create/user/{userId}")
+    public ResponseEntity<Channel> createChannel(@RequestBody Channel channel, @PathVariable Long userId){
+        return new ResponseEntity<>(channelService.create(channel, userId), HttpStatus.CREATED);
     }
 
     // GET
@@ -42,9 +43,9 @@ public class ChannelController {
                 ResponseEntity.ok().body(channel)).orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{id}/chat")
+    @GetMapping("/chat/{id}")
     public ResponseEntity<List<Message>> findAllMessages(@PathVariable Long id){
-        return new ResponseEntity<>(MessageController.getMessageService().findByChannel(id), HttpStatus.OK);
+        return new ResponseEntity<>(channelService.findAllMessages(id), HttpStatus.OK);
     }
 
     @GetMapping
@@ -59,28 +60,28 @@ public class ChannelController {
 
     // PUT
     //=============================================================================
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateChannel(@RequestBody Channel newChannel, @PathVariable Long id){
-        Optional<Channel> existingChannel = channelService.findById(id);
-        return existingChannel.map(channel -> {
-            channel.setChannelName(newChannel.getChannelName());
-            channel.setPrivate(newChannel.getPrivate());
-            channel.setUsers(newChannel.getUsers());
-            channelService.saveChannel(channel);
-            try{
-                return ResponseEntity
-                        .ok()
-                        .location(new URI("/"+ channel.getId()))
-                        .body(channel);
-            } catch (URISyntaxException e) {
-                return ResponseEntity.status(HttpStatus.MULTI_STATUS.INTERNAL_SERVER_ERROR).build();
-            }
-        }).orElse(ResponseEntity.notFound().build());
+
+    @PutMapping("/{id}/changeName")
+    public ResponseEntity<?> updateChannelName(@PathVariable Long id, @RequestParam String channelName){
+        Optional<Channel> updatedChannel = channelService.changeChannelName(id, channelName);
+
+        return updatedChannel
+                .map(c -> {
+                    try{
+                        return ResponseEntity
+                                .ok()
+                                .location(new URI(c.getId() +"/changeName" ))
+                                .body(c);
+                    }catch(URISyntaxException e){
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                    }
+                }).orElse(ResponseEntity.notFound().build());
+
     }
 
     // DELETE
     //=============================================================================
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteChannel(@PathVariable Long id){
         return new ResponseEntity<>(channelService.delete(id), HttpStatus.ACCEPTED);
     }

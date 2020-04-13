@@ -5,6 +5,7 @@ import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.repositories.ChannelRepository;
 import ZCW.ChatApp.repositories.MessageRepository;
+import ZCW.ChatApp.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 
@@ -31,11 +33,17 @@ public class ChannelServiceTest {
     @Autowired
     private MessageService messageService;
 
+    @Autowired
+    private UserService userService;
+
     @MockBean
     private ChannelRepository channelRepository;
 
     @MockBean
     private MessageRepository messageRepository;
+
+    @MockBean
+    private UserRepository userRepository;
 
     @Test
     @DisplayName("Test findById Success")
@@ -96,12 +104,27 @@ public class ChannelServiceTest {
     @Test
     @DisplayName("Test create Channel")
     public void createChannelTest(){
-        Channel mockChannel = new Channel();
-        doReturn(mockChannel).when(channelRepository).save(mockChannel);
+        User mockUser = new User("FirstName", "LastName", "UserName", "password", true);
+        HashSet<User> users = new HashSet<>(Collections.singleton(mockUser));
+        Channel mockChannel = new Channel("Test", users, true);
+        doReturn(mockChannel).when(channelRepository).save(any());
+        doReturn(mockUser).when(userRepository).getOne(any());
 
-        Channel returnChannel = channelService.create(mockChannel);
+        Channel returnChannel = channelService.create(mockChannel, 1L);
 
         Assertions.assertEquals(returnChannel, mockChannel, "They should be equal");
+    }
+
+    @Test
+    public void updateChannelNameTest(){
+        Channel mockChannel = new Channel("Labs", new HashSet<>(), true);
+        given(channelRepository.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
+
+        Optional<Channel> returnChannel = channelService.changeChannelName(mockChannel.getId(), "NewName");
+        String expected = "NewName";
+        String actual = returnChannel.get().getChannelName();
+
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -137,12 +160,11 @@ public class ChannelServiceTest {
         Channel mockChannel = new Channel("test", new HashSet<>(), false);
         Message mockMessage1 = new Message(new User(), "test", new Date(), mockChannel);
         Message mockMessage2 = new Message(new User(), "test", new Date(), mockChannel);
-        doReturn(mockChannel).when(channelRepository).save(mockChannel);
-        doReturn(mockMessage1).when(messageRepository).save(mockMessage1);
-        doReturn(mockMessage2).when(messageRepository).save(mockMessage2);
-        doReturn(Arrays.asList(mockMessage1, mockMessage2)).when(messageRepository).findByChannelId(mockChannel.getId());
+        List<Message> messages = Arrays.asList(mockMessage1, mockMessage2);
+        mockChannel.setMessages(messages);
+        doReturn(Optional.of(mockChannel)).when(channelRepository).findById(any());
 
-        List<Message> actual = messageService.findByChannel(mockChannel.getId());
+        List<Message> actual = channelService.findAllMessages(1L);
 
         Assertions.assertEquals(actual.size(),2);
     }

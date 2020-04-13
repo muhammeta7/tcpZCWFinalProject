@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,8 +17,10 @@ public class Channel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotEmpty(message = "Channel can not be empty!")
+    @Size(min=3, max=15)
     private String channelName;
-    private Boolean isPrivate;
+    private Boolean isPrivate = true;
     @JsonIgnore
     @ManyToMany
     @JoinTable(

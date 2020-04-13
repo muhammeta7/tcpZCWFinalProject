@@ -14,5 +14,6 @@ import java.util.Set;
 public interface ChannelRepository extends JpaRepository<Channel, Long> {
 
     // TODO: Get Channels By User id
+    Optional<Channel> findChannelByChannelName(String channelName);
 
 }

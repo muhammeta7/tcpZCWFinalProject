@@ -1,6 +1,8 @@
 import ZCW.ChatApp.models.Channel;
+import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.services.ChannelService;
+import ZCW.ChatApp.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +20,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.*;
 
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -33,13 +37,17 @@ public class ChannelControllerTest {
     @MockBean
     private ChannelService channelService;
 
+    @MockBean
+    private UserService userService;
 
     @Test
     @DisplayName("POST /channel")
     public void createChannelTest() throws Exception{
         HashSet<User> users = new HashSet<>();
+        User mockUser = new User(1L, "First Name", "Last Name", "User Name", "Password", true);
+        doReturn(mockUser).when(userService).getUser(any());
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/channels/create")
+                .post("/channels/create/user/1")
                 .content(asJsonString(new Channel(1L,"General", users, true)))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -66,6 +74,30 @@ public class ChannelControllerTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.channelName", is("General")))
                 .andExpect(jsonPath("$.private", is(true)));
+    }
+
+    @Test
+    @DisplayName("GET /channels/chat/{id}")
+    public void findAllMessagesTest() throws Exception {
+        HashSet<User> users = new HashSet<>();
+        Channel mockChannel = new Channel(1L, "General", users, true);
+        Message mockMessage1 = new Message(new User(), "Hello", new Date(), mockChannel);
+        Message mockMessage2 = new Message(new User(), "Hi", new Date(), mockChannel);
+        List<Message> messages = Arrays.asList(mockMessage1, mockMessage2);
+        mockChannel.setMessages(messages);
+        given(channelService.findAllMessages(1L)).willReturn(messages);
+
+        mockMvc.perform(
+                get("/channels/chat/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(asJsonString(messages))
+            )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+                .andExpect(jsonPath("$[0].content", is("Hello")))
+
+                .andExpect(jsonPath("$[1].content", is("Hi")));
     }
 
 
@@ -96,9 +128,9 @@ public class ChannelControllerTest {
 
 
     @Test
-    @DisplayName("DELETE /channels/delete/1")
+    @DisplayName("DELETE /channels/1")
     public void deleteChannelTest() throws Exception {
-        mockMvc.perform(delete("/channels/delete/1"))
+        mockMvc.perform(delete("/channels/1"))
                 .andExpect(status().isAccepted());
     }
 
@@ -107,6 +139,25 @@ public class ChannelControllerTest {
     public void deleteAllChannelTest() throws Exception {
         mockMvc.perform(delete("/channels/deleteAll"))
                 .andExpect(status().isAccepted());
+    }
+
+
+    @Test
+    @DisplayName("PUT /channels/{id}/changeName - Success")
+    void updateChannelNameSuccessTest() throws Exception {
+        Channel channel = new Channel(1L, "General", new HashSet<>(), true);
+        Channel channel1 = new Channel(1L, "Updated", new HashSet<>(), true);
+        String newName = "Updated";
+        given(channelService.changeChannelName(channel.getId(), newName)).willReturn(Optional.of(channel1));
+
+        mockMvc.perform(put("/channels/{id}/changeName", channel.getId())
+                .header(HttpHeaders.IF_MATCH, 1)
+                .param("channelName", newName))
+
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+
+                .andExpect(jsonPath("$.channelName", is("Updated")));
     }
 
     public static String asJsonString(final Object obj){
