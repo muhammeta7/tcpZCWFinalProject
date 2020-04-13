@@ -1,6 +1,7 @@
 package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Channel;
+import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.repositories.ChannelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,13 +13,23 @@ public class ChannelService {
     private ChannelRepository channelRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     public ChannelService(ChannelRepository channelRepository){
         this.channelRepository = channelRepository;
     }
 
     // POST
     //=============================================================================
-    public Channel create(Channel channel){
+    public Channel create(Channel channel, Long userId){
+        HashSet<User> channelCreator = new HashSet<>();
+        User user = userService.getUser(userId);
+        channelCreator.add(user);
+        Set<Channel> userChannels = user.getChannels();
+        userChannels.add(channel);
+        channel.setUsers(channelCreator);
+        userService.save(user);
         return channelRepository.save(channel);
     }
 

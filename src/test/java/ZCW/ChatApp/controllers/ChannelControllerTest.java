@@ -3,6 +3,7 @@ package ZCW.ChatApp.controllers;
 import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.services.ChannelService;
+import ZCW.ChatApp.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.*;
 
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -35,13 +38,17 @@ public class ChannelControllerTest {
     @MockBean
     private ChannelService channelService;
 
+    @MockBean
+    private UserService userService;
 
     @Test
     @DisplayName("POST /channel")
     public void createChannelTest() throws Exception{
         HashSet<User> users = new HashSet<>();
+        User mockUser = new User(1L, "First Name", "Last Name", "User Name", "Password", true);
+        doReturn(mockUser).when(userService).getUser(any());
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/channels/create")
+                .post("/channels/create/user/1")
                 .content(asJsonString(new Channel(1L,"General", users, true)))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
