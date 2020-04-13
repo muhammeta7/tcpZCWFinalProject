@@ -1,7 +1,8 @@
 package ZCW.ChatApp.controllers;
 
+import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.User;
-
+import ZCW.ChatApp.services.ChannelService;
 import ZCW.ChatApp.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -16,15 +17,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.HttpHeaders;
 
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.Mockito.times;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -37,6 +37,8 @@ public class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private ChannelService channelService;
 
     @Test
     @DisplayName("POST /user - Success")
@@ -61,6 +63,11 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.connected", is(false)))
                 .andExpect(jsonPath("$.password", is("password")));
     }
+
+    // TODO Test create user failing
+
+    // GET
+    //===================================================================================================================================
 
     @Test
     @DisplayName("GET /user/1 - Success")
@@ -142,7 +149,7 @@ public class UserControllerTest {
 
     @Test
     @DisplayName("GET /users/channel/{channelId}")
-    public void findAllUsersTestByChannel() throws Exception {
+    public void findAllUsersByChannelTest() throws Exception {
         Long channelId = 1L;
         User user1 = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
         User user2 = new User(2L,"Moe", "Aydin", "juju7", "password", false);
@@ -171,6 +178,9 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[1].connected", is(false)))
                 .andExpect(jsonPath("$[1].password", is("password")));
     }
+
+    // PUT
+    //===================================================================================================================================
 
     @Test
     @DisplayName("PUT /users/1/connect - Success")
@@ -275,12 +285,79 @@ public class UserControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    public void joinChannelSuccessTest() throws Exception{
+        Long id = 1L;
+        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false);
+        given(userService.findById(id)).willReturn(Optional.of(putUser));
+        given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
+        given(userService.joinChannelById(putUser.getId(), mockChannel.getId())).willReturn(Optional.of(putUser));
+        String param ="1";
 
+        mockMvc.perform(put("/users/{id}/join", id)
+                .header(HttpHeaders.IF_MATCH, 1)
+                .param("channelId", param))
 
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
+    }
 
+    @Test
+    public void joinChannelFailTest() throws Exception{
+        Long id = 1L;
+        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), true);
+        given(userService.findById(id)).willReturn(Optional.of(putUser));
+        given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
+        given(userService.joinChannelById(putUser.getId(), mockChannel.getId())).willReturn(Optional.empty());
+        String param ="1";
 
-    // TODO join channel
-    // TODO leave channel
+        mockMvc.perform(put("/users/{id}/join", id)
+                .header(HttpHeaders.IF_MATCH, 1)
+                .param("channelId", param))
+
+                .andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    public void leaveChannelSuccessTest() throws Exception{
+        Long id = 1L;
+        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false);
+        given(userService.findById(id)).willReturn(Optional.of(putUser));
+        given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
+        given(userService.leaveChannelById(putUser.getId(), mockChannel.getId())).willReturn(Optional.of(putUser));
+        String param ="1";
+
+        mockMvc.perform(put("/users/{id}/leave", id)
+                .header(HttpHeaders.IF_MATCH, 1)
+                .param("channelId", param))
+
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
+    }
+
+    @Test
+    public void leaveChannelFailTest() throws Exception{
+        Long id = 1L;
+        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false);
+        given(userService.findById(id)).willReturn(Optional.of(putUser));
+        given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
+        given(userService.leaveChannelById(putUser.getId(), mockChannel.getId())).willReturn(Optional.empty());
+        String param ="1";
+
+        mockMvc.perform(put("/users/{id}/leave", id)
+                .header(HttpHeaders.IF_MATCH, 1)
+                .param("channelId", param))
+
+                .andExpect(status().isNotFound());
+    }
+
+    // DELETE
+    //===================================================================================================================================
 
     @Test
     @DisplayName("DELETE /users/delete/1 - Success")
@@ -300,6 +377,31 @@ public class UserControllerTest {
 
         mockMvc.perform(delete("/users/delete/{id}", givenId))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("DELETE /users/deleteAll Success")
+    void deleteAllTest() throws Exception {
+        User user1 = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        User user2 = new User(2L,"Moe", "Aydin", "juju7", "password", false);
+        given(userService.create(user1)).willReturn(user1);
+        given(userService.create(user2)).willReturn(user2);
+        given(userService.deleteAll()).willReturn(true);
+
+        mockMvc.perform(delete("/users/deleteAll"))
+                .andExpect(status().isOk());
+
+        verify(userService, times(1)).deleteAll();
+    }
+
+    @Test
+    @DisplayName("DELETE /users/deleteAll False")
+    void deleteAllFalseTest() throws Exception {
+        given(userService.deleteAll()).willReturn(false);
+
+        mockMvc.perform(delete("/users/deleteAll"))
+                .andExpect(status().isNotFound());
+
     }
 
     static String asJsonString(final Object obj){

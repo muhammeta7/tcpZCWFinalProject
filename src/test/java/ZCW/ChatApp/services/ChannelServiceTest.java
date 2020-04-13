@@ -14,11 +14,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import java.util.*;
 
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -108,33 +108,28 @@ public class ChannelServiceTest {
     @DisplayName("Test delete")
     public void deleteChannelTest(){
         Channel mockChannel = new Channel("Lab", new HashSet<>(), true);
-        doReturn(mockChannel).when(channelRepository).save(mockChannel);
-        doReturn(mockChannel).when(channelRepository).getOne(1L);
+        doReturn(Optional.of(mockChannel)).when(channelRepository).findById(any());
 
-        Boolean actual = channelService.delete(1L);
-        Optional<Channel> option = channelService.findById(mockChannel.getId());
+        Boolean actual = channelService.delete(mockChannel.getId());
 
-        Assertions.assertTrue(actual, "It did not delete the channel properly.");
-        Assertions.assertEquals(Optional.empty(), option);
+        Assertions.assertTrue(actual);
+        verify(channelRepository, times(1)).deleteById(mockChannel.getId());
     }
 
     @Test
     @DisplayName("Test deleteAll")
     public void deleteAllTest(){
-        Channel mockChannel1 = new Channel();
-        Channel mockChannel2 = new Channel();
-        doReturn(mockChannel1).when(channelRepository).save(mockChannel1);
-        doReturn(mockChannel1).when(channelRepository).getOne(1L);
-        doReturn(mockChannel2).when(channelRepository).save(mockChannel2);
-        doReturn(mockChannel2).when(channelRepository).getOne(2L);
+        Channel mockChannel1 = new Channel("Lab", new HashSet<>(), true);
+        Channel mockChannel2 = new Channel("General", new HashSet<>(), false);
+        doReturn(Arrays.asList(mockChannel1, mockChannel2)).when(channelRepository).findAll();
 
+        List<Channel> returnChannels = channelService.findAll();
+        Integer expected = returnChannels.size();
         Boolean actual = channelService.deleteAll();
-        Optional<Channel> option1 = channelService.findById(mockChannel1.getId());
-        Optional<Channel> option2 = channelService.findById(mockChannel2.getId());
 
         Assertions.assertTrue(actual);
-        Assertions.assertFalse(option1.isPresent());
-        Assertions.assertFalse(option2.isPresent());
+        Assertions.assertEquals(2, expected);
+        verify(channelRepository, times(1)).deleteAll();
     }
     @Test
     @DisplayName("test findAllMessages")

@@ -39,6 +39,14 @@ public class Channel {
         this.messages = new ArrayList<>();
     }
 
+    public Channel(Long id, String channelName, HashSet<User> users, Boolean isPrivate) {
+        this.id = id;
+        this.channelName = channelName;
+        this.users = users;
+        this.isPrivate = isPrivate;
+        this.messages = new ArrayList<>();
+    }
+
     public Long getId() {
         return id;
     }
