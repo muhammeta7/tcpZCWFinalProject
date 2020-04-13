@@ -24,6 +24,9 @@ public class ChannelService {
     // POST
     //=============================================================================
     public Channel create(Channel channel, Long userId){
+        if (channelRepository.findChannelByChannelName(channel.getChannelName()).isPresent()){
+            throw new IllegalArgumentException("Channel name is taken.  Try something else.");
+        }
         HashSet<User> channelCreator = new HashSet<>();
         User user = userService.getUser(userId);
         channelCreator.add(user);
