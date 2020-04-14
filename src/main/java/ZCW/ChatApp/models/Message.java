@@ -35,6 +35,14 @@ public class Message {
         this.channel = channel;
     }
 
+    public Message(Long id, User sender, String msgContent, Date timestamp, Channel channel){
+        this.id = id;
+        this.sender = sender;
+        this.content = msgContent;
+        this.timestamp = timestamp;
+        this.channel = channel;
+    }
+
     public Long getId() {
         return id;
     }
