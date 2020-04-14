@@ -22,6 +22,7 @@ public class Channel {
     @Size(min=3, max=15)
     private String channelName;
     private Boolean isPrivate = true;
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "users_channels",
@@ -29,7 +30,7 @@ public class Channel {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> users;
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "channel")
     private List<Message> messages;
 

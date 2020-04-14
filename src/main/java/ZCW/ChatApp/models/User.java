@@ -26,7 +26,7 @@ public class User {
     @Size(min=5, max=15)
     private String password;
     private Boolean connected = false;
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "sender")
     private List<Message> messages;
     @JsonIgnore
