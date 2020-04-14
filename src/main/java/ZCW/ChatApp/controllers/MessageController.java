@@ -22,38 +22,24 @@ import java.util.Optional;
 public class MessageController {
 
     @Autowired
-    private static MessageService messageService;
-    @Autowired
-    private static ChannelService channelService;
+    private MessageService messageService;
 
     @Autowired
     public MessageController(MessageService messageService) {
         this.messageService = messageService;
     }
 
-    public static MessageService getMessageService() {
-        return messageService;
-    }
-
     // POST
     //=============================================================================
-    @PostMapping("create/sender/{userId}/channel/{channelId}")
+    @PostMapping("/channel/{channelId}/sender/{userId}")
     public ResponseEntity<Message> create(@RequestBody Message message, @PathVariable Long userId, @PathVariable Long channelId){
-        return new ResponseEntity<>(messageService.create(message, userId, channelId), HttpStatus.OK);
+        Message newMessage = messageService.create(message, userId, channelId);
+        try{
+            return ResponseEntity.created(new URI("/channel/" + channelId + "/sender/" + userId + "/" + message.getId())).body(message);
+        } catch(URISyntaxException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
-
-//    @PostMapping("/channel/{channelId}")
-//    public ResponseEntity<Message> addMessageToChannel(@RequestBody Message message, @PathVariable Long channelId){
-//        Channel channel= channelService.getChannel(channelId);
-//        message = messageService.postInChannel(message, channel.getId());
-//        try{
-//            return ResponseEntity
-//                    .created(new URI( "/channel/" + channelId))
-//                    .body(message);
-//        } catch (URISyntaxException e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
 
     // GET
     //=============================================================================

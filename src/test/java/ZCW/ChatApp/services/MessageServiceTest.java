@@ -4,6 +4,7 @@ import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
 
 import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.repositories.ChannelRepository;
 import ZCW.ChatApp.repositories.MessageRepository;
 import ZCW.ChatApp.repositories.UserRepository;
 
@@ -20,10 +21,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.awt.print.Pageable;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,8 +38,20 @@ public class MessageServiceTest {
     @Autowired
     private MessageService service;
 
+    @Autowired
+    private ChannelService channelService;
+
+    @Autowired
+    private UserService userService;
+
     @MockBean
     private MessageRepository repo;
+
+    @MockBean
+    private UserRepository userRepository;
+
+    @MockBean
+    private ChannelRepository channelRepository;
 
     @Test
     @DisplayName("Test findById Success")
@@ -80,14 +91,16 @@ public class MessageServiceTest {
     @Test
     @DisplayName("Test create Message")
     public void createMessageTest() {
-        User user = new User();
-        Channel channel = new Channel();
-        Message mockMessage = new Message(user, "testing time", new Date(), channel);
+        User mockUser = new User(1L, "Bob", "Dole", "Lame", "password", true);
+        Channel mockChannel = new Channel(1L, "General", new HashSet<>(Collections.singleton(mockUser)), true);
+        Message mockMessage = new Message(mockUser, "testing time", new Date(), mockChannel);
         doReturn(mockMessage).when(repo).save(any());
+        doReturn(mockUser).when(userRepository).getOne(1L);
+        doReturn(mockChannel).when(channelRepository).getOne(1L);
 
         Message returnMessage = service.create(mockMessage, 1L, 1L);
 
-        Assertions.assertNotNull(returnMessage, "The Message should not be null");
+        Assertions.assertEquals(returnMessage.getContent(), mockMessage.getContent());
     }
 
     @Test
