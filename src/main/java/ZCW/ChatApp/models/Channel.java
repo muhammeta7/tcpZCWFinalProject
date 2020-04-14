@@ -2,6 +2,7 @@ package ZCW.ChatApp.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -21,7 +22,6 @@ public class Channel {
     @Size(min=3, max=15)
     private String channelName;
     private Boolean isPrivate = true;
-    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "users_channels",
@@ -29,10 +29,9 @@ public class Channel {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> users;
-
+    @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "channel")
     private List<Message> messages;
-
 
     public Channel (){}
 

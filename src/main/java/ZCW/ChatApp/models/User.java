@@ -1,5 +1,7 @@
 package ZCW.ChatApp.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -11,7 +13,6 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @NotEmpty(message = "First name can not be empty!")
     @Size(min=3, max=15)
     private String firstName;
@@ -25,7 +26,7 @@ public class User {
     @Size(min=5, max=15)
     private String password;
     private Boolean connected = false;
-    @JsonIgnore
+    @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "sender")
     private List<Message> messages;
     @JsonIgnore
