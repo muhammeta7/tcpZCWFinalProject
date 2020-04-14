@@ -35,7 +35,7 @@ public class MessageController {
     public ResponseEntity<Message> create(@RequestBody Message message, @PathVariable Long userId, @PathVariable Long channelId){
         Message newMessage = messageService.create(message, userId, channelId);
         try{
-            return ResponseEntity.created(new URI("/channel/" + channelId + "/sender/" + userId + "/" + newMessage.getId())).body(message);
+            return ResponseEntity.created(new URI("/channel/" + channelId + "/sender/" + userId + "/" + message.getId())).body(message);
         } catch(URISyntaxException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

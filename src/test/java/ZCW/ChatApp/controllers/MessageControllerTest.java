@@ -23,6 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -50,15 +51,6 @@ public class MessageControllerTest {
     @MockBean
     private UserService userService;
 
-    @MockBean
-    private UserRepository userRepository;
-
-    @MockBean
-    private ChannelRepository channelRepository;
-
-    @MockBean
-    private MessageRepository messageRepository;
-
     @Test
     @DisplayName("POST /messages/{id}/channel/{channelId}")
     public void createMessageTest() throws Exception {
@@ -66,11 +58,13 @@ public class MessageControllerTest {
         Channel mockChannel = new Channel(1L, "General", new HashSet<>(Collections.singleton(mockUser)), true);
         Message postMessage = new Message(1L, mockUser, "Hello", new Date(), mockChannel);
         Message mockMessage = new Message(1L, mockUser, "Hello", new Date(), mockChannel);
+        mockUser.setMessages(Collections.singletonList(mockMessage));
+        mockChannel.setMessages(Collections.singletonList(mockMessage));
 
-        doReturn(mockUser).when(userRepository).getOne(1L);
-        doReturn(mockChannel).when(channelRepository).getOne(1L);
-        doReturn(mockMessage).when(messageRepository).save(any());
         given(messageService.create(postMessage, 1L, 1L)).willReturn(mockMessage);
+        given(messageService.save(any())).willReturn(mockMessage);
+        given(channelService.saveChannel(any())).willReturn(mockChannel);
+        given(userService.save(any())).willReturn(mockUser);
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/messages/channel/1/sender/1")
@@ -83,7 +77,8 @@ public class MessageControllerTest {
 
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.content", is("Hello")))
-                .andExpect(jsonPath("$.user", is(1)));
+                .andExpect(jsonPath("$.channel.id", is(1)))
+                .andExpect(jsonPath("$.sender.id", is(1)));
     }
 
 

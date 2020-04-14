@@ -13,11 +13,9 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User sender;
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "channel_id")
     private Channel channel;
