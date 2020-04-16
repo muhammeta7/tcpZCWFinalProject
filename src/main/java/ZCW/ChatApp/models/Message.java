@@ -1,6 +1,5 @@
 package ZCW.ChatApp.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -18,12 +17,10 @@ public class Message {
     @JoinColumn(name = "user_id")
     private User sender;
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "channel_id")
     private Channel channel;
-    @JsonBackReference
     @NotEmpty(message = "Message Content can not be empty!")
-    @Size(min=3, max=100)
+    @Size(min=3, max=250)
     private String content;
     private Date timestamp;
 

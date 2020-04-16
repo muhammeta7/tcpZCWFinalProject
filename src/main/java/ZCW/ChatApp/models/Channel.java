@@ -31,7 +31,7 @@ public class Channel {
     )
     private Set<User> users;
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "channel")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "channel")
     private List<Message> messages;
 
     public Channel (){}

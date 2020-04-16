@@ -27,7 +27,7 @@ public class User {
     private String password;
     private Boolean connected = false;
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "sender")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "sender")
     private List<Message> messages;
     @JsonIgnore
     @ManyToMany(mappedBy = "users")
