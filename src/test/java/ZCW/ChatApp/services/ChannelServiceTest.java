@@ -4,7 +4,6 @@ import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
 import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.repositories.ChannelRepository;
-import ZCW.ChatApp.repositories.MessageRepository;
 import ZCW.ChatApp.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -30,17 +29,8 @@ public class ChannelServiceTest {
     @Autowired
     private ChannelService channelService;
 
-    @Autowired
-    private MessageService messageService;
-
-    @Autowired
-    private UserService userService;
-
     @MockBean
     private ChannelRepository channelRepository;
-
-    @MockBean
-    private MessageRepository messageRepository;
 
     @MockBean
     private UserRepository userRepository;
