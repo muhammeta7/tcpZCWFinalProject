@@ -82,12 +82,12 @@ public class MessageController {
     //=============================================================================
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Boolean> deleteMessage(@PathVariable Long id) {
-        return new ResponseEntity<>(messageService.delete(id), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(messageService.delete(id), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/deleteAll")
     public ResponseEntity<Boolean> deleteAllMessages() {
-        return new ResponseEntity<>(messageService.deleteAll(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(messageService.deleteAll(), HttpStatus.ACCEPTED);
     }
 
 }

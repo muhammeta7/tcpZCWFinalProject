@@ -79,11 +79,17 @@ public class MessageService {
     //=============================================================================
 
     public Boolean delete(Long id) {
-        messageRepository.deleteById(id);
-        return true;
+        if (findById(id).isPresent()) {
+            messageRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     public Boolean deleteAll() {
+        if (findAll().isEmpty()){
+            return false;
+        }
         messageRepository.deleteAll();
         return true;
     }
