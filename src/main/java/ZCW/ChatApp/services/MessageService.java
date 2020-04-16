@@ -39,9 +39,13 @@ public class MessageService {
         Channel channel = channelService.getChannel(channelId);
         message.setSender(user);
         message.setChannel(channel);
+        List<Message> messages = user.getMessages();
+        List<Message> messages1 = channel.getMessages();
+        messages1.add(message);
+        messages.add(message);
         channelService.saveChannel(channel);
         userService.save(user);
-        return messageRepository.save(message);
+        return save(message);
     }
 
     // GET
@@ -75,11 +79,17 @@ public class MessageService {
     //=============================================================================
 
     public Boolean delete(Long id) {
-        messageRepository.deleteById(id);
-        return true;
+        if (findById(id).isPresent()) {
+            messageRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     public Boolean deleteAll() {
+        if (findAll().isEmpty()){
+            return false;
+        }
         messageRepository.deleteAll();
         return true;
     }

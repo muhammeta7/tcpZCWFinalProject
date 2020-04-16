@@ -29,7 +29,7 @@ public class Channel {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> users;
-
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "channel")
     private List<Message> messages;
 

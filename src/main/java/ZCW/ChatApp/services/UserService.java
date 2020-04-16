@@ -119,7 +119,7 @@ public class UserService {
             userRepo.deleteById(id);
             return true;
         }
-        else return false;
+        return false;
     }
 
     public Boolean deleteAll(){
