@@ -1,4 +1,4 @@
-package ZCW.ChatApp.configurations;
+package ZCW.ChatApp.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,14 +19,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .inMemoryAuthentication()
                 .withUser("admin").password(passwordEncoder().encode("admin")).roles("ADMIN")
                 .and()
-                .withUser("muhammeta7").password(passwordEncoder().encode("password7")).roles("USER");
+                .withUser("muhammeta7").password(passwordEncoder().encode("password7")).roles("USER")
+                .and()
+                .withUser("manager").password(passwordEncoder().encode("manager")).roles("USER");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception{
         http
                 .authorizeRequests()
-                .anyRequest().authenticated()
+                .antMatchers("/console").permitAll()
+
                 .and()
                 .httpBasic();
     }
