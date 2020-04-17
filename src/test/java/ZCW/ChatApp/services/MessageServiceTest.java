@@ -2,10 +2,10 @@ package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
-import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.models.DAOUser;
 import ZCW.ChatApp.repositories.ChannelRepository;
 import ZCW.ChatApp.repositories.MessageRepository;
-import ZCW.ChatApp.repositories.UserRepository;
+import ZCW.ChatApp.repositories.UserDaoRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ public class MessageServiceTest {
     private MessageRepository repo;
 
     @MockBean
-    private UserRepository userRepository;
+    private UserDaoRepository userDAORepository;
 
     @MockBean
     private ChannelRepository channelRepository;
@@ -42,7 +42,7 @@ public class MessageServiceTest {
     @DisplayName("Test findById Success")
     public void findByIdSuccessTest(){
         // Set Up mock object and repo
-        Message mockMessage = new Message(new User(), "testing time", new Date(), new Channel());
+        Message mockMessage = new Message(new DAOUser(), "testing time", new Date(), new Channel());
         doReturn(Optional.of(mockMessage)).when(repo).findById(1L);
         // Execute Call
         Optional<Message> returnMessage = service.findById(1L);
@@ -64,8 +64,8 @@ public class MessageServiceTest {
     @Test
     @DisplayName("Test findAll")
     public void findAllTest(){
-        Message mockMessage1 = new Message(new User(), "testing time", new Date(), new Channel());
-        Message mockMessage2 = new Message(new User(), "testing time", new Date(), new Channel());
+        Message mockMessage1 = new Message(new DAOUser(), "testing time", new Date(), new Channel());
+        Message mockMessage2 = new Message(new DAOUser(), "testing time", new Date(), new Channel());
         doReturn(Arrays.asList(mockMessage1, mockMessage2)).when(repo).findAll();
 
         List<Message> returnList = service.findAll();
@@ -76,11 +76,11 @@ public class MessageServiceTest {
     @Test
     @DisplayName("Test create Message")
     public void createMessageTest() {
-        User mockUser = new User(1L, "Bob", "Dole", "Lame", "password", true);
+        DAOUser mockUser = new DAOUser(1L, "Bob", "Dole", "Lame", "password", true);
         Channel mockChannel = new Channel(1L, "General", new HashSet<>(Collections.singleton(mockUser)), true);
         Message mockMessage = new Message(mockUser, "testing time", new Date(), mockChannel);
         doReturn(mockMessage).when(repo).save(any());
-        doReturn(mockUser).when(userRepository).getOne(1L);
+        doReturn(mockUser).when(userDAORepository).getOne(1L);
         doReturn(mockChannel).when(channelRepository).getOne(1L);
 
         Message returnMessage = service.create(mockMessage, 1L, 1L);
@@ -90,7 +90,7 @@ public class MessageServiceTest {
 
     @Test
     public void getMessageTest(){
-        Message mockMessage = new Message(new User(), "testing time", new Date(), new Channel());
+        Message mockMessage = new Message(new DAOUser(), "testing time", new Date(), new Channel());
         doReturn(mockMessage).when(repo).getOne(mockMessage.getId());
 
         Message returnMessage = service.getMessage(mockMessage.getId());
@@ -101,7 +101,7 @@ public class MessageServiceTest {
     @Test
     @DisplayName("Test create Message")
     public void saveMessageTest() {
-        Message mockMessage = new Message(new User(), "testing time", new Date(), new Channel());
+        Message mockMessage = new Message(new DAOUser(), "testing time", new Date(), new Channel());
         doReturn(mockMessage).when(repo).save(any());
 
         Message returnMessage = service.save(mockMessage);
@@ -112,7 +112,7 @@ public class MessageServiceTest {
     @Test
     @DisplayName("Test find messages by user id")
     public void findMessagesByUserIdTest(){
-        User user = new User();
+        DAOUser user = new DAOUser();
         user.setId(1L);
         Message mockMessage = new Message(user, "testing", new Date(), new Channel());
         Message mockMessage2 = new Message(user, "testing 2", new Date(), new Channel());
@@ -124,8 +124,21 @@ public class MessageServiceTest {
     }
 
     @Test
+    public void findMessagesByChannelTest(){
+        Channel channel = new Channel();
+        Message mockMessage = new Message(new DAOUser(), "testing", new Date(), channel);
+        Message mockMessage2 = new Message(new DAOUser(), "testing 2", new Date(), channel);
+
+        doReturn(Arrays.asList(mockMessage, mockMessage2)).when(repo).findByChannelId(channel.getId());
+
+        List<Message> expected = service.findByChannel(channel.getId());
+
+        Assertions.assertEquals(expected.size(), 2);
+    }
+
+    @Test
     public void deleteMessageTest(){
-        Message mockMessage = new Message(new User(), "testing time", new Date(), new Channel());
+        Message mockMessage = new Message(new DAOUser(), "testing time", new Date(), new Channel());
         doReturn(Optional.of(mockMessage)).when(repo).findById(any());
 
         Boolean actual = service.delete(mockMessage.getId());
@@ -136,8 +149,8 @@ public class MessageServiceTest {
 
     @Test
     public void deleteAllTest(){
-        Message mockMessage1 = new Message(new User(), "testing time", new Date(), new Channel());
-        Message mockMessage2 = new Message(new User(), "testing time", new Date(), new Channel());
+        Message mockMessage1 = new Message(new DAOUser(), "testing time", new Date(), new Channel());
+        Message mockMessage2 = new Message(new DAOUser(), "testing time", new Date(), new Channel());
         doReturn(Arrays.asList(mockMessage1, mockMessage2)).when(repo).findAll();
 
         List<Message> returnMessages = service.findAll();

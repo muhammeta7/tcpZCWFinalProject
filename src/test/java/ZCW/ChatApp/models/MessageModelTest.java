@@ -19,7 +19,7 @@ public class MessageModelTest {
 
     @Test
     public void constructorTest(){
-        Message message = new Message(new User(), "content", new Date(), new Channel());
+        Message message = new Message(new DAOUser(), "content", new Date(), new Channel());
         assertEquals("content", message.getContent());
     }
 
@@ -32,7 +32,7 @@ public class MessageModelTest {
 
     @Test
     public void getSenderTest(){
-        User user = new User();
+        DAOUser user = new DAOUser();
         user.setUserName("John");
         message.setSender(user);
         assertEquals("John", message.getSender().getUserName() );
@@ -56,8 +56,8 @@ public class MessageModelTest {
 
     @Test
     public void getChannelTest(){
-        HashSet<User> users = new HashSet<>();
-        users.add(new User());
+        HashSet<DAOUser> users = new HashSet<>();
+        users.add(new DAOUser());
         Channel channel = new Channel("test", users, false);
         message.setChannel(channel);
         String expected = "test";
