@@ -35,8 +35,10 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     public DAOUser save(UserDTO user) {
         DAOUser newUser = new DAOUser();
-        newUser.setUserName(user.getUsername());
+        newUser.setUserName(user.getUserName());
         newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
+        newUser.setFirstName(user.getLastName());
+        newUser.setLastName(user.getFirstName());
         return userDaoRepository.save(newUser);
     }
 
