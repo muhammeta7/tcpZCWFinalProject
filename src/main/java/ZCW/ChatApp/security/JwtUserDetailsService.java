@@ -4,7 +4,6 @@ import ZCW.ChatApp.models.DAOUser;
 import ZCW.ChatApp.models.UserDTO;
 import ZCW.ChatApp.repositories.UserDaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,6 +30,10 @@ public class JwtUserDetailsService implements UserDetailsService {
         }
         return new org.springframework.security.core.userdetails.User(user.get().getUserName(), user.get().getPassword(),
                 new ArrayList<>());
+    }
+
+    public Boolean findUserByUsername(String username){
+        return userDaoRepository.findByUserName(username).isPresent();
     }
 
     public DAOUser save(UserDTO user) {
