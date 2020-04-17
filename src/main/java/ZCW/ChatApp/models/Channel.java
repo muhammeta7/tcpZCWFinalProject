@@ -1,7 +1,6 @@
 package ZCW.ChatApp.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -28,22 +27,21 @@ public class Channel {
             joinColumns = @JoinColumn(name = "channel_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<User> users;
+    private Set<DAOUser> users;
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "channel")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "channel")
     private List<Message> messages;
-
 
     public Channel (){}
 
-    public Channel(String channelName, HashSet<User> users, Boolean isPrivate) {
+    public Channel(String channelName, HashSet<DAOUser> users, Boolean isPrivate) {
         this.channelName = channelName;
         this.users = users;
         this.isPrivate = isPrivate;
         this.messages = new ArrayList<>();
     }
 
-    public Channel(Long id, String channelName, HashSet<User> users, Boolean isPrivate) {
+    public Channel(Long id, String channelName, HashSet<DAOUser> users, Boolean isPrivate) {
         this.id = id;
         this.channelName = channelName;
         this.users = users;
@@ -67,11 +65,11 @@ public class Channel {
         this.channelName = channelName;
     }
 
-    public Set<User> getUsers() {
+    public Set<DAOUser> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<User> users) {
+    public void setUsers(Set<DAOUser> users) {
         this.users = users;
     }
 

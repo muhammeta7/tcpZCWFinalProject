@@ -1,7 +1,7 @@
 package ZCW.ChatApp.controllers;
 
 import ZCW.ChatApp.models.Channel;
-import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.models.DAOUser;
 import ZCW.ChatApp.services.ChannelService;
 import ZCW.ChatApp.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.HttpHeaders;
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.times;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class UserControllerTest {
+public class DAOUserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,40 +41,14 @@ public class UserControllerTest {
     @MockBean
     private ChannelService channelService;
 
-    @Test
-    @DisplayName("POST /user - Success")
-    public void createUserTest() throws Exception {
-        User postUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
-        User mockUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
-        given(userService.create(postUser)).willReturn(mockUser);
-        mockMvc.perform(
-                     post("/users/create")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(asJsonString(postUser))
-                )
-
-                .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(header().string(HttpHeaders.LOCATION, "/create/1"))
-
-                .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.firstName", is("Moe")))
-                .andExpect(jsonPath("$.lastName", is("Aydin")))
-                .andExpect(jsonPath("$.userName", is("muhammeta7")))
-                .andExpect(jsonPath("$.connected", is(false)))
-                .andExpect(jsonPath("$.password", is("password")));
-    }
-
-    // TODO Test create user failing
-
     // GET
     //===================================================================================================================================
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("GET /user/1 - Success")
     public void findUserByIDFoundTest() throws Exception {
         Long givenId = 1L;
-        User getUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser getUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
         given(userService.findById(givenId)).willReturn(Optional.of(getUser));
 
         mockMvc.perform(get("/users/{id}", givenId))
@@ -84,10 +59,9 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.firstName", is("Moe")))
                 .andExpect(jsonPath("$.lastName", is("Aydin")))
                 .andExpect(jsonPath("$.userName", is("muhammeta7")))
-                .andExpect(jsonPath("$.connected", is(false)))
-                .andExpect(jsonPath("$.password", is("password")));
+                .andExpect(jsonPath("$.connected", is(false)));
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("GET /users/1 - Not Found")
     void findByIdNotFoundTest() throws Exception {
@@ -96,12 +70,12 @@ public class UserControllerTest {
         mockMvc.perform(get("/users/{id}", 1L))
                 .andExpect(status().isNotFound());
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("GET /users/username/muhammeta7 - Success")
     public void findUserByUserNameTest() throws Exception {
         String givenName = "muhammeta7";
-        User getUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser getUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
         given(userService.findUserByUsername(givenName)).willReturn(Optional.of(getUser));
 
         mockMvc.perform(get("/users/username/{username}", givenName))
@@ -112,17 +86,16 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.firstName", is("Moe")))
                 .andExpect(jsonPath("$.lastName", is("Aydin")))
                 .andExpect(jsonPath("$.userName", is("muhammeta7")))
-                .andExpect(jsonPath("$.connected", is(false)))
-                .andExpect(jsonPath("$.password", is("password")));
+                .andExpect(jsonPath("$.connected", is(false)));
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("GET /users")
     public void findAllUsersTest() throws Exception {
-        User user1 = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
-        User user2 = new User(2L,"Moe", "Aydin", "juju7", "password", false);
+        DAOUser user1 = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser user2 = new DAOUser(2L,"Moe", "Aydin", "juju7", "password", false);
 
-        List<User> userList = new ArrayList<>(Arrays.asList(user1,user2));
+        List<DAOUser> userList = new ArrayList<>(Arrays.asList(user1,user2));
         given(userService.findAll()).willReturn(userList);
 
         mockMvc.perform(get("/users"))
@@ -136,25 +109,23 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[0].lastName", is("Aydin")))
                 .andExpect(jsonPath("$[0].userName", is("muhammeta7")))
                 .andExpect(jsonPath("$[0].connected", is(false)))
-                .andExpect(jsonPath("$[0].password", is("password")))
 
                 .andExpect(jsonPath("$.*").isArray())
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].firstName", is("Moe")))
                 .andExpect(jsonPath("$[1].lastName", is("Aydin")))
                 .andExpect(jsonPath("$[1].userName", is("juju7")))
-                .andExpect(jsonPath("$[1].connected", is(false)))
-                .andExpect(jsonPath("$[1].password", is("password")));
+                .andExpect(jsonPath("$[1].connected", is(false)));
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("GET /users/channel/{channelId}")
     public void findAllUsersByChannelTest() throws Exception {
         Long channelId = 1L;
-        User user1 = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
-        User user2 = new User(2L,"Moe", "Aydin", "juju7", "password", false);
+        DAOUser user1 = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser user2 = new DAOUser(2L,"Moe", "Aydin", "juju7", "password", false);
 
-        List<User> userList = new ArrayList<>(Arrays.asList(user1,user2));
+        List<DAOUser> userList = new ArrayList<>(Arrays.asList(user1,user2));
         given(userService.findUsersByChannel(channelId)).willReturn(userList);
 
         mockMvc.perform(get("/users/channel/{channelId}", channelId))
@@ -168,26 +139,24 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[0].lastName", is("Aydin")))
                 .andExpect(jsonPath("$[0].userName", is("muhammeta7")))
                 .andExpect(jsonPath("$[0].connected", is(false)))
-                .andExpect(jsonPath("$[0].password", is("password")))
 
                 .andExpect(jsonPath("$.*").isArray())
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].firstName", is("Moe")))
                 .andExpect(jsonPath("$[1].lastName", is("Aydin")))
                 .andExpect(jsonPath("$[1].userName", is("juju7")))
-                .andExpect(jsonPath("$[1].connected", is(false)))
-                .andExpect(jsonPath("$[1].password", is("password")));
+                .andExpect(jsonPath("$[1].connected", is(false)));
     }
 
     // PUT
     //===================================================================================================================================
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("PUT /users/1/connect - Success")
     public void connectTest() throws Exception {
         Long givenId = 1L;
-        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
-        User mockUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser mockUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
 
         given(userService.updateConnection(putUser.getId())).willReturn(mockUser);
 
@@ -201,13 +170,13 @@ public class UserControllerTest {
 
                 .andExpect(jsonPath("$.connected", is(true)));
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("PUT /users/1/disconnect - Success")
     public void disconnectTest() throws Exception {
         Long givenId = 1L;
-        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
-        User mockUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        DAOUser mockUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
 
         given(userService.updateConnection(putUser.getId())).willReturn(mockUser);
 
@@ -221,12 +190,12 @@ public class UserControllerTest {
 
                 .andExpect(jsonPath("$.connected", is(false)));
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("PUT /users/update/username/1 - Success")
     void updateUserNameSuccessTest() throws Exception {
         Long givenId = 1L;
-        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
         String newUsername = "anything";
         given(userService.updateUserName(putUser.getId(), newUsername)).willReturn(Optional.of(putUser));
 
@@ -239,7 +208,7 @@ public class UserControllerTest {
 
                 .andExpect(jsonPath("$.userName", is("muhammeta7")));
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("PUT /users/update/username/1 - Fail")
     void updateUserNameFailTest() throws Exception {
@@ -253,12 +222,12 @@ public class UserControllerTest {
 
                 .andExpect(status().isNotFound());
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("PUT /users/update/password/1 - Success")
     public void updatePasswordSuccessTest() throws Exception {
         Long givenId = 1L;
-        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
         String newPassword = "anything";
         given(userService.updatePassword(putUser.getId(), newPassword)).willReturn(Optional.of(putUser));
 
@@ -267,10 +236,9 @@ public class UserControllerTest {
                 .param("password", newPassword))
                 .andExpect(status().isOk())
 
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.password", is("password")));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("PUT /users/update/password/1 - Fail")
     void updatePasswordFailTest() throws Exception {
@@ -284,11 +252,11 @@ public class UserControllerTest {
 
                 .andExpect(status().isNotFound());
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     public void joinChannelSuccessTest() throws Exception{
         Long id = 1L;
-        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
         Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false);
         given(userService.findById(id)).willReturn(Optional.of(putUser));
         given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
@@ -302,11 +270,11 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     public void joinChannelFailTest() throws Exception{
         Long id = 1L;
-        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
         Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), true);
         given(userService.findById(id)).willReturn(Optional.of(putUser));
         given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
@@ -320,11 +288,11 @@ public class UserControllerTest {
                 .andExpect(status().isNotFound());
 
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     public void leaveChannelSuccessTest() throws Exception{
         Long id = 1L;
-        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
         Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false);
         given(userService.findById(id)).willReturn(Optional.of(putUser));
         given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
@@ -338,11 +306,11 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     public void leaveChannelFailTest() throws Exception{
         Long id = 1L;
-        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
         Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false);
         given(userService.findById(id)).willReturn(Optional.of(putUser));
         given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
@@ -358,7 +326,7 @@ public class UserControllerTest {
 
     // DELETE
     //===================================================================================================================================
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("DELETE /users/delete/1 - Success")
     void deleteUserTest() throws Exception {
@@ -368,7 +336,7 @@ public class UserControllerTest {
         mockMvc.perform(delete("/users/delete/{id}", givenId))
                 .andExpect(status().isOk());
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("DELETE /users/delete/1 - Not Found")
     void deleteUserNotFoundTest() throws Exception {
@@ -378,12 +346,12 @@ public class UserControllerTest {
         mockMvc.perform(delete("/users/delete/{id}", givenId))
                 .andExpect(status().isNotFound());
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("DELETE /users/deleteAll Success")
     void deleteAllTest() throws Exception {
-        User user1 = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
-        User user2 = new User(2L,"Moe", "Aydin", "juju7", "password", false);
+        DAOUser user1 = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser user2 = new DAOUser(2L,"Moe", "Aydin", "juju7", "password", false);
         given(userService.create(user1)).willReturn(user1);
         given(userService.create(user2)).willReturn(user2);
         given(userService.deleteAll()).willReturn(true);
@@ -393,7 +361,7 @@ public class UserControllerTest {
 
         verify(userService, times(1)).deleteAll();
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("DELETE /users/deleteAll False")
     void deleteAllFalseTest() throws Exception {

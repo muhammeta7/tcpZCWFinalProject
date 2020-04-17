@@ -2,20 +2,23 @@ package ZCW.ChatApp.controllers;
 
 import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
-import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.models.DAOUser;
 import ZCW.ChatApp.services.ChannelService;
 import ZCW.ChatApp.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -24,13 +27,13 @@ import java.util.*;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
+@AutoConfigureMockMvc
 public class ChannelControllerTest {
 
     @Autowired
@@ -42,11 +45,12 @@ public class ChannelControllerTest {
     @MockBean
     private UserService userService;
 
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("POST /channel")
     public void createChannelTest() throws Exception{
-        HashSet<User> users = new HashSet<>();
-        User mockUser = new User(1L, "First Name", "Last Name", "User Name", "Password", true);
+        HashSet<DAOUser> users = new HashSet<>();
+        DAOUser mockUser = new DAOUser(1L, "First Name", "Last Name", "User Name", "Password", true);
         doReturn(mockUser).when(userService).getUser(any());
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/channels/create/user/1")
@@ -56,12 +60,12 @@ public class ChannelControllerTest {
                 )
                 .andExpect(status().isCreated());
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("GET /channels/1")
     public void findChannelByIdTest() throws Exception{
         Long givenId = 1L;
-        HashSet<User> users = new HashSet<>();
+        HashSet<DAOUser> users = new HashSet<>();
         Channel getChannel = new Channel(1L, "General", users, true);
         given(channelService.findById(givenId)).willReturn(Optional.of(getChannel));
 
@@ -77,14 +81,14 @@ public class ChannelControllerTest {
                 .andExpect(jsonPath("$.channelName", is("General")))
                 .andExpect(jsonPath("$.private", is(true)));
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("GET /channels/chat/{id}")
     public void findAllMessagesTest() throws Exception {
-        HashSet<User> users = new HashSet<>();
+        HashSet<DAOUser> users = new HashSet<>();
         Channel mockChannel = new Channel(1L, "General", users, true);
-        Message mockMessage1 = new Message(new User(), "Hello", new Date(), mockChannel);
-        Message mockMessage2 = new Message(new User(), "Hi", new Date(), mockChannel);
+        Message mockMessage1 = new Message(new DAOUser(), "Hello", new Date(), mockChannel);
+        Message mockMessage2 = new Message(new DAOUser(), "Hi", new Date(), mockChannel);
         List<Message> messages = Arrays.asList(mockMessage1, mockMessage2);
         mockChannel.setMessages(messages);
         given(channelService.findAllMessages(1L)).willReturn(messages);
@@ -102,11 +106,11 @@ public class ChannelControllerTest {
                 .andExpect(jsonPath("$[1].content", is("Hi")));
     }
 
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("GET /channels")
     public void findAllChannelsTest() throws Exception {
-        HashSet<User> users = new HashSet<>();
+        HashSet<DAOUser> users = new HashSet<>();
         Channel channel1 = new Channel(1L, "General", users, true);
         Channel channel2 = new Channel(2L, "Announcements", users, false);
 
@@ -128,14 +132,14 @@ public class ChannelControllerTest {
                 .andExpect(jsonPath("$[1].private", is(false)));
     }
 
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("DELETE /channels/1")
     public void deleteChannelTest() throws Exception {
         mockMvc.perform(delete("/channels/1"))
                 .andExpect(status().isAccepted());
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("DELETE /channels/deleteAll")
     public void deleteAllChannelTest() throws Exception {
@@ -143,7 +147,7 @@ public class ChannelControllerTest {
                 .andExpect(status().isAccepted());
     }
 
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("PUT /channels/{id}/changeName - Success")
     void updateChannelNameSuccessTest() throws Exception {
