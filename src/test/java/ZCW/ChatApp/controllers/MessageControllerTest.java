@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -26,7 +27,6 @@ import java.util.*;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -46,7 +46,7 @@ public class MessageControllerTest {
 
     @MockBean
     private UserService userService;
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("POST /messages/channel/{channelId}/sender/{userId}")
     public void createMessageTest() throws Exception {
@@ -76,7 +76,7 @@ public class MessageControllerTest {
                 .andExpect(jsonPath("$.channel.id", is(1)))
                 .andExpect(jsonPath("$.sender.id", is(1)));
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("GET /messages/{id}")
     public void getMessageByIdTest() throws Exception {
@@ -89,7 +89,7 @@ public class MessageControllerTest {
                         .andExpect(jsonPath("$.id", is(1)))
                         .andExpect(jsonPath("$.content", is("Hello there")));
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("GET /messages")
     public void getAllMessagesTest() throws Exception {
@@ -106,7 +106,7 @@ public class MessageControllerTest {
                         .andExpect(jsonPath("$[1].id", is(2)))
                         .andExpect(jsonPath("$[1].content", is("General Kenobi")));
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("GET /messages/sender/{userId}")
     public void getAllMessagesByUser() throws Exception {
@@ -126,7 +126,7 @@ public class MessageControllerTest {
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].content", is("I hate flying")));
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("DELETE /messages/delete/1")
     public void deleteMessageTest() throws Exception {
@@ -134,7 +134,7 @@ public class MessageControllerTest {
         mockMvc.perform(delete("/messages/delete/{id}", 1L))
                 .andExpect(status().isAccepted());
     }
-
+    @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("DELETE /messages/deleteAll")
     public void deleteAllMessagesTest() throws Exception {

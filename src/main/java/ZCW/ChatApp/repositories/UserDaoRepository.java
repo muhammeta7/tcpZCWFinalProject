@@ -14,6 +14,4 @@ public interface UserDaoRepository extends JpaRepository<DAOUser, Long> {
 
         List<DAOUser> findAllByChannels(Channel channel);
 
-//        List<Message> findAllById()
-
 }

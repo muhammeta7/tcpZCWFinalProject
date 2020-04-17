@@ -1,6 +1,5 @@
 package ZCW.ChatApp.controllers;
 
-import ZCW.ChatApp.models.TestUser;
 import ZCW.ChatApp.models.DAOUser;
 import ZCW.ChatApp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,28 +23,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    // POST
-    //=============================================================================
-    @PostMapping("/create")
-    public ResponseEntity<DAOUser> createUser(@RequestBody DAOUser user) {
-        DAOUser newUser = userService.create(user);
-        try{
-            return ResponseEntity
-                    .created(new URI("/create/" + newUser.getId()))
-                    .body(user);
-        } catch (URISyntaxException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
 
     // GET TODO Write Failing tests findAll Users, FindByChannel
     //=============================================================================
-    @GetMapping(produces = "application/json")
-    @RequestMapping({ "/validateLogin" })
-    public TestUser validateLogin() {
-        return new TestUser("User successfully authenticated");
-    }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findUserById(@PathVariable Long id){
