@@ -33,6 +33,7 @@ public class User {
     @ManyToMany(mappedBy = "users")
     private Set<Channel> channels;
 
+
     public User (){};
 
     public User(String firstName, String lastName, String userName, String password, Boolean isConnected) {
@@ -119,6 +120,8 @@ public class User {
     public void setChannels(HashSet<Channel> channels) {
         this.channels = channels;
     }
+
+
 
     @Override
     public boolean equals(Object o) {

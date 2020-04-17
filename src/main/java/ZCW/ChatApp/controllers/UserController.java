@@ -1,5 +1,6 @@
 package ZCW.ChatApp.controllers;
 
+import ZCW.ChatApp.models.TestUser;
 import ZCW.ChatApp.models.User;
 import ZCW.ChatApp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,13 @@ public class UserController {
 
     // GET TODO Write Failing tests findAll Users, FindByChannel
     //=============================================================================
+    @GetMapping(produces = "application/json")
+    @RequestMapping({ "/validateLogin" })
+    public TestUser validateLogin() {
+        return new TestUser("User successfully authenticated");
+    }
+
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findUserById(@PathVariable Long id){
         return userService.findById(id)
