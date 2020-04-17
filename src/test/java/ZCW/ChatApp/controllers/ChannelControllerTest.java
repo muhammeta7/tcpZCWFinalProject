@@ -2,7 +2,7 @@ package ZCW.ChatApp.controllers;
 
 import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
-import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.models.DAOUser;
 import ZCW.ChatApp.services.ChannelService;
 import ZCW.ChatApp.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,8 +45,8 @@ public class ChannelControllerTest {
     @Test
     @DisplayName("POST /channel")
     public void createChannelTest() throws Exception{
-        HashSet<User> users = new HashSet<>();
-        User mockUser = new User(1L, "First Name", "Last Name", "User Name", "Password", true);
+        HashSet<DAOUser> users = new HashSet<>();
+        DAOUser mockUser = new DAOUser(1L, "First Name", "Last Name", "User Name", "Password", true);
         doReturn(mockUser).when(userService).getUser(any());
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/channels/create/user/1")
@@ -61,7 +61,7 @@ public class ChannelControllerTest {
     @DisplayName("GET /channels/1")
     public void findChannelByIdTest() throws Exception{
         Long givenId = 1L;
-        HashSet<User> users = new HashSet<>();
+        HashSet<DAOUser> users = new HashSet<>();
         Channel getChannel = new Channel(1L, "General", users, true);
         given(channelService.findById(givenId)).willReturn(Optional.of(getChannel));
 
@@ -81,10 +81,10 @@ public class ChannelControllerTest {
     @Test
     @DisplayName("GET /channels/chat/{id}")
     public void findAllMessagesTest() throws Exception {
-        HashSet<User> users = new HashSet<>();
+        HashSet<DAOUser> users = new HashSet<>();
         Channel mockChannel = new Channel(1L, "General", users, true);
-        Message mockMessage1 = new Message(new User(), "Hello", new Date(), mockChannel);
-        Message mockMessage2 = new Message(new User(), "Hi", new Date(), mockChannel);
+        Message mockMessage1 = new Message(new DAOUser(), "Hello", new Date(), mockChannel);
+        Message mockMessage2 = new Message(new DAOUser(), "Hi", new Date(), mockChannel);
         List<Message> messages = Arrays.asList(mockMessage1, mockMessage2);
         mockChannel.setMessages(messages);
         given(channelService.findAllMessages(1L)).willReturn(messages);
@@ -106,7 +106,7 @@ public class ChannelControllerTest {
     @Test
     @DisplayName("GET /channels")
     public void findAllChannelsTest() throws Exception {
-        HashSet<User> users = new HashSet<>();
+        HashSet<DAOUser> users = new HashSet<>();
         Channel channel1 = new Channel(1L, "General", users, true);
         Channel channel2 = new Channel(2L, "Announcements", users, false);
 

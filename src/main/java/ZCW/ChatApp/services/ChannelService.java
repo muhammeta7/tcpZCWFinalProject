@@ -2,7 +2,7 @@ package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
-import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.models.DAOUser;
 import ZCW.ChatApp.repositories.ChannelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,8 +27,8 @@ public class ChannelService {
         if (channelRepository.findChannelByChannelName(channel.getChannelName()).isPresent()){
             throw new IllegalArgumentException("Channel name is taken.Try something else.");
         }
-        HashSet<User> channelCreator = new HashSet<>();
-        User user = userService.getUser(userId);
+        HashSet<DAOUser> channelCreator = new HashSet<>();
+        DAOUser user = userService.getUser(userId);
         channelCreator.add(user);
         Set<Channel> userChannels = user.getChannels();
         userChannels.add(channel);

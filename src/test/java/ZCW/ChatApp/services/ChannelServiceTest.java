@@ -2,9 +2,9 @@ package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
-import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.models.DAOUser;
 import ZCW.ChatApp.repositories.ChannelRepository;
-import ZCW.ChatApp.repositories.UserRepository;
+import ZCW.ChatApp.repositories.UserDaoRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ public class ChannelServiceTest {
     private ChannelRepository channelRepository;
 
     @MockBean
-    private UserRepository userRepository;
+    private UserDaoRepository userDAORepository;
 
     @Test
     @DisplayName("Test findById Success")
@@ -94,11 +94,11 @@ public class ChannelServiceTest {
     @Test
     @DisplayName("Test create Channel")
     public void createChannelTest(){
-        User mockUser = new User("FirstName", "LastName", "UserName", "password", true);
-        HashSet<User> users = new HashSet<>(Collections.singleton(mockUser));
+        DAOUser mockUser = new DAOUser("FirstName", "LastName", "UserName", "password", true);
+        HashSet<DAOUser> users = new HashSet<>(Collections.singleton(mockUser));
         Channel mockChannel = new Channel("Test", users, true);
         doReturn(mockChannel).when(channelRepository).save(any());
-        doReturn(mockUser).when(userRepository).getOne(any());
+        doReturn(mockUser).when(userDAORepository).getOne(any());
 
         Channel returnChannel = channelService.create(mockChannel, 1L);
 
@@ -158,8 +158,8 @@ public class ChannelServiceTest {
     @DisplayName("test findAllMessages")
     public void findAllMessagesTest(){
         Channel mockChannel = new Channel("test", new HashSet<>(), false);
-        Message mockMessage1 = new Message(new User(), "test", new Date(), mockChannel);
-        Message mockMessage2 = new Message(new User(), "test", new Date(), mockChannel);
+        Message mockMessage1 = new Message(new DAOUser(), "test", new Date(), mockChannel);
+        Message mockMessage2 = new Message(new DAOUser(), "test", new Date(), mockChannel);
         List<Message> messages = Arrays.asList(mockMessage1, mockMessage2);
         mockChannel.setMessages(messages);
         doReturn(Optional.of(mockChannel)).when(channelRepository).findById(any());

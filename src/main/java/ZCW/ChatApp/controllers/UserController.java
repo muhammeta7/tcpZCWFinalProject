@@ -1,7 +1,7 @@
 package ZCW.ChatApp.controllers;
 
 import ZCW.ChatApp.models.TestUser;
-import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.models.DAOUser;
 import ZCW.ChatApp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,8 +27,8 @@ public class UserController {
     // POST
     //=============================================================================
     @PostMapping("/create")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User newUser = userService.create(user);
+    public ResponseEntity<DAOUser> createUser(@RequestBody DAOUser user) {
+        DAOUser newUser = userService.create(user);
         try{
             return ResponseEntity
                     .created(new URI("/create/" + newUser.getId()))
@@ -70,12 +70,12 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> findAllUsers(){
+    public ResponseEntity<List<DAOUser>> findAllUsers(){
         return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/channel/{channelId}")
-    public ResponseEntity<List<User>> findByChannel(@PathVariable Long channelId){
+    public ResponseEntity<List<DAOUser>> findByChannel(@PathVariable Long channelId){
         return new ResponseEntity<>(userService.findUsersByChannel(channelId), HttpStatus.OK);
     }
 
@@ -83,18 +83,18 @@ public class UserController {
     //=============================================================================
 
     @PutMapping("/{id}/connect")
-    public ResponseEntity<User> connect(@PathVariable Long id){
+    public ResponseEntity<DAOUser> connect(@PathVariable Long id){
         return new ResponseEntity<>(userService.updateConnection(id), HttpStatus.OK);
     }
 
     @PutMapping("/{id}/disconnect")
-    public ResponseEntity<User> disconnect(@PathVariable Long id){
+    public ResponseEntity<DAOUser> disconnect(@PathVariable Long id){
         return new ResponseEntity<>(userService.updateConnection(id), HttpStatus.OK);
     }
 
     @PutMapping("/update/username/{id}")
     public ResponseEntity<?> updateUserName(@PathVariable Long id, @RequestParam String username){
-        Optional<User> updatedUser = userService.updateUserName(id, username);
+        Optional<DAOUser> updatedUser = userService.updateUserName(id, username);
 
         return updatedUser
                 .map(u -> {
@@ -111,7 +111,7 @@ public class UserController {
 
     @PutMapping("/update/password/{id}")
     public ResponseEntity<?> updatePassword(@PathVariable Long id, @RequestParam String password){
-        Optional<User> updatedUser = userService.updatePassword(id, password);
+        Optional<DAOUser> updatedUser = userService.updatePassword(id, password);
 
         return updatedUser
                 .map(u -> {
@@ -128,7 +128,7 @@ public class UserController {
 
     @PutMapping("/{id}/join")
     public ResponseEntity<?> joinChannel(@PathVariable Long id, @RequestParam Long channelId) throws Exception {
-        Optional<User> updatedUser = userService.joinChannelById(id, channelId);
+        Optional<DAOUser> updatedUser = userService.joinChannelById(id, channelId);
         return updatedUser
                 .map(u -> {
                     try{
@@ -145,7 +145,7 @@ public class UserController {
 
     @PutMapping("/{id}/leave")
     public ResponseEntity<?> leaveChannel(@PathVariable Long id, @RequestParam Long channelId){
-        Optional<User> updatedUser = userService.leaveChannelById(id, channelId);
+        Optional<DAOUser> updatedUser = userService.leaveChannelById(id, channelId);
         return updatedUser
                 .map(u -> {
                     try{

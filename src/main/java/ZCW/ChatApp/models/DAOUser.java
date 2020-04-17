@@ -1,6 +1,5 @@
 package ZCW.ChatApp.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -8,22 +7,15 @@ import javax.validation.constraints.Size;
 import java.util.*;
 
 @Entity
-public class User {
+public class DAOUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotEmpty(message = "First name can not be empty!")
-    @Size(min=3, max=15)
     private String firstName;
-    @NotEmpty(message = "Last name can not be empty!")
-    @Size(min=3, max=15)
     private String lastName;
-    @NotEmpty(message = "Username can not be empty!")
-    @Size(min=3, max=15)
     private String userName;
-    @NotEmpty(message = "Password can not be empty!")
-    @Size(min=5, max=15)
+    @JsonIgnore
     private String password;
     private Boolean connected = false;
     @JsonIgnore
@@ -33,11 +25,9 @@ public class User {
     @ManyToMany(mappedBy = "users")
     private Set<Channel> channels;
 
+    public DAOUser(){};
 
-
-    public User (){};
-
-    public User(String firstName, String lastName, String userName, String password, Boolean isConnected) {
+    public DAOUser(String firstName, String lastName, String userName, String password, Boolean isConnected) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
@@ -47,7 +37,7 @@ public class User {
         this.channels = new HashSet<>();
     }
 
-    public User(Long id, String firstName, String lastName, String userName, String password, Boolean isConnected) {
+    public DAOUser(Long id, String firstName, String lastName, String userName, String password, Boolean isConnected) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -128,7 +118,7 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
+        DAOUser user = (DAOUser) o;
         return Objects.equals(id, user.id) &&
                 Objects.equals(firstName, user.firstName) &&
                 Objects.equals(lastName, user.lastName) &&

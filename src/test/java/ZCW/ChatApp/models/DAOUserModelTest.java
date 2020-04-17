@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class UserModelTest {
-    private User user;
+public class DAOUserModelTest {
+    private DAOUser user;
 
     @Before
     public void setup(){
-        this.user = new User();
+        this.user = new DAOUser();
     }
 
     @Test
