@@ -60,10 +60,15 @@ public class ChannelModelTest {
 
     @Test
     public void getAndSetMessagesTest() {
-        // Given
         List<Message> messages = new ArrayList<>();
         messages.add(new Message());
         messages.add(new Message());
+        Channel channel = new Channel();
+        channel.setMessages(messages);
+        Integer expected = 2;
+        Integer actual = channel.getMessages().size();
+        Assert.assertEquals(expected, actual);
+
     }
 
     @Test

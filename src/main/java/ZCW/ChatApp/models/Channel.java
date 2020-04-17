@@ -1,8 +1,11 @@
 package ZCW.ChatApp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,15 +15,22 @@ import java.util.Set;
 public class Channel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotEmpty(message = "Channel can not be empty!")
+    @Size(min=3, max=15)
     private String channelName;
-    private Boolean isPrivate;
-    @JsonIgnoreProperties("channel")
+    private Boolean isPrivate = true;
+    @JsonIgnore
     @ManyToMany
+    @JoinTable(
+            name = "users_channels",
+            joinColumns = @JoinColumn(name = "channel_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private Set<User> users;
-
-    @OneToMany
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "channel")
     private List<Message> messages;
 
 
@@ -30,7 +40,14 @@ public class Channel {
         this.channelName = channelName;
         this.users = users;
         this.isPrivate = isPrivate;
-        this.users = new HashSet<>();
+        this.messages = new ArrayList<>();
+    }
+
+    public Channel(Long id, String channelName, HashSet<User> users, Boolean isPrivate) {
+        this.id = id;
+        this.channelName = channelName;
+        this.users = users;
+        this.isPrivate = isPrivate;
         this.messages = new ArrayList<>();
     }
 

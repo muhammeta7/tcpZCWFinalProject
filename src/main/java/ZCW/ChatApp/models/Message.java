@@ -3,6 +3,8 @@ package ZCW.ChatApp.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
@@ -11,18 +13,28 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User sender;
-    @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "channel_id")
     private Channel channel;
+    @NotEmpty(message = "Message Content can not be empty!")
+    @Size(min=3, max=100)
     private String content;
     private Date timestamp;
 
     public Message (){}
 
     public Message(User sender, String msgContent, Date timestamp, Channel channel) {
+        this.sender = sender;
+        this.content = msgContent;
+        this.timestamp = timestamp;
+        this.channel = channel;
+    }
+
+    public Message(Long id, User sender, String msgContent, Date timestamp, Channel channel){
+        this.id = id;
         this.sender = sender;
         this.content = msgContent;
         this.timestamp = timestamp;
