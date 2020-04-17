@@ -1,8 +1,8 @@
 package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Channel;
-import ZCW.ChatApp.models.User;
-import ZCW.ChatApp.repositories.UserRepository;
+import ZCW.ChatApp.models.DAOUser;
+import ZCW.ChatApp.repositories.UserDaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -11,23 +11,23 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    private UserRepository userRepo;
+    private UserDaoRepository userRepo;
 
     @Autowired
     private ChannelService channelService;
 
     @Autowired
-    public UserService(UserRepository userRepo) {
+    public UserService(UserDaoRepository userRepo) {
         this.userRepo = userRepo;
     }
 
-    public User save(User user){
+    public DAOUser save(DAOUser user){
         return userRepo.save(user);
     }
 
     // POST
     //=============================================================================
-    public User create(User user) throws IllegalArgumentException{
+    public DAOUser create(DAOUser user) throws IllegalArgumentException{
         if(!userRepo.findByUserName(user.getUserName()).isPresent()){
             return userRepo.save(user);
         }
@@ -37,28 +37,28 @@ public class UserService {
     // GET
     //=============================================================================
 
-    public List<User> findAll(){
+    public List<DAOUser> findAll(){
         return userRepo.findAll();
     }
 
-    public Optional<User> findById(Long id){
+    public Optional<DAOUser> findById(Long id){
         return userRepo.findById(id);
     }
 
-    public User getUser(Long id){
+    public DAOUser getUser(Long id){
         return userRepo.getOne(id);
     }
 
-    public Optional<User> findUserByUsername(String username){ return userRepo.findByUserName(username); }
+    public Optional<DAOUser> findUserByUsername(String username){ return userRepo.findByUserName(username); }
 
-    public List<User> findUsersByChannel(Long id){
+    public List<DAOUser> findUsersByChannel(Long id){
         return userRepo.findAllByChannels(channelService.getChannel(id));
     }
 
     // UPDATE
     //=============================================================================
-    public User updateConnection(Long id){
-        User original = userRepo.getOne(id);
+    public DAOUser updateConnection(Long id){
+        DAOUser original = userRepo.getOne(id);
         if (original.isConnected()) {
             original.setConnected(false);
         } else {
@@ -67,8 +67,8 @@ public class UserService {
         return userRepo.save(original);
     }
 
-    public Optional<User> joinChannelById(Long userId, Long channelId) throws Exception {
-        Optional<User> original = userRepo.findById(userId);
+    public Optional<DAOUser> joinChannelById(Long userId, Long channelId) throws Exception {
+        Optional<DAOUser> original = userRepo.findById(userId);
         Optional<Channel> channel = channelService.findById(channelId);
         if(!channel.get().getPrivate()){
             original.get().getChannels().add(channel.get());
@@ -81,8 +81,8 @@ public class UserService {
         return original;
     }
 
-    public Optional<User> leaveChannelById(Long userId, Long channelId){
-        Optional<User> original = userRepo.findById(userId);
+    public Optional<DAOUser> leaveChannelById(Long userId, Long channelId){
+        Optional<DAOUser> original = userRepo.findById(userId);
         Optional<Channel> channel = channelService.findById(channelId);
         if(original.get().getChannels().contains(channel.get())){
             original.get().getChannels().remove(channel.get());
@@ -94,8 +94,8 @@ public class UserService {
     }
 
 
-    public Optional<User> updateUserName(Long id, String username){
-        Optional<User> original = userRepo.findById(id);
+    public Optional<DAOUser> updateUserName(Long id, String username){
+        Optional<DAOUser> original = userRepo.findById(id);
         if(!userRepo.findByUserName(username).isPresent()){
             original.get().setUserName(username);
             userRepo.save(original.get());
@@ -105,8 +105,8 @@ public class UserService {
         return original;
     }
 
-    public Optional<User> updatePassword(Long id, String password){
-        Optional<User> original = userRepo.findById(id);
+    public Optional<DAOUser> updatePassword(Long id, String password){
+        Optional<DAOUser> original = userRepo.findById(id);
         original.get().setPassword(password);
         userRepo.save(original.get());
         return original;

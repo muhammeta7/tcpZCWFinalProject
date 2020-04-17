@@ -1,7 +1,7 @@
 package ZCW.ChatApp.controllers;
 
 import ZCW.ChatApp.models.Channel;
-import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.models.DAOUser;
 import ZCW.ChatApp.services.ChannelService;
 import ZCW.ChatApp.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.times;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class UserControllerTest {
+public class DAOUserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,8 +43,8 @@ public class UserControllerTest {
     @Test
     @DisplayName("POST /user - Success")
     public void createUserTest() throws Exception {
-        User postUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
-        User mockUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser postUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser mockUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
         given(userService.create(postUser)).willReturn(mockUser);
         mockMvc.perform(
                      post("/users/create")
@@ -73,7 +73,7 @@ public class UserControllerTest {
     @DisplayName("GET /user/1 - Success")
     public void findUserByIDFoundTest() throws Exception {
         Long givenId = 1L;
-        User getUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser getUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
         given(userService.findById(givenId)).willReturn(Optional.of(getUser));
 
         mockMvc.perform(get("/users/{id}", givenId))
@@ -101,7 +101,7 @@ public class UserControllerTest {
     @DisplayName("GET /users/username/muhammeta7 - Success")
     public void findUserByUserNameTest() throws Exception {
         String givenName = "muhammeta7";
-        User getUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser getUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
         given(userService.findUserByUsername(givenName)).willReturn(Optional.of(getUser));
 
         mockMvc.perform(get("/users/username/{username}", givenName))
@@ -119,10 +119,10 @@ public class UserControllerTest {
     @Test
     @DisplayName("GET /users")
     public void findAllUsersTest() throws Exception {
-        User user1 = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
-        User user2 = new User(2L,"Moe", "Aydin", "juju7", "password", false);
+        DAOUser user1 = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser user2 = new DAOUser(2L,"Moe", "Aydin", "juju7", "password", false);
 
-        List<User> userList = new ArrayList<>(Arrays.asList(user1,user2));
+        List<DAOUser> userList = new ArrayList<>(Arrays.asList(user1,user2));
         given(userService.findAll()).willReturn(userList);
 
         mockMvc.perform(get("/users"))
@@ -151,10 +151,10 @@ public class UserControllerTest {
     @DisplayName("GET /users/channel/{channelId}")
     public void findAllUsersByChannelTest() throws Exception {
         Long channelId = 1L;
-        User user1 = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
-        User user2 = new User(2L,"Moe", "Aydin", "juju7", "password", false);
+        DAOUser user1 = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser user2 = new DAOUser(2L,"Moe", "Aydin", "juju7", "password", false);
 
-        List<User> userList = new ArrayList<>(Arrays.asList(user1,user2));
+        List<DAOUser> userList = new ArrayList<>(Arrays.asList(user1,user2));
         given(userService.findUsersByChannel(channelId)).willReturn(userList);
 
         mockMvc.perform(get("/users/channel/{channelId}", channelId))
@@ -186,8 +186,8 @@ public class UserControllerTest {
     @DisplayName("PUT /users/1/connect - Success")
     public void connectTest() throws Exception {
         Long givenId = 1L;
-        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
-        User mockUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser mockUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
 
         given(userService.updateConnection(putUser.getId())).willReturn(mockUser);
 
@@ -206,8 +206,8 @@ public class UserControllerTest {
     @DisplayName("PUT /users/1/disconnect - Success")
     public void disconnectTest() throws Exception {
         Long givenId = 1L;
-        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
-        User mockUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        DAOUser mockUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
 
         given(userService.updateConnection(putUser.getId())).willReturn(mockUser);
 
@@ -226,7 +226,7 @@ public class UserControllerTest {
     @DisplayName("PUT /users/update/username/1 - Success")
     void updateUserNameSuccessTest() throws Exception {
         Long givenId = 1L;
-        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
         String newUsername = "anything";
         given(userService.updateUserName(putUser.getId(), newUsername)).willReturn(Optional.of(putUser));
 
@@ -258,7 +258,7 @@ public class UserControllerTest {
     @DisplayName("PUT /users/update/password/1 - Success")
     public void updatePasswordSuccessTest() throws Exception {
         Long givenId = 1L;
-        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
         String newPassword = "anything";
         given(userService.updatePassword(putUser.getId(), newPassword)).willReturn(Optional.of(putUser));
 
@@ -288,7 +288,7 @@ public class UserControllerTest {
     @Test
     public void joinChannelSuccessTest() throws Exception{
         Long id = 1L;
-        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
         Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false);
         given(userService.findById(id)).willReturn(Optional.of(putUser));
         given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
@@ -306,7 +306,7 @@ public class UserControllerTest {
     @Test
     public void joinChannelFailTest() throws Exception{
         Long id = 1L;
-        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
         Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), true);
         given(userService.findById(id)).willReturn(Optional.of(putUser));
         given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
@@ -324,7 +324,7 @@ public class UserControllerTest {
     @Test
     public void leaveChannelSuccessTest() throws Exception{
         Long id = 1L;
-        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
         Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false);
         given(userService.findById(id)).willReturn(Optional.of(putUser));
         given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
@@ -342,7 +342,7 @@ public class UserControllerTest {
     @Test
     public void leaveChannelFailTest() throws Exception{
         Long id = 1L;
-        User putUser = new User(1L,"Moe", "Aydin", "muhammeta7", "password", true);
+        DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
         Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false);
         given(userService.findById(id)).willReturn(Optional.of(putUser));
         given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
@@ -382,8 +382,8 @@ public class UserControllerTest {
     @Test
     @DisplayName("DELETE /users/deleteAll Success")
     void deleteAllTest() throws Exception {
-        User user1 = new User(1L,"Moe", "Aydin", "muhammeta7", "password", false);
-        User user2 = new User(2L,"Moe", "Aydin", "juju7", "password", false);
+        DAOUser user1 = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser user2 = new DAOUser(2L,"Moe", "Aydin", "juju7", "password", false);
         given(userService.create(user1)).willReturn(user1);
         given(userService.create(user2)).willReturn(user2);
         given(userService.deleteAll()).willReturn(true);

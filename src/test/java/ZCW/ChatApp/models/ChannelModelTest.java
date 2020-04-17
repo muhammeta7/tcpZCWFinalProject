@@ -8,7 +8,6 @@ import java.util.HashSet;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ChannelModelTest {
 
@@ -45,9 +44,9 @@ public class ChannelModelTest {
     @Test
     public void getAndSetUsersTest(){
         // Given
-        Set<User> users = new HashSet<>();
-        users.add(new User());
-        users.add(new User());
+        Set<DAOUser> users = new HashSet<>();
+        users.add(new DAOUser());
+        users.add(new DAOUser());
         Channel channel = new Channel();
 
         // When

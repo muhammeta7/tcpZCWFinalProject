@@ -1,8 +1,8 @@
 package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Channel;
-import ZCW.ChatApp.models.User;
-import ZCW.ChatApp.repositories.UserRepository;
+import ZCW.ChatApp.models.DAOUser;
+import ZCW.ChatApp.repositories.UserDaoRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,13 +25,13 @@ import static org.mockito.Mockito.times;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserServiceTest {
+public class DAOUserServiceTest {
 
     @Autowired
     private UserService userService;
 
     @MockBean
-    private UserRepository repo;
+    private UserDaoRepository repo;
 
     @MockBean
     private ChannelService channelService;
@@ -41,18 +41,18 @@ public class UserServiceTest {
 
     @Test
     public void createUserSuccessTest() throws IllegalArgumentException {
-        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "password", "muhammeta7", false);
         doReturn(mockUser).when(repo).save(any());
 
-        User returnUser = userService.create(mockUser);
+        DAOUser returnUser = userService.create(mockUser);
 
         Assertions.assertNotNull(returnUser, "The User should not be null");
     }
 
     @Test
     public void createUserNameFailsTest() {
-        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
-        User mockUser2 = new User("Jack", "Black", "muhammeta7", "password2", false);
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser mockUser2 = new DAOUser("Jack", "Black", "muhammeta7", "password2", false);
         doReturn(Optional.of(mockUser)).when(repo).findByUserName(any());
         doReturn(Optional.of(mockUser)).when(repo).save(any());
         doReturn(Optional.of(mockUser2)).when(repo).findByUserName(any());
@@ -64,10 +64,10 @@ public class UserServiceTest {
     //===================================================================================================================================
     @Test
     public void findByIdSuccessTest(){
-        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "muhammeta7", "password", false);
         doReturn(Optional.of(mockUser)).when(repo).findById(mockUser.getId());
 
-        Optional<User> returnUser = userService.findById(mockUser.getId());
+        Optional<DAOUser> returnUser = userService.findById(mockUser.getId());
 
         Assertions.assertTrue(returnUser.isPresent(), "No User was found");
         Assertions.assertSame(returnUser.get(), mockUser, "Models don't match");
@@ -77,18 +77,18 @@ public class UserServiceTest {
     public void findByIdFailTest(){
         doReturn(Optional.empty()).when(repo).findById(1L);
 
-        Optional<User> returnUser = userService.findById(1L);
+        Optional<DAOUser> returnUser = userService.findById(1L);
 
         Assertions.assertFalse(returnUser.isPresent(), "User found it shouldn't be.");
     }
 
     @Test
     public void findAllUsersTest(){
-        User mockUser1 = new User("Moe", "Aydin", "muhammeta7", "password", false);
-        User mockUser2 = new User("Jack", "Black", "jack7", "password2", false);
+        DAOUser mockUser1 = new DAOUser("Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser mockUser2 = new DAOUser("Jack", "Black", "jack7", "password2", false);
         doReturn(Arrays.asList(mockUser1, mockUser2)).when(repo).findAll();
 
-        List<User> returnList = userService.findAll();
+        List<DAOUser> returnList = userService.findAll();
 
         Assertions.assertEquals(2, returnList.size(), "findAll should return 2 users");
     }
@@ -96,20 +96,20 @@ public class UserServiceTest {
     @Test
     @DisplayName("Test get user")
     public void getUserTest(){
-        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "muhammeta7", "password", false);
         doReturn(mockUser).when(repo).getOne(mockUser.getId());
 
-        User returnUser = userService.getUser(mockUser.getId());
+        DAOUser returnUser = userService.getUser(mockUser.getId());
 
         Assertions.assertNotNull(returnUser);
     }
 
     @Test
     public void findUsersByUserNameTest(){
-        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "muhammeta7", "password", false);
         doReturn(Optional.of(mockUser)).when(repo).findByUserName(mockUser.getUserName());
 
-        Optional<User> returnUser = userService.findUserByUsername(mockUser.getUserName());
+        Optional<DAOUser> returnUser = userService.findUserByUsername(mockUser.getUserName());
 
         Assertions.assertTrue(returnUser.isPresent(), "No user was found");
         Assertions.assertSame(returnUser.get(), mockUser, "Models don't match");
@@ -117,9 +117,9 @@ public class UserServiceTest {
 
     @Test
     public void findUsersByChannelTest(){
-        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
-        User mockUser1 = new User("Joe", "Aydin", "password", "something", false);
-        HashSet<User> users = new HashSet<>();
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser mockUser1 = new DAOUser("Joe", "Aydin", "password", "something", false);
+        HashSet<DAOUser> users = new HashSet<>();
         users.add(mockUser1);
         users.add(mockUser);
         Channel mockChannel = new Channel("Labs", users, false);
@@ -134,10 +134,10 @@ public class UserServiceTest {
 
     @Test
     public void saveTest() {
-        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "muhammeta7", "password", false);
         doReturn(mockUser).when(repo).save(any());
 
-        User returnUser = userService.save(mockUser);
+        DAOUser returnUser = userService.save(mockUser);
 
         Assertions.assertNotNull(returnUser, "Saved user should not be null");
     }
@@ -147,11 +147,11 @@ public class UserServiceTest {
 
     @Test
     public void updateUsernameSuccessTest() throws IllegalArgumentException{
-        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "password", "muhammeta7", false);
         given(repo.findById(mockUser.getId())).willReturn(Optional.of(mockUser));
         given(repo.save(mockUser)).willReturn(any());
 
-        Optional<User> returnUser = userService.updateUserName(mockUser.getId(), "newUserName");
+        Optional<DAOUser> returnUser = userService.updateUserName(mockUser.getId(), "newUserName");
         String expected = "newUserName";
         String actual = returnUser.get().getUserName();
 
@@ -160,8 +160,8 @@ public class UserServiceTest {
 
     @Test
     public void updateUserNameFailsTest() {
-        User mockUser = new User("Moe", "Aydin", "muhammeta7", "password", false);
-        User mockUser2 = new User("Jack", "Black", "jack", "password2", false);
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser mockUser2 = new DAOUser("Jack", "Black", "jack", "password2", false);
         doReturn(Optional.of(mockUser)).when(repo).findByUserName(any());
         doReturn(Optional.of(mockUser)).when(repo).save(any());
         doReturn(Optional.of(mockUser2)).when(repo).findByUserName(any());
@@ -175,11 +175,11 @@ public class UserServiceTest {
 
     @Test
     public void updatePasswordTest(){
-        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "password", "muhammeta7", false);
         given(repo.findById(mockUser.getId())).willReturn(Optional.of(mockUser));
         given(repo.save(mockUser)).willReturn(any());
 
-        Optional<User> returnUser = userService.updatePassword(mockUser.getId(), "somethingElse");
+        Optional<DAOUser> returnUser = userService.updatePassword(mockUser.getId(), "somethingElse");
         String expected = "somethingElse";
         String actual = returnUser.get().getPassword();
 
@@ -189,7 +189,7 @@ public class UserServiceTest {
 
     @Test
     public void updateConnectionTest(){
-        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "password", "muhammeta7", false);
         doReturn(mockUser).when(repo).save(mockUser);
         doReturn(mockUser).when(repo).getOne(1L);
 
@@ -200,7 +200,7 @@ public class UserServiceTest {
 
     @Test
     public void updateConnectionFalse(){
-        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "password", "muhammeta7", false);
         doReturn(mockUser).when(repo).save(mockUser);
         doReturn(mockUser).when(repo).getOne(1L);
 
@@ -212,7 +212,7 @@ public class UserServiceTest {
 
     @Test
     public void joinChannelByIdTest() throws Exception {
-        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "password", "muhammeta7", false);
         Channel mockChannel = new Channel("Labs", new HashSet<>(), false);
         doReturn(Optional.of(mockUser)).when(repo).findById(any());
         doReturn(Optional.of(mockChannel)).when(channelService).findById(any());
@@ -226,7 +226,7 @@ public class UserServiceTest {
 
     @Test
     public void joinChannelByIdFailTest() {
-        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "password", "muhammeta7", false);
         Channel mockChannel = new Channel("Labs", new HashSet<>(), true);
         doReturn(Optional.of(mockUser)).when(repo).findById(any());
         doReturn(Optional.of(mockChannel)).when(channelService).findById(any());
@@ -239,7 +239,7 @@ public class UserServiceTest {
 
     @Test
     public void leaveChannelByIdTest() throws Exception {
-        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "password", "muhammeta7", false);
         Channel mockChannel = new Channel("Labs", new HashSet<>(), false);
         Channel mockChannel1 = new Channel("Labs", new HashSet<>(), false);
 
@@ -266,7 +266,7 @@ public class UserServiceTest {
 
     @Test
     public void deleteUserTest(){
-        User mockUser = new User("Moe", "Aydin", "password", "muhammeta7", false);
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "password", "muhammeta7", false);
         doReturn(Optional.of(mockUser)).when(repo).findById(any());
 
         Boolean actual = userService.deleteUser(mockUser.getId());
@@ -284,11 +284,11 @@ public class UserServiceTest {
 
     @Test
     public void deleteAllTrueTest(){
-        User mockUser1 = new User("Moe", "Aydin", "muhammeta7", "password", false);
-        User mockUser2 = new User("Jack", "Black", "jack7", "password2", false);
+        DAOUser mockUser1 = new DAOUser("Moe", "Aydin", "muhammeta7", "password", false);
+        DAOUser mockUser2 = new DAOUser("Jack", "Black", "jack7", "password2", false);
         doReturn(Arrays.asList(mockUser1, mockUser2)).when(repo).findAll();
 
-        List<User> returnUsers = userService.findAll();
+        List<DAOUser> returnUsers = userService.findAll();
         Integer expected = returnUsers.size();
         Boolean actual = userService.deleteAll();
 

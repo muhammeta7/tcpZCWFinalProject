@@ -2,7 +2,7 @@ package ZCW.ChatApp.services;
 
 import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.Message;
-import ZCW.ChatApp.models.User;
+import ZCW.ChatApp.models.DAOUser;
 import ZCW.ChatApp.repositories.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ public class MessageService {
     // TODO Test
     public Message create(Message message, Long userId, Long channelId) {
         message.setTimestamp(new Date());
-        User user = userService.getUser(userId);
+        DAOUser user = userService.getUser(userId);
         Channel channel = channelService.getChannel(channelId);
         message.setSender(user);
         message.setChannel(channel);
