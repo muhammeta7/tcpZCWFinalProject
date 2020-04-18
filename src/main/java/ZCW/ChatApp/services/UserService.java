@@ -5,8 +5,11 @@ import ZCW.ChatApp.models.DAOUser;
 import ZCW.ChatApp.repositories.UserDaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -55,6 +58,11 @@ public class UserService {
         return userRepo.findAllByChannels(channelService.getChannel(id));
     }
 
+    public HashSet<Channel> findAllChannelsByUser(String username){
+        Optional<DAOUser> user = userRepo.findByUserName(username);
+        HashSet<Channel> userChannels = new HashSet<>(user.get().getChannels());
+        return userChannels;
+    }
     // UPDATE
     //=============================================================================
     public DAOUser updateConnection(Long id){
