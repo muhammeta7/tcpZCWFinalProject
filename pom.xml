@@ -58,24 +58,17 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-		<!--	H2 stuff	-->
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2-mvstore</artifactId>
-			<version>1.4.200</version>
-			<scope>compile</scope>
-		</dependency>
 
 		<!--	Security Page	-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<version>4.0.4.RELEASE</version>
 		</dependency>
 
 		<dependency>
