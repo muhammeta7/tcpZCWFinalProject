@@ -1,5 +1,6 @@
 package ZCW.ChatApp.controllers;
 
+import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.TestUser;
 import ZCW.ChatApp.models.DAOUser;
 import ZCW.ChatApp.services.UserService;
@@ -11,6 +12,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -78,6 +80,12 @@ public class UserController {
     public ResponseEntity<List<DAOUser>> findByChannel(@PathVariable Long channelId){
         return new ResponseEntity<>(userService.findUsersByChannel(channelId), HttpStatus.OK);
     }
+
+    @GetMapping("channels/{username}")
+    public ResponseEntity<Set<Channel>> getAllUserChannels(@PathVariable String username) {
+        return new ResponseEntity<>(userService.findAllChannelsByUser(username), HttpStatus.OK);
+    }
+
 
     // PUT TODO change last 2 methods to optionals and write Fail tests
     //=============================================================================
