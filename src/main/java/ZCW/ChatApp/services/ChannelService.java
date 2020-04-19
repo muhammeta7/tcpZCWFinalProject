@@ -81,9 +81,13 @@ public class ChannelService {
         return original;
     }
 
-    public Optional<Channel> changeChannelPrivate(Long id, Boolean value){
+    public Optional<Channel> changeChannelPrivacy(Long id){
         Optional<Channel> original = channelRepository.findById(id);
-        original.get().setPrivate(value);
+        if(original.get().getPrivate()){
+            original.get().setPrivate(false);
+        } else{
+            original.get().setPrivate(true);
+        }
         channelRepository.save(original.get());
         return original;
     }
