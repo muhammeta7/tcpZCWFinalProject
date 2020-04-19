@@ -78,4 +78,5 @@ public class Message {
     public void setChannel(Channel channel) {
         this.channel = channel;
     }
+
 }

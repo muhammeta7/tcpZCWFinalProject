@@ -56,7 +56,10 @@ public class ChannelService {
     }
 
     public List<Message> findAllMessages(Long id){
-        return channelRepository.findById(id).get().getMessages();
+        List<Message> messages = channelRepository.findById(id).get().getMessages();
+        Comparator<Message> compareMessage = Comparator.comparing(Message::getTimestamp);
+        Collections.sort(messages, compareMessage);
+        return messages;
     }
 
     // UPDATE
