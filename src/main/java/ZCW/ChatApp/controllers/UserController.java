@@ -115,6 +115,22 @@ public class UserController {
                 }).orElse(ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/{id}/channel/{channelId}/invite/{inviteId}")
+    public ResponseEntity<?> inviteToChannel(@PathVariable Long id, @PathVariable Long channelId, @PathVariable Long inviteId) throws Exception {
+        Optional<DAOUser> inviteUser = userService.inviteToChannel(id, inviteId, channelId);
+        return inviteUser
+                .map(u -> {
+                    try {
+                        return ResponseEntity
+                                .ok()
+                                .location(new URI("/" + id + "/channel/" + channelId + "/invite/" + u.getId()))
+                                .body(u);
+                    } catch (URISyntaxException e) {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                    }
+                }).orElse(ResponseEntity.notFound().build());
+    }
+
     @PutMapping("/{id}/join")
     public ResponseEntity<?> joinChannel(@PathVariable Long id, @RequestParam Long channelId) throws Exception {
         Optional<DAOUser> updatedUser = userService.joinChannelById(id, channelId);

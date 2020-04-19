@@ -7,6 +7,7 @@ import ZCW.ChatApp.repositories.ChannelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ChannelService {
@@ -60,6 +61,11 @@ public class ChannelService {
         Comparator<Message> compareMessage = Comparator.comparing(Message::getTimestamp);
         Collections.sort(messages, compareMessage);
         return messages;
+    }
+
+    public List<Channel> getAllPublicChannels(){
+        return channelRepository.findAll().stream().filter(channel ->
+                !channel.getPrivate()).collect(Collectors.toList());
     }
 
     // UPDATE
