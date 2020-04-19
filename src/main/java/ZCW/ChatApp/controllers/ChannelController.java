@@ -66,7 +66,6 @@ public class ChannelController {
     @PutMapping("/{id}/changeName")
     public ResponseEntity<?> updateChannelName(@PathVariable Long id, @RequestParam String channelName){
         Optional<Channel> updatedChannel = channelService.changeChannelName(id, channelName);
-
         return updatedChannel
                 .map(c -> {
                     try{
