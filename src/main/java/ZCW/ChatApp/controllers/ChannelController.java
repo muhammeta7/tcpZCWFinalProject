@@ -55,6 +55,11 @@ public class ChannelController {
         return new ResponseEntity<>(channel.getUsers(), HttpStatus.OK);
     }
 
+    @GetMapping("/public")
+    public ResponseEntity<List<Channel>> findAllPublicChannels(){
+        return new ResponseEntity<>(channelService.getAllPublicChannels(), HttpStatus.OK);
+    }
+
     // PUT
     //=============================================================================
 
