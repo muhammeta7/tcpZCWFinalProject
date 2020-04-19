@@ -81,6 +81,23 @@ public class ChannelController {
 
     }
 
+    @PutMapping("/{id}/changePrivacy")
+    public ResponseEntity<?> updateChannelPrivacy(@PathVariable Long id, @RequestParam Boolean value) {
+        Optional<Channel> updatedChannel = channelService.changeChannelPrivate(id, value);
+
+        return updatedChannel
+                .map(c -> {
+                    try {
+                        return ResponseEntity
+                                .ok()
+                                .location(new URI(c.getId() + "/changePrivacy"))
+                                .body(c);
+                    } catch (URISyntaxException e) {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                    }
+                }).orElse(ResponseEntity.notFound().build());
+    }
+
     // DELETE
     //=============================================================================
     @DeleteMapping("/{id}")
