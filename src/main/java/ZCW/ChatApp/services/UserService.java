@@ -75,10 +75,10 @@ public class UserService {
         return userRepo.save(original);
     }
 
-    public Optional<DAOUser> inviteToChannel(Long userId, Long invitedUserId, Long channelId) throws Exception {
-        Optional<DAOUser> user = userRepo.findById(userId);
-        Optional<DAOUser> invitedUser = userRepo.findById(invitedUserId);
-        Optional<Channel> channel = channelService.findById(channelId);
+    public Optional<DAOUser> inviteToChannel(String userName, String channelName, String invitedUserName) throws Exception {
+        Optional<DAOUser> user = userRepo.findByUserName(userName);
+        Optional<DAOUser> invitedUser = userRepo.findByUserName(invitedUserName);
+        Optional<Channel> channel = channelService.findByChannelName(channelName);
         if (channel.get().getUsers().contains(user.get())) {
             invitedUser.get().getChannels().add(channel.get());
             channel.get().getUsers().add(invitedUser.get());

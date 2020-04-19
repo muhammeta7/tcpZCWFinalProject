@@ -68,6 +68,10 @@ public class ChannelService {
                 !channel.getPrivate()).collect(Collectors.toList());
     }
 
+    public Optional<Channel> findByChannelName(String channelName){
+        return channelRepository.findChannelByChannelName(channelName);
+    }
+
     // UPDATE
     //=============================================================================
     public Optional<Channel> changeChannelName(Long id,String name ){
