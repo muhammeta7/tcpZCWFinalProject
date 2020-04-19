@@ -125,7 +125,7 @@ public class ChannelServiceTest {
         Channel mockChannel = new Channel("Labs", new HashSet<>(), true);
         given(channelRepository.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
 
-        Optional<Channel> returnChannel = channelService.changeChannelPrivate(mockChannel.getId(), false);
+        Optional<Channel> returnChannel = channelService.changeChannelPrivacy(mockChannel.getId());
 
         Assertions.assertFalse(returnChannel.get().getPrivate());
     }

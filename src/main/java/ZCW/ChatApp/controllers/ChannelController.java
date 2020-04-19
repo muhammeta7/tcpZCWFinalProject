@@ -66,7 +66,6 @@ public class ChannelController {
     @PutMapping("/{id}/changeName")
     public ResponseEntity<?> updateChannelName(@PathVariable Long id, @RequestParam String channelName){
         Optional<Channel> updatedChannel = channelService.changeChannelName(id, channelName);
-
         return updatedChannel
                 .map(c -> {
                     try{
@@ -82,8 +81,8 @@ public class ChannelController {
     }
 
     @PutMapping("/{id}/changePrivacy")
-    public ResponseEntity<?> updateChannelPrivacy(@PathVariable Long id, @RequestParam Boolean value) {
-        Optional<Channel> updatedChannel = channelService.changeChannelPrivate(id, value);
+    public ResponseEntity<?> updateChannelPrivacy(@PathVariable Long id) {
+        Optional<Channel> updatedChannel = channelService.changeChannelPrivacy(id);
 
         return updatedChannel
                 .map(c -> {
