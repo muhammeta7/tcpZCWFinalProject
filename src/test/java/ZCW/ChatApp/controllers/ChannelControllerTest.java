@@ -79,7 +79,7 @@ public class ChannelControllerTest {
 
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.channelName", is("General")))
-                .andExpect(jsonPath("$.private", is(true)));
+                .andExpect(jsonPath("$.isPrivate", is(true)));
     }
     @WithMockUser(username = "muhammeta7")
     @Test
@@ -124,12 +124,12 @@ public class ChannelControllerTest {
                 .andExpect(jsonPath("$.*").isArray())
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].channelName", is("General")))
-                .andExpect(jsonPath("$[0].private", is(true)))
+                .andExpect(jsonPath("$[0].isPrivate", is(true)))
 
                 .andExpect(jsonPath("$.*").isArray())
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].channelName", is("Announcements")))
-                .andExpect(jsonPath("$[1].private", is(false)));
+                .andExpect(jsonPath("$[1].isPrivate", is(false)));
     }
 
     @WithMockUser(username = "muhammeta7")

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserService {
@@ -93,7 +92,7 @@ public class UserService {
     public Optional<DAOUser> joinChannelById(Long userId, Long channelId) throws Exception {
         Optional<DAOUser> original = userRepo.findById(userId);
         Optional<Channel> channel = channelService.findById(channelId);
-        if(!channel.get().getPrivate()){
+        if(!channel.get().getIsPrivate()){
             original.get().getChannels().add(channel.get());
             channel.get().getUsers().add(original.get());
             channelService.saveChannel(channel.get());
