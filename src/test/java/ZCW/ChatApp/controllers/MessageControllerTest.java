@@ -126,6 +126,27 @@ public class MessageControllerTest {
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].content", is("I hate flying")));
     }
+
+    @WithMockUser(username = "muhammeta7")
+    @Test
+    @DisplayName("PUT /messages/{id}")
+    public void updateMessageTest() throws Exception {
+        Message messageToBeUpdate = new Message(1L, new DAOUser(), "Hello there", new Date(), new Channel());
+        Message updateContentMessage = new Message(2L, new DAOUser(), "I hate flying", new Date(), new Channel());
+        given(messageService.findById(1L)).willReturn(Optional.of(messageToBeUpdate));
+
+        mockMvc.perform(put("/messages/{id}?", messageToBeUpdate.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.IF_MATCH, 1)
+                .content(asJsonString(updateContentMessage)))
+
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.content", is("I hate flying")));
+    }
+
     @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("DELETE /messages/delete/1")

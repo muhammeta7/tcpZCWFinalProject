@@ -27,7 +27,7 @@ public class UserController {
     }
 
 
-    // GET TODO Write Failing tests findAll Users, FindByChannel
+    // GET
     //=============================================================================
 
     @GetMapping("/{id}")
@@ -68,7 +68,7 @@ public class UserController {
     }
 
 
-    // PUT TODO change last 2 methods to optionals and write Fail tests
+    // PUT
     //=============================================================================
 
     @PutMapping("/{id}/connect")

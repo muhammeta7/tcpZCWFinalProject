@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -121,7 +122,30 @@ public class ChannelServiceTest {
     }
 
     @Test
-    public void updateChannelPrivacy(){
+    public void getAllPublicChannelsTest(){
+        Channel mockChannel1 = new Channel("Test", new HashSet<>(), false);
+        Channel mockChannel2 = new Channel("Test", new HashSet<>(), false);
+        List<Channel> expectedChannels = Arrays.asList(mockChannel1, mockChannel2);
+        given(channelRepository.findAll().stream().filter(channel -> !channel.getPrivate()).collect(Collectors.toList())).willReturn(expectedChannels);
+
+        List<Channel> actualChannels = channelService.getAllPublicChannels();
+
+        Assertions.assertEquals(expectedChannels.get(0), actualChannels.get(0));
+        Assertions.assertEquals(expectedChannels.get(1), actualChannels.get(1));
+    }
+
+    @Test
+    public void findByChannelNameTest(){
+        Channel mockChannel1 = new Channel("Test", new HashSet<>(), false);
+        given(channelRepository.findChannelByChannelName("Test")).willReturn(Optional.of(mockChannel1));
+
+        Optional<Channel> returnChannel = channelService.findByChannelName("Test");
+
+        Assertions.assertEquals(mockChannel1, returnChannel.get());
+    }
+
+    @Test
+    public void updateChannelPrivacyTest(){
         Channel mockChannel = new Channel("Labs", new HashSet<>(), true);
         given(channelRepository.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
 
