@@ -20,6 +20,7 @@ import org.springframework.http.HttpHeaders;
 
 import java.util.*;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -146,6 +147,24 @@ public class DAOUserControllerTest {
                 .andExpect(jsonPath("$[1].lastName", is("Aydin")))
                 .andExpect(jsonPath("$[1].userName", is("juju7")))
                 .andExpect(jsonPath("$[1].connected", is(false)));
+    }
+
+    @WithMockUser(username = "muhammeta7")
+    @Test
+    @DisplayName("GET /users/channels/{userName}")
+    public void getAllUserChannelsTest() throws Exception {
+        DAOUser user1 = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
+        Channel mockChannel1 = new Channel(1L, "Test Channel Name 1", new HashSet<>(), true);
+        Channel mockChannel2 = new Channel(2L, "Test Channel Name 2", new HashSet<>(), true);
+        HashSet<Channel> channels = new HashSet<>(Arrays.asList(mockChannel1, mockChannel2));
+        given(userService.findAllChannelsByUser("muhammeta7")).willReturn(channels);
+
+        mockMvc.perform(get("/users/channels/{userName}", user1.getUserName()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+                .andExpect(jsonPath("$.*").isArray())
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     // PUT
@@ -322,6 +341,27 @@ public class DAOUserControllerTest {
                 .param("channelId", param))
 
                 .andExpect(status().isNotFound());
+    }
+
+    @WithMockUser(username = "muhammeta7")
+    @Test
+    public void inviteToChannelTest() throws Exception {
+        DAOUser mockUser = new DAOUser(1L, "Moe", "Aydin", "muhammeta7", "password", true);
+        DAOUser invitedUser = new DAOUser(2L, "Chris", "Farmer", "Farmerc92", "password", true);
+        Channel channel = new Channel(1L, "Test", new HashSet<>(Collections.singletonList(mockUser)),  true);
+        invitedUser.setChannels(new HashSet<>(Collections.singletonList(channel)));
+        given(userService.inviteToChannel("muhammeta7", "Test", "Farmerc92")).willReturn(Optional.of(invitedUser));
+
+        mockMvc.perform(put("/users/{userName}/{channelName}/invite/{inviteUserName}", mockUser.getUserName(), channel.getChannelName(), invitedUser.getUserName())
+                .header(HttpHeaders.IF_MATCH, "muhammeta7", "Test", "Farmerc92"))
+
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+                .andExpect(jsonPath("$.id", is(2)))
+                .andExpect(jsonPath("$.firstName", is("Chris")))
+                .andExpect(jsonPath("$.lastName", is("Farmer")))
+                .andExpect(jsonPath("$.userName", is("Farmerc92")));
     }
 
     // DELETE

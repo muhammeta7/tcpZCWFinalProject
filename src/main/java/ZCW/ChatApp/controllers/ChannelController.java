@@ -51,8 +51,8 @@ public class ChannelController {
     }
 
     @GetMapping("/{channelName}/users")
-    public ResponseEntity<Set<DAOUser>> findAllUsersForChannel(@RequestBody Channel channel){
-        return new ResponseEntity<>(channel.getUsers(), HttpStatus.OK);
+    public ResponseEntity<Set<DAOUser>> findAllUsersForChannel(@PathVariable String channelName){
+        return new ResponseEntity<>(channelService.findByChannelName(channelName).get().getUsers(), HttpStatus.OK);
     }
 
     @GetMapping("/public")
