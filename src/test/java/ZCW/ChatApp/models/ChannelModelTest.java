@@ -73,8 +73,8 @@ public class ChannelModelTest {
     @Test
     public void channelPrivacyTest(){
         Channel channel = new Channel();
-        channel.setPrivate(true);
-        Boolean actual = channel.getPrivate();
+        channel.setIsPrivate(true);
+        Boolean actual = channel.getIsPrivate();
         Assert.assertTrue(actual);
     }
 

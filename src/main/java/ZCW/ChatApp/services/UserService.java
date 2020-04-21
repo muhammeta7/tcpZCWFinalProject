@@ -66,7 +66,7 @@ public class UserService {
     //=============================================================================
     public DAOUser updateConnection(Long id){
         DAOUser original = userRepo.getOne(id);
-        if (original.isConnected()) {
+        if (original.getConnected()) {
             original.setConnected(false);
         } else {
             original.setConnected(true);
@@ -92,7 +92,7 @@ public class UserService {
     public Optional<DAOUser> joinChannelById(Long userId, Long channelId) throws Exception {
         Optional<DAOUser> original = userRepo.findById(userId);
         Optional<Channel> channel = channelService.findById(channelId);
-        if(!channel.get().getPrivate()){
+        if(!channel.get().getIsPrivate()){
             original.get().getChannels().add(channel.get());
             channel.get().getUsers().add(original.get());
             channelService.saveChannel(channel.get());

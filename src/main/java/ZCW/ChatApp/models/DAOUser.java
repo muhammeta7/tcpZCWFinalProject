@@ -88,7 +88,7 @@ public class DAOUser {
         this.password = password;
     }
 
-    public Boolean isConnected() {
+    public Boolean getConnected() {
         return connected;
     }
 
