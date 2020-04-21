@@ -123,7 +123,7 @@ public class ChannelServiceTest {
         Channel mockChannel1 = new Channel("Test", new HashSet<>(), false);
         Channel mockChannel2 = new Channel("Test", new HashSet<>(), false);
         List<Channel> expectedChannels = Arrays.asList(mockChannel1, mockChannel2);
-        given(channelRepository.findAll().stream().filter(channel -> !channel.getPrivate()).collect(Collectors.toList())).willReturn(expectedChannels);
+        given(channelRepository.findAll().stream().filter(channel -> !channel.getIsPrivate()).collect(Collectors.toList())).willReturn(expectedChannels);
 
         List<Channel> actualChannels = channelService.getAllPublicChannels();
 
