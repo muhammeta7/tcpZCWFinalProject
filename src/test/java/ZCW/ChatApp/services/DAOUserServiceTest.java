@@ -193,7 +193,7 @@ public class DAOUserServiceTest {
         doReturn(mockUser).when(repo).save(mockUser);
         doReturn(mockUser).when(repo).getOne(1L);
 
-        Boolean actual = userService.updateConnection(1L).isConnected();
+        Boolean actual = userService.updateConnection(1L).getConnected();
 
         Assertions.assertTrue(actual);
     }
@@ -205,7 +205,7 @@ public class DAOUserServiceTest {
         doReturn(mockUser).when(repo).getOne(1L);
 
         userService.updateConnection(1L);
-        Boolean actual = userService.updateConnection(1L).isConnected();
+        Boolean actual = userService.updateConnection(1L).getConnected();
 
         Assertions.assertFalse(actual);
     }

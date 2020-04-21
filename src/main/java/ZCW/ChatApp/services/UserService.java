@@ -66,7 +66,7 @@ public class UserService {
     //=============================================================================
     public DAOUser updateConnection(Long id){
         DAOUser original = userRepo.getOne(id);
-        if (original.isConnected()) {
+        if (original.getConnected()) {
             original.setConnected(false);
         } else {
             original.setConnected(true);
