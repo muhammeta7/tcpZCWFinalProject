@@ -40,7 +40,11 @@ public class ChannelService {
     public Channel createDM(Channel channel, String userName, String dmUserName) {
         DAOUser user = userService.findUserByUsername(userName).get();
         DAOUser dmUser = userService.findUserByUsername(dmUserName).get();
-        channel.setChannelName(user.getFirstName() + " and " + dmUser.getFirstName());
+        String temp = user.getFirstName() + " and " + dmUser.getFirstName();
+        if(temp.length() > 30){
+            temp = temp.substring(0,30);
+        }
+        channel.setChannelName(temp);
         channel.setUsers(new HashSet<>(Arrays.asList(user, dmUser)));
         channel.setIsPrivate(true);
         user.getChannels().add(channel);
