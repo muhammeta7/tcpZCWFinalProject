@@ -17,7 +17,7 @@ public class Channel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotEmpty(message = "Channel can not be empty!")
-    @Size(min=3, max=15)
+    @Size(min=3, max=30)
     private String channelName;
     private Boolean isPrivate = true;
     @JsonIgnore
