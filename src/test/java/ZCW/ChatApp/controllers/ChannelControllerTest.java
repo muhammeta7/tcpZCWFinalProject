@@ -46,7 +46,7 @@ public class ChannelControllerTest {
 
     @WithMockUser(username = "muhammeta7")
     @Test
-    @DisplayName("POST /channel")
+    @DisplayName("POST /channels/create/user/{userId}")
     public void createChannelTest() throws Exception{
         HashSet<DAOUser> users = new HashSet<>();
         DAOUser mockUser = new DAOUser(1L, "First Name", "Last Name", "User Name", "Password", true);
@@ -59,6 +59,24 @@ public class ChannelControllerTest {
                 )
                 .andExpect(status().isCreated());
     }
+
+    @WithMockUser(username = "muhammeta7")
+    @Test
+    @DisplayName("POST /channels/{userName}/dm/{dmUserName}")
+    public void createDMTest() throws Exception{
+        DAOUser mockUser = new DAOUser(1L, "Moe", "Aydin", "muhammet7", "password", true);
+        DAOUser dmMockuser = new DAOUser(2L, "Chris", "Farmer", "farmerc", "password", true);
+        doReturn(Optional.of(mockUser)).when(userService).findUserByUsername("muhammet7");
+        doReturn(Optional.of(dmMockuser)).when(userService).findUserByUsername("farmerc");
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/channels/{userName}/dm/{dmUserName}", mockUser.getUserName(), dmMockuser.getUserName())
+                .content(asJsonString(new Channel()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isCreated());
+    }
+
     @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("GET /channels/1")
@@ -166,11 +184,11 @@ public class ChannelControllerTest {
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].channelName", is("Public Test 1")))
-                .andExpect(jsonPath("$[0].private", is(false)))
+                .andExpect(jsonPath("$[0].isPrivate", is(false)))
 
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].channelName", is("Public Test 2")))
-                .andExpect(jsonPath("$[1].private", is(false)));
+                .andExpect(jsonPath("$[1].isPrivate", is(false)));
     }
 
     @WithMockUser(username = "muhammeta7")
@@ -221,7 +239,7 @@ public class ChannelControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 
-                .andExpect(jsonPath("$.private", is(false)));
+                .andExpect(jsonPath("$.isPrivate", is(false)));
     }
 
     public static String asJsonString(final Object obj){

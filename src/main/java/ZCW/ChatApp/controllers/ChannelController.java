@@ -33,8 +33,8 @@ public class ChannelController {
     }
 
     @PostMapping("/{userName}/dm/{dmUserName}")
-    public ResponseEntity<Channel> createDM(@PathVariable String userName, @PathVariable String dmUserName){
-        return new ResponseEntity<>(channelService.createDM(userName, dmUserName), HttpStatus.CREATED);
+    public ResponseEntity<Channel> createDM(@RequestBody Channel channel, @PathVariable String userName, @PathVariable String dmUserName){
+        return new ResponseEntity<>(channelService.createDM(channel, userName, dmUserName), HttpStatus.CREATED);
     }
 
     // GET
