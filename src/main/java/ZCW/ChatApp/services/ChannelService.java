@@ -37,11 +37,12 @@ public class ChannelService {
         return channelRepository.save(channel);
     }
 
-    public Channel createDM(String userName, String dmUserName) {
+    public Channel createDM(Channel channel, String userName, String dmUserName) {
         DAOUser user = userService.findUserByUsername(userName).get();
         DAOUser dmUser = userService.findUserByUsername(dmUserName).get();
-        String channelName = user.getFirstName() + " and " + dmUser.getFirstName();
-        Channel channel = new Channel(channelName, new HashSet<>(Arrays.asList(user, dmUser)), true);
+        channel.setChannelName(user.getFirstName() + " and " + dmUser.getFirstName());
+        channel.setUsers(new HashSet<>(Arrays.asList(user, dmUser)));
+        channel.setIsPrivate(true);
         user.getChannels().add(channel);
         dmUser.getChannels().add(channel);
         userService.save(user);

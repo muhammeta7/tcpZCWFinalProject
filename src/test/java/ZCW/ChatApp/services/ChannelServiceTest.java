@@ -107,6 +107,21 @@ public class ChannelServiceTest {
     }
 
     @Test
+    @DisplayName("Test create DM")
+    public void createDMTest(){
+        DAOUser mockUser = new DAOUser(1L, "Moe", "Aydin", "muhammet7", "password", true);
+        DAOUser dmMockUser = new DAOUser(2L, "Chris", "Farmer", "farmerc", "password", true);
+        Channel mockChannel = new Channel(1L, "Moe and Chris", new HashSet<>(Arrays.asList(mockUser, dmMockUser)), true);
+        doReturn(mockChannel).when(channelRepository).save(any());
+        doReturn(Optional.of(mockUser)).when(userDAORepository).findByUserName("muhammet7");
+        doReturn(Optional.of(dmMockUser)).when(userDAORepository).findByUserName("farmerc");
+
+        Channel returnChannel = channelService.createDM(new Channel(),"muhammet7", "farmerc");
+
+        Assertions.assertEquals(returnChannel, mockChannel);
+    }
+
+    @Test
     public void updateChannelNameTest(){
         Channel mockChannel = new Channel("Labs", new HashSet<>(), true);
         given(channelRepository.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
