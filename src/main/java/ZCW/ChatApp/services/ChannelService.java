@@ -26,15 +26,26 @@ public class ChannelService {
     //=============================================================================
     public Channel create(Channel channel, Long userId){
         if (channelRepository.findChannelByChannelName(channel.getChannelName()).isPresent()){
-            throw new IllegalArgumentException("Channel name is taken.Try something else.");
+            throw new IllegalArgumentException("Channel name is taken.  Try something else.");
         }
         HashSet<DAOUser> channelCreator = new HashSet<>();
         DAOUser user = userService.getUser(userId);
         channelCreator.add(user);
-        Set<Channel> userChannels = user.getChannels();
-        userChannels.add(channel);
+        user.getChannels().add(channel);
         channel.setUsers(channelCreator);
         userService.save(user);
+        return channelRepository.save(channel);
+    }
+
+    public Channel createDM(String userName, String dmUserName) {
+        DAOUser user = userService.findUserByUsername(userName).get();
+        DAOUser dmUser = userService.findUserByUsername(dmUserName).get();
+        String channelName = user.getFirstName() + " and " + dmUser.getFirstName();
+        Channel channel = new Channel(channelName, new HashSet<>(Arrays.asList(user, dmUser)), true);
+        user.getChannels().add(channel);
+        dmUser.getChannels().add(channel);
+        userService.save(user);
+        userService.save(dmUser);
         return channelRepository.save(channel);
     }
 
@@ -109,4 +120,5 @@ public class ChannelService {
         channelRepository.deleteAll();
         return true;
     }
+
 }
