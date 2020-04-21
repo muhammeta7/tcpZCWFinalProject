@@ -32,6 +32,11 @@ public class ChannelController {
         return new ResponseEntity<>(channelService.create(channel, userId), HttpStatus.CREATED);
     }
 
+    @PostMapping("/{userName}/dm/{dmUserName}")
+    public ResponseEntity<Channel> createDM(@PathVariable String userName, @PathVariable String dmUserName){
+        return new ResponseEntity<>(channelService.createDM(userName, dmUserName), HttpStatus.CREATED);
+    }
+
     // GET
     //=============================================================================
     @GetMapping("/{id}")

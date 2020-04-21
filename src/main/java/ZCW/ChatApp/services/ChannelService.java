@@ -26,7 +26,7 @@ public class ChannelService {
     //=============================================================================
     public Channel create(Channel channel, Long userId){
         if (channelRepository.findChannelByChannelName(channel.getChannelName()).isPresent()){
-            throw new IllegalArgumentException("Channel name is taken.Try something else.");
+            throw new IllegalArgumentException("Channel name is taken.  Try something else.");
         }
         HashSet<DAOUser> channelCreator = new HashSet<>();
         DAOUser user = userService.getUser(userId);
@@ -36,6 +36,10 @@ public class ChannelService {
         channel.setUsers(channelCreator);
         userService.save(user);
         return channelRepository.save(channel);
+    }
+
+    public Channel createDM(String userName, String dmUserName) {
+        return new Channel();
     }
 
     // GET
@@ -109,4 +113,5 @@ public class ChannelService {
         channelRepository.deleteAll();
         return true;
     }
+
 }
