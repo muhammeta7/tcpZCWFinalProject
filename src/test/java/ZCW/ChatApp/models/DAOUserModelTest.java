@@ -74,7 +74,7 @@ public class DAOUserModelTest {
         user.setConnected(true);
 
         // when; then
-        Assert.assertTrue(user.isConnected());
+        Assert.assertTrue(user.getConnected());
     }
 
     @Test

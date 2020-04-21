@@ -65,7 +65,7 @@ public class ChannelService {
 
     public List<Channel> getAllPublicChannels(){
         return channelRepository.findAll().stream().filter(channel ->
-                !channel.getPrivate()).collect(Collectors.toList());
+                !channel.getIsPrivate()).collect(Collectors.toList());
     }
 
     public Optional<Channel> findByChannelName(String channelName){
@@ -83,10 +83,10 @@ public class ChannelService {
 
     public Optional<Channel> changeChannelPrivacy(Long id){
         Optional<Channel> original = channelRepository.findById(id);
-        if(original.get().getPrivate()){
-            original.get().setPrivate(false);
+        if(original.get().getIsPrivate()){
+            original.get().setIsPrivate(false);
         } else{
-            original.get().setPrivate(true);
+            original.get().setIsPrivate(true);
         }
         channelRepository.save(original.get());
         return original;
