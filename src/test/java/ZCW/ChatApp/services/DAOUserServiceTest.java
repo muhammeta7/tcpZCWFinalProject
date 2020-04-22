@@ -147,14 +147,27 @@ public class DAOUserServiceTest {
     public void findAllChannelsByUserTest(){
         DAOUser mockUser = new DAOUser("Moe", "Aydin", "muhammeta7", "password", true);
         Channel mockChannel1 = new Channel("Labs", new HashSet<>(Collections.singletonList(mockUser)), true, false);
-        Channel mockChannel2 = new Channel("Labs", new HashSet<>(Collections.singletonList(mockUser)), true, false);
+        Channel mockChannel2 = new Channel("Labs", new HashSet<>(Collections.singletonList(mockUser)), true, true);
         HashSet<Channel> channels = new HashSet<>(Arrays.asList(mockChannel1, mockChannel2));
         mockUser.setChannels(channels);
         given(repo.findByUserName("muhammeta7")).willReturn(Optional.of(mockUser));
 
         HashSet<Channel> returnChannels = userService.findAllChannelsByUser("muhammeta7");
 
-        Assert.assertEquals(returnChannels.size(), 2);
+        Assert.assertEquals(returnChannels.size(), 1);
+    }
+
+    @Test
+    public void findAllDmsByUserTest(){
+        DAOUser mockUser = new DAOUser("Chris", "Farmer", "farmerc", "password", true);
+        Channel mockDm = new Channel("Chris and Bob", new HashSet<>(), true, true);
+        Channel mockChannel = new Channel("Labs", new HashSet<>(), true, false);
+        mockUser.setChannels(new HashSet<>(Arrays.asList(mockDm, mockChannel)));
+        given(repo.findByUserName("farmerc")).willReturn(Optional.of(mockUser));
+
+        HashSet<Channel> returnChannels = userService.findAllDmsByUser("farmerc");
+
+        Assert.assertEquals(returnChannels.size(), 1);
     }
 
     // PUT

@@ -154,17 +154,39 @@ public class DAOUserControllerTest {
     @DisplayName("GET /users/channels/{userName}")
     public void getAllUserChannelsTest() throws Exception {
         DAOUser user1 = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
-        Channel mockChannel1 = new Channel(1L, "Test Channel Name 1", new HashSet<>(), true, false);
-        Channel mockChannel2 = new Channel(2L, "Test Channel Name 2", new HashSet<>(), true, false);
-        HashSet<Channel> channels = new HashSet<>(Arrays.asList(mockChannel1, mockChannel2));
-        given(userService.findAllChannelsByUser("muhammeta7")).willReturn(channels);
+        Channel mockChannel1 = new Channel(1L, "Test Channel Name 1", new HashSet<>(), false, false);
+        given(userService.findAllChannelsByUser("muhammeta7")).willReturn(new HashSet<>(Collections.singletonList(mockChannel1)));
 
         mockMvc.perform(get("/users/channels/{userName}", user1.getUserName()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 
                 .andExpect(jsonPath("$.*").isArray())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].channelName", is("Test Channel Name 1")))
+                .andExpect(jsonPath("$[0].isPrivate", is(false)))
+                .andExpect(jsonPath("$[0].isDm", is(false)));
+    }
+
+    @WithMockUser(username = "muhammeta7")
+    @Test
+    @DisplayName("GET /users/dms/{userName}")
+    public void getAllUserDmsTest() throws Exception {
+        DAOUser mockUser = new DAOUser(1L, "Chris", "Farmer", "farmerc", "password", true);
+        Channel mockDm = new Channel(2L, "Test 2", new HashSet<>(), true, true);
+        given(userService.findAllDmsByUser("farmerc")).willReturn(new HashSet<>(Collections.singletonList(mockDm)));
+
+        mockMvc.perform(get("/users/dms/{userName}", mockUser.getUserName()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+                .andExpect(jsonPath("$.*").isArray())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", is(2)))
+                .andExpect(jsonPath("$[0].channelName", is("Test 2")))
+                .andExpect(jsonPath("$[0].isPrivate", is(true)))
+                .andExpect(jsonPath("$[0].isDm", is(true)));
     }
 
     // PUT
