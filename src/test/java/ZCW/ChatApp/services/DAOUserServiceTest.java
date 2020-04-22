@@ -123,7 +123,7 @@ public class DAOUserServiceTest {
         HashSet<DAOUser> users = new HashSet<>();
         users.add(mockUser1);
         users.add(mockUser);
-        Channel mockChannel = new Channel("Labs", users, false);
+        Channel mockChannel = new Channel("Labs", users, false, false);
         doReturn(Arrays.asList(mockUser, mockUser1)).when(repo).findAllByChannels(mockChannel);
 
         Mockito.when(channelService.getChannel(mockChannel.getId())).thenReturn(mockChannel);
@@ -146,8 +146,8 @@ public class DAOUserServiceTest {
     @Test
     public void findAllChannelsByUserTest(){
         DAOUser mockUser = new DAOUser("Moe", "Aydin", "muhammeta7", "password", true);
-        Channel mockChannel1 = new Channel("Labs", new HashSet<>(Collections.singletonList(mockUser)), true);
-        Channel mockChannel2 = new Channel("Labs", new HashSet<>(Collections.singletonList(mockUser)), true);
+        Channel mockChannel1 = new Channel("Labs", new HashSet<>(Collections.singletonList(mockUser)), true, false);
+        Channel mockChannel2 = new Channel("Labs", new HashSet<>(Collections.singletonList(mockUser)), true, false);
         HashSet<Channel> channels = new HashSet<>(Arrays.asList(mockChannel1, mockChannel2));
         mockUser.setChannels(channels);
         given(repo.findByUserName("muhammeta7")).willReturn(Optional.of(mockUser));
@@ -229,7 +229,7 @@ public class DAOUserServiceTest {
     public void inviteToChannelTest() throws Exception {
         DAOUser mockUser = new DAOUser("Moe", "Aydin", "password", "muhammeta7", true);
         DAOUser invitedUser = new DAOUser("Chris", "Farmer", "password", "farmerc", true);
-        Channel mockChannel = new Channel("Labs", new HashSet<>(), false);
+        Channel mockChannel = new Channel("Labs", new HashSet<>(), false, false);
         mockChannel.setUsers(new HashSet<>(Collections.singletonList(mockUser)));
         doReturn(Optional.of(mockUser)).when(repo).findByUserName("muhammeta7");
         doReturn(Optional.of(invitedUser)).when(repo).findByUserName("farmerc");
@@ -244,7 +244,7 @@ public class DAOUserServiceTest {
     @Test
     public void joinChannelByIdTest() throws Exception {
         DAOUser mockUser = new DAOUser("Moe", "Aydin", "password", "muhammeta7", false);
-        Channel mockChannel = new Channel("Labs", new HashSet<>(), false);
+        Channel mockChannel = new Channel("Labs", new HashSet<>(), false, false);
         doReturn(Optional.of(mockUser)).when(repo).findById(any());
         doReturn(Optional.of(mockChannel)).when(channelService).findById(any());
 
@@ -258,7 +258,7 @@ public class DAOUserServiceTest {
     @Test
     public void joinChannelByIdFailTest() {
         DAOUser mockUser = new DAOUser("Moe", "Aydin", "password", "muhammeta7", false);
-        Channel mockChannel = new Channel("Labs", new HashSet<>(), true);
+        Channel mockChannel = new Channel("Labs", new HashSet<>(), true, false);
         doReturn(Optional.of(mockUser)).when(repo).findById(any());
         doReturn(Optional.of(mockChannel)).when(channelService).findById(any());
 
@@ -271,8 +271,8 @@ public class DAOUserServiceTest {
     @Test
     public void leaveChannelByIdTest() throws Exception {
         DAOUser mockUser = new DAOUser("Moe", "Aydin", "password", "muhammeta7", false);
-        Channel mockChannel = new Channel("Labs", new HashSet<>(), false);
-        Channel mockChannel1 = new Channel("Labs", new HashSet<>(), false);
+        Channel mockChannel = new Channel("Labs", new HashSet<>(), false, false);
+        Channel mockChannel1 = new Channel("Labs", new HashSet<>(), false, false);
 
         doReturn(Optional.of(mockUser)).when(repo).findById(any());
         doReturn(Optional.of(mockChannel1)).when(channelService).findById(any());

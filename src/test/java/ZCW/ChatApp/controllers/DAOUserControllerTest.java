@@ -154,8 +154,8 @@ public class DAOUserControllerTest {
     @DisplayName("GET /users/channels/{userName}")
     public void getAllUserChannelsTest() throws Exception {
         DAOUser user1 = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
-        Channel mockChannel1 = new Channel(1L, "Test Channel Name 1", new HashSet<>(), true);
-        Channel mockChannel2 = new Channel(2L, "Test Channel Name 2", new HashSet<>(), true);
+        Channel mockChannel1 = new Channel(1L, "Test Channel Name 1", new HashSet<>(), true, false);
+        Channel mockChannel2 = new Channel(2L, "Test Channel Name 2", new HashSet<>(), true, false);
         HashSet<Channel> channels = new HashSet<>(Arrays.asList(mockChannel1, mockChannel2));
         given(userService.findAllChannelsByUser("muhammeta7")).willReturn(channels);
 
@@ -276,7 +276,7 @@ public class DAOUserControllerTest {
     public void joinChannelSuccessTest() throws Exception{
         Long id = 1L;
         DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
-        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false);
+        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false, false);
         given(userService.findById(id)).willReturn(Optional.of(putUser));
         given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
         given(userService.joinChannelById(putUser.getId(), mockChannel.getId())).willReturn(Optional.of(putUser));
@@ -294,7 +294,7 @@ public class DAOUserControllerTest {
     public void joinChannelFailTest() throws Exception{
         Long id = 1L;
         DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
-        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), true);
+        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), true, false);
         given(userService.findById(id)).willReturn(Optional.of(putUser));
         given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
         given(userService.joinChannelById(putUser.getId(), mockChannel.getId())).willReturn(Optional.empty());
@@ -312,7 +312,7 @@ public class DAOUserControllerTest {
     public void leaveChannelSuccessTest() throws Exception{
         Long id = 1L;
         DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
-        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false);
+        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false, false);
         given(userService.findById(id)).willReturn(Optional.of(putUser));
         given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
         given(userService.leaveChannelById(putUser.getId(), mockChannel.getId())).willReturn(Optional.of(putUser));
@@ -330,7 +330,7 @@ public class DAOUserControllerTest {
     public void leaveChannelFailTest() throws Exception{
         Long id = 1L;
         DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
-        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false);
+        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false, false);
         given(userService.findById(id)).willReturn(Optional.of(putUser));
         given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
         given(userService.leaveChannelById(putUser.getId(), mockChannel.getId())).willReturn(Optional.empty());
@@ -348,7 +348,7 @@ public class DAOUserControllerTest {
     public void inviteToChannelTest() throws Exception {
         DAOUser mockUser = new DAOUser(1L, "Moe", "Aydin", "muhammeta7", "password", true);
         DAOUser invitedUser = new DAOUser(2L, "Chris", "Farmer", "Farmerc92", "password", true);
-        Channel channel = new Channel(1L, "Test", new HashSet<>(Collections.singletonList(mockUser)),  true);
+        Channel channel = new Channel(1L, "Test", new HashSet<>(Collections.singletonList(mockUser)),  true, false);
         invitedUser.setChannels(new HashSet<>(Collections.singletonList(channel)));
         given(userService.inviteToChannel("muhammeta7", "Test", "Farmerc92")).willReturn(Optional.of(invitedUser));
 

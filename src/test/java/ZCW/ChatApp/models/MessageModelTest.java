@@ -58,7 +58,7 @@ public class MessageModelTest {
     public void getChannelTest(){
         HashSet<DAOUser> users = new HashSet<>();
         users.add(new DAOUser());
-        Channel channel = new Channel("test", users, false);
+        Channel channel = new Channel("test", users, false, false);
         message.setChannel(channel);
         String expected = "test";
         String actual = message.getChannel().getChannelName();
