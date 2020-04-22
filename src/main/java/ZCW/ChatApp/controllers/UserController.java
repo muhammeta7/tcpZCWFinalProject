@@ -69,6 +69,7 @@ public class UserController {
 
     @GetMapping("/dms/{userName}")
     public ResponseEntity<Set<Channel>> getAllUserDms(@PathVariable String userName){
+        System.out.println(userName);
         return new ResponseEntity<>(userService.findAllDmsByUser(userName), HttpStatus.OK);
     }
 
