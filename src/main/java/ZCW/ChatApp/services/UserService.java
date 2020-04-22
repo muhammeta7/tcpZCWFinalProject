@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -59,9 +60,14 @@ public class UserService {
 
     public HashSet<Channel> findAllChannelsByUser(String username){
         Optional<DAOUser> user = userRepo.findByUserName(username);
-        HashSet<Channel> userChannels = new HashSet<>(user.get().getChannels());
-        return userChannels;
+        return user.get().getChannels().stream().filter(c -> !c.getIsDm()).collect(Collectors.toCollection(HashSet::new));
     }
+
+    public HashSet<Channel> findAllDmsByUser(String username){
+        Optional<DAOUser> user = userRepo.findByUserName(username);
+        return user.get().getChannels().stream().filter(Channel::getIsDm).collect(Collectors.toCollection(HashSet::new));
+    }
+
     // UPDATE
     //=============================================================================
     public DAOUser updateConnection(Long id){

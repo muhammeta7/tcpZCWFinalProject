@@ -62,9 +62,14 @@ public class UserController {
         return new ResponseEntity<>(userService.findUsersByChannel(channelId), HttpStatus.OK);
     }
 
-    @GetMapping("channels/{username}")
+    @GetMapping("/channels/{username}")
     public ResponseEntity<Set<Channel>> getAllUserChannels(@PathVariable String username) {
         return new ResponseEntity<>(userService.findAllChannelsByUser(username), HttpStatus.OK);
+    }
+
+    @GetMapping("/dms/{userName}")
+    public ResponseEntity<Set<Channel>> getAllUserDms(@PathVariable String userName){
+        return new ResponseEntity<>(userService.findAllDmsByUser(userName), HttpStatus.OK);
     }
 
 

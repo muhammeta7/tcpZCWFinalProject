@@ -78,4 +78,12 @@ public class ChannelModelTest {
         Assert.assertTrue(actual);
     }
 
+    @Test
+    public void channelIsDmTest(){
+        Channel channel = new Channel();
+        channel.setIsDm(true);
+        Boolean actual = channel.getIsDm();
+        Assert.assertTrue(actual);
+    }
+
 }

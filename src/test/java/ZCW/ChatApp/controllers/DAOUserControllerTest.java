@@ -154,17 +154,39 @@ public class DAOUserControllerTest {
     @DisplayName("GET /users/channels/{userName}")
     public void getAllUserChannelsTest() throws Exception {
         DAOUser user1 = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", false);
-        Channel mockChannel1 = new Channel(1L, "Test Channel Name 1", new HashSet<>(), true);
-        Channel mockChannel2 = new Channel(2L, "Test Channel Name 2", new HashSet<>(), true);
-        HashSet<Channel> channels = new HashSet<>(Arrays.asList(mockChannel1, mockChannel2));
-        given(userService.findAllChannelsByUser("muhammeta7")).willReturn(channels);
+        Channel mockChannel1 = new Channel(1L, "Test Channel Name 1", new HashSet<>(), false, false);
+        given(userService.findAllChannelsByUser("muhammeta7")).willReturn(new HashSet<>(Collections.singletonList(mockChannel1)));
 
         mockMvc.perform(get("/users/channels/{userName}", user1.getUserName()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 
                 .andExpect(jsonPath("$.*").isArray())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].channelName", is("Test Channel Name 1")))
+                .andExpect(jsonPath("$[0].isPrivate", is(false)))
+                .andExpect(jsonPath("$[0].isDm", is(false)));
+    }
+
+    @WithMockUser(username = "muhammeta7")
+    @Test
+    @DisplayName("GET /users/dms/{userName}")
+    public void getAllUserDmsTest() throws Exception {
+        DAOUser mockUser = new DAOUser(1L, "Chris", "Farmer", "farmerc", "password", true);
+        Channel mockDm = new Channel(2L, "Test 2", new HashSet<>(), true, true);
+        given(userService.findAllDmsByUser("farmerc")).willReturn(new HashSet<>(Collections.singletonList(mockDm)));
+
+        mockMvc.perform(get("/users/dms/{userName}", mockUser.getUserName()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+                .andExpect(jsonPath("$.*").isArray())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", is(2)))
+                .andExpect(jsonPath("$[0].channelName", is("Test 2")))
+                .andExpect(jsonPath("$[0].isPrivate", is(true)))
+                .andExpect(jsonPath("$[0].isDm", is(true)));
     }
 
     // PUT
@@ -276,7 +298,7 @@ public class DAOUserControllerTest {
     public void joinChannelSuccessTest() throws Exception{
         Long id = 1L;
         DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
-        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false);
+        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false, false);
         given(userService.findById(id)).willReturn(Optional.of(putUser));
         given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
         given(userService.joinChannelById(putUser.getId(), mockChannel.getId())).willReturn(Optional.of(putUser));
@@ -294,7 +316,7 @@ public class DAOUserControllerTest {
     public void joinChannelFailTest() throws Exception{
         Long id = 1L;
         DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
-        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), true);
+        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), true, false);
         given(userService.findById(id)).willReturn(Optional.of(putUser));
         given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
         given(userService.joinChannelById(putUser.getId(), mockChannel.getId())).willReturn(Optional.empty());
@@ -312,7 +334,7 @@ public class DAOUserControllerTest {
     public void leaveChannelSuccessTest() throws Exception{
         Long id = 1L;
         DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
-        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false);
+        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false, false);
         given(userService.findById(id)).willReturn(Optional.of(putUser));
         given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
         given(userService.leaveChannelById(putUser.getId(), mockChannel.getId())).willReturn(Optional.of(putUser));
@@ -330,7 +352,7 @@ public class DAOUserControllerTest {
     public void leaveChannelFailTest() throws Exception{
         Long id = 1L;
         DAOUser putUser = new DAOUser(1L,"Moe", "Aydin", "muhammeta7", "password", true);
-        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false);
+        Channel mockChannel = new Channel(1L,"Labs", new HashSet<>(), false, false);
         given(userService.findById(id)).willReturn(Optional.of(putUser));
         given(channelService.findById(mockChannel.getId())).willReturn(Optional.of(mockChannel));
         given(userService.leaveChannelById(putUser.getId(), mockChannel.getId())).willReturn(Optional.empty());
@@ -348,7 +370,7 @@ public class DAOUserControllerTest {
     public void inviteToChannelTest() throws Exception {
         DAOUser mockUser = new DAOUser(1L, "Moe", "Aydin", "muhammeta7", "password", true);
         DAOUser invitedUser = new DAOUser(2L, "Chris", "Farmer", "Farmerc92", "password", true);
-        Channel channel = new Channel(1L, "Test", new HashSet<>(Collections.singletonList(mockUser)),  true);
+        Channel channel = new Channel(1L, "Test", new HashSet<>(Collections.singletonList(mockUser)),  true, false);
         invitedUser.setChannels(new HashSet<>(Collections.singletonList(channel)));
         given(userService.inviteToChannel("muhammeta7", "Test", "Farmerc92")).willReturn(Optional.of(invitedUser));
 

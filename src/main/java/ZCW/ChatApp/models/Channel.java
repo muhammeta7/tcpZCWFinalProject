@@ -20,6 +20,7 @@ public class Channel {
     @Size(min=3, max=30)
     private String channelName;
     private Boolean isPrivate = true;
+    private Boolean isDm;
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -34,18 +35,20 @@ public class Channel {
 
     public Channel (){}
 
-    public Channel(String channelName, HashSet<DAOUser> users, Boolean isPrivate) {
+    public Channel(String channelName, HashSet<DAOUser> users, Boolean isPrivate, Boolean isDm) {
         this.channelName = channelName;
         this.users = users;
         this.isPrivate = isPrivate;
+        this.isDm = isDm;
         this.messages = new ArrayList<>();
     }
 
-    public Channel(Long id, String channelName, HashSet<DAOUser> users, Boolean isPrivate) {
+    public Channel(Long id, String channelName, HashSet<DAOUser> users, Boolean isPrivate, Boolean isDm) {
         this.id = id;
         this.channelName = channelName;
         this.users = users;
         this.isPrivate = isPrivate;
+        this.isDm = isDm;
         this.messages = new ArrayList<>();
     }
 
@@ -79,6 +82,14 @@ public class Channel {
 
     public void setIsPrivate(Boolean isPrivate) {
         this.isPrivate = isPrivate;
+    }
+
+    public Boolean getIsDm() {
+        return isDm;
+    }
+
+    public void setIsDm(Boolean isDm) {
+        this.isDm = isDm;
     }
 
     public ArrayList<Message> getMessages() {

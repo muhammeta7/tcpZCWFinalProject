@@ -51,7 +51,7 @@ public class MessageControllerTest {
     @DisplayName("POST /messages/channel/{channelId}/sender/{userId}")
     public void createMessageTest() throws Exception {
         DAOUser mockUser = new DAOUser(1L, "Bob", "Dole", "Lame", "password", true);
-        Channel mockChannel = new Channel(1L, "General", new HashSet<>(Collections.singleton(mockUser)), true);
+        Channel mockChannel = new Channel(1L, "General", new HashSet<>(Collections.singleton(mockUser)), true, false);
         Message postMessage = new Message(1L, mockUser, "Hello", new Date(), mockChannel);
         Message mockMessage = new Message(1L, mockUser, "Hello", new Date(), mockChannel);
         mockUser.setMessages(Collections.singletonList(mockMessage));

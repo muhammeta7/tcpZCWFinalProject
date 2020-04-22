@@ -48,12 +48,11 @@ public class ChannelControllerTest {
     @Test
     @DisplayName("POST /channels/create/user/{userId}")
     public void createChannelTest() throws Exception{
-        HashSet<DAOUser> users = new HashSet<>();
         DAOUser mockUser = new DAOUser(1L, "First Name", "Last Name", "User Name", "Password", true);
         doReturn(mockUser).when(userService).getUser(any());
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/channels/create/user/1")
-                .content(asJsonString(new Channel(1L,"General", users, true)))
+                .content(asJsonString(new Channel()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 )
@@ -83,7 +82,7 @@ public class ChannelControllerTest {
     public void findChannelByIdTest() throws Exception{
         Long givenId = 1L;
         HashSet<DAOUser> users = new HashSet<>();
-        Channel getChannel = new Channel(1L, "General", users, true);
+        Channel getChannel = new Channel(1L, "General", users, true, false);
         given(channelService.findById(givenId)).willReturn(Optional.of(getChannel));
 
         mockMvc.perform(
@@ -103,7 +102,7 @@ public class ChannelControllerTest {
     @DisplayName("GET /channels/chat/{id}")
     public void findAllMessagesTest() throws Exception {
         HashSet<DAOUser> users = new HashSet<>();
-        Channel mockChannel = new Channel(1L, "General", users, true);
+        Channel mockChannel = new Channel(1L, "General", users, true, false);
         Message mockMessage1 = new Message(new DAOUser(), "Hello", new Date(), mockChannel);
         Message mockMessage2 = new Message(new DAOUser(), "Hi", new Date(), mockChannel);
         List<Message> messages = Arrays.asList(mockMessage1, mockMessage2);
@@ -128,8 +127,8 @@ public class ChannelControllerTest {
     @DisplayName("GET /channels")
     public void findAllChannelsTest() throws Exception {
         HashSet<DAOUser> users = new HashSet<>();
-        Channel channel1 = new Channel(1L, "General", users, true);
-        Channel channel2 = new Channel(2L, "Announcements", users, false);
+        Channel channel1 = new Channel(1L, "General", users, true, false);
+        Channel channel2 = new Channel(2L, "Announcements", users, false, false);
 
         List<Channel> channelList = new ArrayList<>(Arrays.asList(channel1, channel2));
         given(channelService.findAll()).willReturn(channelList);
@@ -157,7 +156,7 @@ public class ChannelControllerTest {
         DAOUser mockUser = new DAOUser(1L, "Bob", "Dole", "Lame", "password", true);
         DAOUser mockUser2 =new DAOUser(2L, "Chris", "Farmer", "farmerc", "password", true);
         HashSet<DAOUser> users = new HashSet<>(Arrays.asList(mockUser, mockUser2));
-        Channel mockChannel = new Channel(1L, "Test", users, true);
+        Channel mockChannel = new Channel(1L, "Test", users, true, false);
         given(channelService.findByChannelName("Test")).willReturn(Optional.of(mockChannel));
 
         mockMvc.perform(get("/channels/Test/users"))
@@ -173,8 +172,8 @@ public class ChannelControllerTest {
     @DisplayName("GET /public")
     public void findAllPublicChannelsTest() throws Exception {
         HashSet<DAOUser> users = new HashSet<>();
-        Channel mockPublicChannel1 = new Channel(1L, "Public Test 1", users, false);
-        Channel mockPublicChannel2 = new Channel(2L, "Public Test 2", users, false);
+        Channel mockPublicChannel1 = new Channel(1L, "Public Test 1", users, false, false);
+        Channel mockPublicChannel2 = new Channel(2L, "Public Test 2", users, false, false);
         given(channelService.getAllPublicChannels()).willReturn(Arrays.asList(mockPublicChannel1, mockPublicChannel2));
 
         mockMvc.perform(get("/channels/public"))
@@ -210,8 +209,8 @@ public class ChannelControllerTest {
     @Test
     @DisplayName("PUT /channels/{id}/changeName - Success")
     void updateChannelNameSuccessTest() throws Exception {
-        Channel channel = new Channel(1L, "General", new HashSet<>(), true);
-        Channel channel1 = new Channel(1L, "Updated", new HashSet<>(), true);
+        Channel channel = new Channel(1L, "General", new HashSet<>(), true, false);
+        Channel channel1 = new Channel(1L, "Updated", new HashSet<>(), true, false);
         String newName = "Updated";
         given(channelService.changeChannelName(channel.getId(), newName)).willReturn(Optional.of(channel1));
 
@@ -229,8 +228,8 @@ public class ChannelControllerTest {
     @Test
     @DisplayName("PUT /channels/{id}/changePrivacy")
     public void updateChannelPrivacyTest() throws Exception {
-        Channel channel = new Channel(1L, "General", new HashSet<>(), true);
-        Channel updatedChannel = new Channel(1L, "General", new HashSet<>(), false);
+        Channel channel = new Channel(1L, "General", new HashSet<>(), true, false);
+        Channel updatedChannel = new Channel(1L, "General", new HashSet<>(), false, false);
         given(channelService.changeChannelPrivacy(channel.getId())).willReturn(Optional.of(updatedChannel));
 
         mockMvc.perform(put("/channels/{id}/changePrivacy", updatedChannel.getId())

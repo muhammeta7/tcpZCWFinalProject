@@ -77,7 +77,7 @@ public class MessageServiceTest {
     @DisplayName("Test create Message")
     public void createMessageTest() {
         DAOUser mockUser = new DAOUser(1L, "Bob", "Dole", "Lame", "password", true);
-        Channel mockChannel = new Channel(1L, "General", new HashSet<>(Collections.singleton(mockUser)), true);
+        Channel mockChannel = new Channel(1L, "General", new HashSet<>(Collections.singleton(mockUser)), true, false);
         Message mockMessage = new Message(mockUser, "testing time", new Date(), mockChannel);
         doReturn(mockMessage).when(repo).save(any());
         doReturn(mockUser).when(userDAORepository).getOne(1L);

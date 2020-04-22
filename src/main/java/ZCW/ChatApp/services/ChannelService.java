@@ -31,6 +31,7 @@ public class ChannelService {
         HashSet<DAOUser> channelCreator = new HashSet<>();
         DAOUser user = userService.getUser(userId);
         channelCreator.add(user);
+        channel.setIsDm(false);
         user.getChannels().add(channel);
         channel.setUsers(channelCreator);
         userService.save(user);
@@ -47,6 +48,7 @@ public class ChannelService {
         channel.setChannelName(temp);
         channel.setUsers(new HashSet<>(Arrays.asList(user, dmUser)));
         channel.setIsPrivate(true);
+        channel.setIsDm(true);
         user.getChannels().add(channel);
         dmUser.getChannels().add(channel);
         userService.save(user);
