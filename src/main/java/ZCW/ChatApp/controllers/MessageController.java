@@ -58,11 +58,9 @@ public class MessageController {
     //=============================================================================
     @PutMapping("/{id}/edit")
     public ResponseEntity<?> updateMessage(@RequestParam String newContent, @PathVariable Long id){
-        Optional<Message> existingMessage = messageService.findById(id);
-        return existingMessage
+        Optional<Message> updatedMessage = messageService.changeMessageContent(newContent, id);
+        return updatedMessage
                 .map(m -> {
-                    m.setContent(newContent);
-                    messageService.save(m);
                     try{
                         return ResponseEntity
                                 .ok()

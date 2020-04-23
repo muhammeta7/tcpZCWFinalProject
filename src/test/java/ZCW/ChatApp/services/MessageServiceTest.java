@@ -137,6 +137,17 @@ public class MessageServiceTest {
     }
 
     @Test
+    public void changeMessageContentTest(){
+        Message mockMessage = new Message(1L, new DAOUser(), "Hello", new Date(), new Channel());
+
+        doReturn(Optional.of(mockMessage)).when(repo).findById(1L);
+
+        Optional<Message> expected = service.changeMessageContent("There", 1L);
+
+        Assertions.assertEquals("There", expected.get().getContent());
+    }
+
+    @Test
     public void deleteMessageTest(){
         Message mockMessage = new Message(new DAOUser(), "testing time", new Date(), new Channel());
         doReturn(Optional.of(mockMessage)).when(repo).findById(any());
