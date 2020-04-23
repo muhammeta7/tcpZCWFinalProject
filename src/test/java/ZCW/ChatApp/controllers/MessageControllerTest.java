@@ -129,21 +129,19 @@ public class MessageControllerTest {
 
     @WithMockUser(username = "muhammeta7")
     @Test
-    @DisplayName("PUT /messages/{id}")
+    @DisplayName("PUT /messages/{id}/edit")
     public void updateMessageTest() throws Exception {
-        Message messageToBeUpdate = new Message(1L, new DAOUser(), "Hello there", new Date(), new Channel());
-        Message updateContentMessage = new Message(2L, new DAOUser(), "I hate flying", new Date(), new Channel());
-        given(messageService.findById(1L)).willReturn(Optional.of(messageToBeUpdate));
+        Message messageToBeUpdated = new Message(1L, new DAOUser(), "Hello there", new Date(), new Channel());
+        String newContent = "I hate flying";
+        given(messageService.findById(1L)).willReturn(Optional.of(messageToBeUpdated));
 
-        mockMvc.perform(put("/messages/{id}?", messageToBeUpdate.getId())
-                .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(put("/messages/{id}/edit", messageToBeUpdated.getId())
                 .header(HttpHeaders.IF_MATCH, 1)
-                .content(asJsonString(updateContentMessage)))
+                .param("newContent", newContent))
 
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 
-                .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.content", is("I hate flying")));
     }
 
