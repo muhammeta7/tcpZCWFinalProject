@@ -67,13 +67,19 @@ public class MessageService {
         return messageRepository.findByChannelId(channelId);
     }
 
-    // TODO Test
     public List<Message> findMessagesByUserId(Long userId){
         return messageRepository.findMessagesBySender_Id(userId);
     }
 
     // UPDATE
     //=============================================================================
+
+    public Optional<Message> changeMessageContent(String newContent, Long id){
+        Optional<Message> original = messageRepository.findById(id);
+        original.get().setContent(newContent);
+        messageRepository.save(original.get());
+        return original;
+    }
 
     // DELETE
     //=============================================================================

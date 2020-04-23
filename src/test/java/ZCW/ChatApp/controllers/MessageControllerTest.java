@@ -131,9 +131,9 @@ public class MessageControllerTest {
     @Test
     @DisplayName("PUT /messages/{id}/edit")
     public void updateMessageTest() throws Exception {
-        Message messageToBeUpdated = new Message(1L, new DAOUser(), "Hello there", new Date(), new Channel());
         String newContent = "I hate flying";
-        given(messageService.findById(1L)).willReturn(Optional.of(messageToBeUpdated));
+        Message messageToBeUpdated = new Message(1L, new DAOUser(), newContent, new Date(), new Channel());
+        given(messageService.changeMessageContent(newContent, 1L)).willReturn(Optional.of(messageToBeUpdated));
 
         mockMvc.perform(put("/messages/{id}/edit", messageToBeUpdated.getId())
                 .header(HttpHeaders.IF_MATCH, 1)
