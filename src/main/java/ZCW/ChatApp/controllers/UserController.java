@@ -1,5 +1,7 @@
 package ZCW.ChatApp.controllers;
 
+
+import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.DAOUser;
 import ZCW.ChatApp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -24,7 +27,7 @@ public class UserController {
     }
 
 
-    // GET TODO Write Failing tests findAll Users, FindByChannel
+    // GET
     //=============================================================================
 
     @GetMapping("/{id}")
@@ -59,7 +62,19 @@ public class UserController {
         return new ResponseEntity<>(userService.findUsersByChannel(channelId), HttpStatus.OK);
     }
 
-    // PUT TODO change last 2 methods to optionals and write Fail tests
+    @GetMapping("/channels/{username}")
+    public ResponseEntity<Set<Channel>> getAllUserChannels(@PathVariable String username) {
+        return new ResponseEntity<>(userService.findAllChannelsByUser(username), HttpStatus.OK);
+    }
+
+    @GetMapping("/dms/{userName}")
+    public ResponseEntity<Set<Channel>> getAllUserDms(@PathVariable String userName){
+        System.out.println(userName);
+        return new ResponseEntity<>(userService.findAllDmsByUser(userName), HttpStatus.OK);
+    }
+
+
+    // PUT
     //=============================================================================
 
     @PutMapping("/{id}/connect")
@@ -101,6 +116,22 @@ public class UserController {
                                 .location(new URI("/update/password/" + u.getId()))
                                 .body(u);
                     }catch(URISyntaxException e){
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                    }
+                }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{userName}/{channelName}/invite/{inviteUserName}")
+    public ResponseEntity<?> inviteToChannel(@PathVariable String userName, @PathVariable String channelName, @PathVariable String inviteUserName) throws Exception {
+        Optional<DAOUser> inviteUser = userService.inviteToChannel(userName, channelName, inviteUserName);
+        return inviteUser
+                .map(u -> {
+                    try {
+                        return ResponseEntity
+                                .ok()
+                                .location(new URI("/" + userName + "/" + channelName + "/invite/" + u.getUserName()))
+                                .body(u);
+                    } catch (URISyntaxException e) {
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
                     }
                 }).orElse(ResponseEntity.notFound().build());

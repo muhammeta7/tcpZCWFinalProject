@@ -88,7 +88,7 @@ public class DAOUser {
         this.password = password;
     }
 
-    public Boolean isConnected() {
+    public Boolean getConnected() {
         return connected;
     }
 
@@ -111,8 +111,6 @@ public class DAOUser {
     public void setChannels(HashSet<Channel> channels) {
         this.channels = channels;
     }
-
-
 
     @Override
     public boolean equals(Object o) {

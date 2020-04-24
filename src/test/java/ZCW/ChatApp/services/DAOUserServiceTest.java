@@ -3,6 +3,7 @@ package ZCW.ChatApp.services;
 import ZCW.ChatApp.models.Channel;
 import ZCW.ChatApp.models.DAOUser;
 import ZCW.ChatApp.repositories.UserDaoRepository;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -122,7 +123,7 @@ public class DAOUserServiceTest {
         HashSet<DAOUser> users = new HashSet<>();
         users.add(mockUser1);
         users.add(mockUser);
-        Channel mockChannel = new Channel("Labs", users, false);
+        Channel mockChannel = new Channel("Labs", users, false, false);
         doReturn(Arrays.asList(mockUser, mockUser1)).when(repo).findAllByChannels(mockChannel);
 
         Mockito.when(channelService.getChannel(mockChannel.getId())).thenReturn(mockChannel);
@@ -140,6 +141,33 @@ public class DAOUserServiceTest {
         DAOUser returnUser = userService.save(mockUser);
 
         Assertions.assertNotNull(returnUser, "Saved user should not be null");
+    }
+
+    @Test
+    public void findAllChannelsByUserTest(){
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "muhammeta7", "password", true);
+        Channel mockChannel1 = new Channel("Labs", new HashSet<>(Collections.singletonList(mockUser)), true, false);
+        Channel mockChannel2 = new Channel("Labs", new HashSet<>(Collections.singletonList(mockUser)), true, true);
+        HashSet<Channel> channels = new HashSet<>(Arrays.asList(mockChannel1, mockChannel2));
+        mockUser.setChannels(channels);
+        given(repo.findByUserName("muhammeta7")).willReturn(Optional.of(mockUser));
+
+        HashSet<Channel> returnChannels = userService.findAllChannelsByUser("muhammeta7");
+
+        Assert.assertEquals(returnChannels.size(), 1);
+    }
+
+    @Test
+    public void findAllDmsByUserTest(){
+        DAOUser mockUser = new DAOUser("Chris", "Farmer", "farmerc", "password", true);
+        Channel mockDm = new Channel("Chris and Bob", new HashSet<>(), true, true);
+        Channel mockChannel = new Channel("Labs", new HashSet<>(), true, false);
+        mockUser.setChannels(new HashSet<>(Arrays.asList(mockDm, mockChannel)));
+        given(repo.findByUserName("farmerc")).willReturn(Optional.of(mockUser));
+
+        HashSet<Channel> returnChannels = userService.findAllDmsByUser("farmerc");
+
+        Assert.assertEquals(returnChannels.size(), 1);
     }
 
     // PUT
@@ -193,7 +221,7 @@ public class DAOUserServiceTest {
         doReturn(mockUser).when(repo).save(mockUser);
         doReturn(mockUser).when(repo).getOne(1L);
 
-        Boolean actual = userService.updateConnection(1L).isConnected();
+        Boolean actual = userService.updateConnection(1L).getConnected();
 
         Assertions.assertTrue(actual);
     }
@@ -205,15 +233,31 @@ public class DAOUserServiceTest {
         doReturn(mockUser).when(repo).getOne(1L);
 
         userService.updateConnection(1L);
-        Boolean actual = userService.updateConnection(1L).isConnected();
+        Boolean actual = userService.updateConnection(1L).getConnected();
 
         Assertions.assertFalse(actual);
     }
 
     @Test
+    public void inviteToChannelTest() throws Exception {
+        DAOUser mockUser = new DAOUser("Moe", "Aydin", "password", "muhammeta7", true);
+        DAOUser invitedUser = new DAOUser("Chris", "Farmer", "password", "farmerc", true);
+        Channel mockChannel = new Channel("Labs", new HashSet<>(), false, false);
+        mockChannel.setUsers(new HashSet<>(Collections.singletonList(mockUser)));
+        doReturn(Optional.of(mockUser)).when(repo).findByUserName("muhammeta7");
+        doReturn(Optional.of(invitedUser)).when(repo).findByUserName("farmerc");
+        doReturn(Optional.of(mockChannel)).when(channelService).findByChannelName(any());
+
+        Optional<DAOUser> returnUser = userService.inviteToChannel("muhammeta7", "Labs", "farmerc");
+
+        Assertions.assertTrue(mockChannel.getUsers().contains(invitedUser));
+        Assertions.assertEquals(returnUser.get(), invitedUser);
+    }
+
+    @Test
     public void joinChannelByIdTest() throws Exception {
         DAOUser mockUser = new DAOUser("Moe", "Aydin", "password", "muhammeta7", false);
-        Channel mockChannel = new Channel("Labs", new HashSet<>(), false);
+        Channel mockChannel = new Channel("Labs", new HashSet<>(), false, false);
         doReturn(Optional.of(mockUser)).when(repo).findById(any());
         doReturn(Optional.of(mockChannel)).when(channelService).findById(any());
 
@@ -227,7 +271,7 @@ public class DAOUserServiceTest {
     @Test
     public void joinChannelByIdFailTest() {
         DAOUser mockUser = new DAOUser("Moe", "Aydin", "password", "muhammeta7", false);
-        Channel mockChannel = new Channel("Labs", new HashSet<>(), true);
+        Channel mockChannel = new Channel("Labs", new HashSet<>(), true, false);
         doReturn(Optional.of(mockUser)).when(repo).findById(any());
         doReturn(Optional.of(mockChannel)).when(channelService).findById(any());
 
@@ -240,8 +284,8 @@ public class DAOUserServiceTest {
     @Test
     public void leaveChannelByIdTest() throws Exception {
         DAOUser mockUser = new DAOUser("Moe", "Aydin", "password", "muhammeta7", false);
-        Channel mockChannel = new Channel("Labs", new HashSet<>(), false);
-        Channel mockChannel1 = new Channel("Labs", new HashSet<>(), false);
+        Channel mockChannel = new Channel("Labs", new HashSet<>(), false, false);
+        Channel mockChannel1 = new Channel("Labs", new HashSet<>(), false, false);
 
         doReturn(Optional.of(mockUser)).when(repo).findById(any());
         doReturn(Optional.of(mockChannel1)).when(channelService).findById(any());
@@ -279,7 +323,7 @@ public class DAOUserServiceTest {
     public void deleteUserThatExistsTest(){
         Boolean actual = userService.deleteUser(1L);
         Assertions.assertFalse(actual);
-        verify(repo, times(0)).deleteById(1l);
+        verify(repo, times(0)).deleteById(1L);
     }
 
     @Test

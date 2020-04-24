@@ -32,6 +32,11 @@ public class ChannelController {
         return new ResponseEntity<>(channelService.create(channel, userId), HttpStatus.CREATED);
     }
 
+    @PostMapping("/{userName}/dm/{dmUserName}")
+    public ResponseEntity<Channel> createDM(@RequestBody Channel channel, @PathVariable String userName, @PathVariable String dmUserName){
+        return new ResponseEntity<>(channelService.createDM(channel, userName, dmUserName), HttpStatus.CREATED);
+    }
+
     // GET
     //=============================================================================
     @GetMapping("/{id}")
@@ -51,8 +56,13 @@ public class ChannelController {
     }
 
     @GetMapping("/{channelName}/users")
-    public ResponseEntity<Set<DAOUser>> findAllUsersForChannel(@RequestBody Channel channel){
-        return new ResponseEntity<>(channel.getUsers(), HttpStatus.OK);
+    public ResponseEntity<Set<DAOUser>> findAllUsersForChannel(@PathVariable String channelName){
+        return new ResponseEntity<>(channelService.findByChannelName(channelName).get().getUsers(), HttpStatus.OK);
+    }
+
+    @GetMapping("/public")
+    public ResponseEntity<List<Channel>> findAllPublicChannels(){
+        return new ResponseEntity<>(channelService.getAllPublicChannels(), HttpStatus.OK);
     }
 
     // PUT
@@ -61,7 +71,6 @@ public class ChannelController {
     @PutMapping("/{id}/changeName")
     public ResponseEntity<?> updateChannelName(@PathVariable Long id, @RequestParam String channelName){
         Optional<Channel> updatedChannel = channelService.changeChannelName(id, channelName);
-
         return updatedChannel
                 .map(c -> {
                     try{
@@ -74,6 +83,23 @@ public class ChannelController {
                     }
                 }).orElse(ResponseEntity.notFound().build());
 
+    }
+
+    @PutMapping("/{id}/changePrivacy")
+    public ResponseEntity<?> updateChannelPrivacy(@PathVariable Long id) {
+        Optional<Channel> updatedChannel = channelService.changeChannelPrivacy(id);
+
+        return updatedChannel
+                .map(c -> {
+                    try {
+                        return ResponseEntity
+                                .ok()
+                                .location(new URI(c.getId() + "/changePrivacy"))
+                                .body(c);
+                    } catch (URISyntaxException e) {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                    }
+                }).orElse(ResponseEntity.notFound().build());
     }
 
     // DELETE

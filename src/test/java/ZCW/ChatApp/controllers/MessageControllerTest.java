@@ -51,7 +51,7 @@ public class MessageControllerTest {
     @DisplayName("POST /messages/channel/{channelId}/sender/{userId}")
     public void createMessageTest() throws Exception {
         DAOUser mockUser = new DAOUser(1L, "Bob", "Dole", "Lame", "password", true);
-        Channel mockChannel = new Channel(1L, "General", new HashSet<>(Collections.singleton(mockUser)), true);
+        Channel mockChannel = new Channel(1L, "General", new HashSet<>(Collections.singleton(mockUser)), true, false);
         Message postMessage = new Message(1L, mockUser, "Hello", new Date(), mockChannel);
         Message mockMessage = new Message(1L, mockUser, "Hello", new Date(), mockChannel);
         mockUser.setMessages(Collections.singletonList(mockMessage));
@@ -126,6 +126,25 @@ public class MessageControllerTest {
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].content", is("I hate flying")));
     }
+
+    @WithMockUser(username = "muhammeta7")
+    @Test
+    @DisplayName("PUT /messages/{id}/edit")
+    public void updateMessageTest() throws Exception {
+        String newContent = "I hate flying";
+        Message messageToBeUpdated = new Message(1L, new DAOUser(), newContent, new Date(), new Channel());
+        given(messageService.changeMessageContent(newContent, 1L)).willReturn(Optional.of(messageToBeUpdated));
+
+        mockMvc.perform(put("/messages/{id}/edit", messageToBeUpdated.getId())
+                .header(HttpHeaders.IF_MATCH, 1)
+                .param("newContent", newContent))
+
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+
+                .andExpect(jsonPath("$.content", is("I hate flying")));
+    }
+
     @WithMockUser(username = "muhammeta7")
     @Test
     @DisplayName("DELETE /messages/delete/1")

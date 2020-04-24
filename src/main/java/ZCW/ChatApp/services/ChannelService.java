@@ -7,6 +7,7 @@ import ZCW.ChatApp.repositories.ChannelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ChannelService {
@@ -25,15 +26,33 @@ public class ChannelService {
     //=============================================================================
     public Channel create(Channel channel, Long userId){
         if (channelRepository.findChannelByChannelName(channel.getChannelName()).isPresent()){
-            throw new IllegalArgumentException("Channel name is taken.Try something else.");
+            throw new IllegalArgumentException("Channel name is taken.  Try something else.");
         }
         HashSet<DAOUser> channelCreator = new HashSet<>();
         DAOUser user = userService.getUser(userId);
         channelCreator.add(user);
-        Set<Channel> userChannels = user.getChannels();
-        userChannels.add(channel);
+        channel.setIsDm(false);
+        user.getChannels().add(channel);
         channel.setUsers(channelCreator);
         userService.save(user);
+        return channelRepository.save(channel);
+    }
+
+    public Channel createDM(Channel channel, String userName, String dmUserName) {
+        DAOUser user = userService.findUserByUsername(userName).get();
+        DAOUser dmUser = userService.findUserByUsername(dmUserName).get();
+        String temp = user.getFirstName() + " and " + dmUser.getFirstName();
+        if(temp.length() > 30){
+            temp = temp.substring(0,30);
+        }
+        channel.setChannelName(temp);
+        channel.setUsers(new HashSet<>(Arrays.asList(user, dmUser)));
+        channel.setIsPrivate(true);
+        channel.setIsDm(true);
+        user.getChannels().add(channel);
+        dmUser.getChannels().add(channel);
+        userService.save(user);
+        userService.save(dmUser);
         return channelRepository.save(channel);
     }
 
@@ -56,7 +75,19 @@ public class ChannelService {
     }
 
     public List<Message> findAllMessages(Long id){
-        return channelRepository.findById(id).get().getMessages();
+        List<Message> messages = channelRepository.findById(id).get().getMessages();
+        Comparator<Message> compareMessage = Comparator.comparing(Message::getTimestamp);
+        Collections.sort(messages, compareMessage);
+        return messages;
+    }
+
+    public List<Channel> getAllPublicChannels(){
+        return channelRepository.findAll().stream().filter(channel ->
+                !channel.getIsPrivate()).collect(Collectors.toList());
+    }
+
+    public Optional<Channel> findByChannelName(String channelName){
+        return channelRepository.findChannelByChannelName(channelName);
     }
 
     // UPDATE
@@ -68,9 +99,13 @@ public class ChannelService {
         return original;
     }
 
-    public Optional<Channel> changeChannelPrivate(Long id, Boolean value){
+    public Optional<Channel> changeChannelPrivacy(Long id){
         Optional<Channel> original = channelRepository.findById(id);
-        original.get().setPrivate(value);
+        if(original.get().getIsPrivate()){
+            original.get().setIsPrivate(false);
+        } else{
+            original.get().setIsPrivate(true);
+        }
         channelRepository.save(original.get());
         return original;
     }
@@ -92,4 +127,5 @@ public class ChannelService {
         channelRepository.deleteAll();
         return true;
     }
+
 }

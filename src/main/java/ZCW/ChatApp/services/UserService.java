@@ -5,8 +5,11 @@ import ZCW.ChatApp.models.DAOUser;
 import ZCW.ChatApp.repositories.UserDaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -55,11 +58,21 @@ public class UserService {
         return userRepo.findAllByChannels(channelService.getChannel(id));
     }
 
+    public HashSet<Channel> findAllChannelsByUser(String username){
+        Optional<DAOUser> user = userRepo.findByUserName(username);
+        return user.get().getChannels().stream().filter(c -> !c.getIsDm()).collect(Collectors.toCollection(HashSet::new));
+    }
+
+    public HashSet<Channel> findAllDmsByUser(String username){
+        Optional<DAOUser> user = userRepo.findByUserName(username);
+        return user.get().getChannels().stream().filter(Channel::getIsDm).collect(Collectors.toCollection(HashSet::new));
+    }
+
     // UPDATE
     //=============================================================================
     public DAOUser updateConnection(Long id){
         DAOUser original = userRepo.getOne(id);
-        if (original.isConnected()) {
+        if (original.getConnected()) {
             original.setConnected(false);
         } else {
             original.setConnected(true);
@@ -67,10 +80,25 @@ public class UserService {
         return userRepo.save(original);
     }
 
+    public Optional<DAOUser> inviteToChannel(String userName, String channelName, String invitedUserName) throws Exception {
+        Optional<DAOUser> user = userRepo.findByUserName(userName);
+        Optional<DAOUser> invitedUser = userRepo.findByUserName(invitedUserName);
+        Optional<Channel> channel = channelService.findByChannelName(channelName);
+        if (channel.get().getUsers().contains(user.get())) {
+            invitedUser.get().getChannels().add(channel.get());
+            channel.get().getUsers().add(invitedUser.get());
+            channelService.saveChannel(channel.get());
+            userRepo.save(invitedUser.get());
+        } else {
+            throw new Exception("You do not belong to this channel in the first place!");
+        }
+        return invitedUser;
+    }
+
     public Optional<DAOUser> joinChannelById(Long userId, Long channelId) throws Exception {
         Optional<DAOUser> original = userRepo.findById(userId);
         Optional<Channel> channel = channelService.findById(channelId);
-        if(!channel.get().getPrivate()){
+        if(!channel.get().getIsPrivate()){
             original.get().getChannels().add(channel.get());
             channel.get().getUsers().add(original.get());
             channelService.saveChannel(channel.get());
