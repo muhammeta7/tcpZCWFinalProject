@@ -54,8 +54,7 @@ public class ChannelControllerTest {
                 .post("/channels/create/user/1")
                 .content(asJsonString(new Channel()))
                 .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                )
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
     }
 

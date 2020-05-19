@@ -73,7 +73,6 @@ public class UserController {
         return new ResponseEntity<>(userService.findAllDmsByUser(userName), HttpStatus.OK);
     }
 
-
     // PUT
     //=============================================================================
 
